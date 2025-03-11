@@ -2,7 +2,7 @@
 namespace WPAutoAgent\Core;
 
 class Config {
-    private static $table_suffix = 'schatbot_';
+    private static $table_suffix = 'wpautoagent_';
     public const API_ENDPOINT = 'https://api.example.com/v1';
     public const VERSION = '1.0.0';  // Add version constant
 

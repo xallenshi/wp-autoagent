@@ -52,7 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['article_id'])) {
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <button id="submit_article">Submit Article to Pinecone</button>
+        <button id="submit_article">Submit Article to OpenAI</button>
     </div>
 <?php endif; ?>
+
+
 
