@@ -13,8 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<div class="sc-plugin-container">
-    <form id="sc_create_ai_assistant_form" method="post">
+<div class="wpaa-plugin-container">
+    <form id="wpaa_create_ai_assistant_form" method="post">
     <h1>Create Your AI Agent</h1>
     <h4>The AI Agent is a large language model driven assistant assist your customers with a collection of tools and instructions in answering questions and automating tasks.</h4>
     

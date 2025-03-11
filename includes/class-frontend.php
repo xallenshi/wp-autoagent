@@ -10,8 +10,8 @@ class Frontend {
         wp_enqueue_style('wp-autoagent-css', WP_AUTOAGENT_PLUGIN_URL . 'assets/css/wp-autoagent.css', array(), WP_AUTOAGENT_VERSION);
         wp_enqueue_script('wp-autoagent-js', WP_AUTOAGENT_PLUGIN_URL . 'assets/js/wp-autoagent.js', array('jquery'), WP_AUTOAGENT_VERSION, true);
         
-        wp_localize_script('wp-autoagent-js', 'wp_autoagent_settings', array(
-            'nonce' => wp_create_nonce('wp_autoagent_settings')
+        wp_localize_script('wp-autoagent-js', 'wpaa_nonce', array(
+            'nonce' => wp_create_nonce('wpaa_setting')
         ));
     }
 

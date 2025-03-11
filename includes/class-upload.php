@@ -11,12 +11,11 @@ class Upload {
 
     public function __construct() {
         $this->table_article = Config::get_table_name('article');
-        $this->table_article_chunk = Config::get_table_name('article_chunk');
-        add_action('wp_ajax_smart_chatbot_settings_upload', array($this, 'smart_chatbot_settings_upload'));
+        add_action('wp_ajax_wpaa_article_upload', array($this, 'wpaa_article_upload'));
     }
 
-    public function smart_chatbot_settings_upload() {
-        if (!check_ajax_referer('smart_chatbot_settings', 'nonce', false)) {
+    public function wpaa_article_upload() {
+        if (!check_ajax_referer('wpaa_setting', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }
@@ -32,14 +31,13 @@ class Upload {
         $article_id = $this->save_article($file);
 
         if (!$article_id) {
-            wp_send_json_error('Failed to save article header info.');
+            wp_send_json_error('Failed to upload the article.');
             return;
         }
 
-        
-
-        wp_send_json_success('Article uploaded and processed successfully.');
+        wp_send_json_success('The article has been uploaded and processed.');
     }
+    
 
     private function save_article($file) {
         global $wpdb;

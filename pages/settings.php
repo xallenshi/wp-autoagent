@@ -1,6 +1,6 @@
-<div class="sc-body">
-    <div class="sc-title">WP AutoAgent Settings</div>
-    <div id="sc_settings_menu">
+<div class="wpaa-body">
+    <div class="wpaa-title">WP AutoAgent Settings</div>
+    <div id="wpaa_settings_menu">
         <ul>
             
             <li data-page="create">Manage Agent</li>
@@ -11,20 +11,20 @@
     </div>
 
     <!-- WP AutoAgent Content -->
-    <div id="sc_settings_content">
+    <div id="wpaa_settings_content">
 
-        <div class="sc-page" id="sc_create" style="display: none;">
+        <div class="wpaa-page" id="wpaa_create" style="display: none;">
             <?php include(WP_AUTOAGENT_PLUGIN_DIR . 'pages/create.php'); ?>
         </div>
 
-        <div class="sc-page" id="sc_upload" style="display: none;">
+        <div class="wpaa-page" id="wpaa_upload" style="display: none;">
             <?php include(WP_AUTOAGENT_PLUGIN_DIR . 'pages/upload.php'); ?>
         </div>
         
-        <div class="sc-page" id="sc_publish" style="display: none;">
+        <div class="wpaa-page" id="wpaa_publish" style="display: none;">
             <?php include(WP_AUTOAGENT_PLUGIN_DIR . 'pages/publish.php'); ?>
         </div>
-        <div class="sc-page" id="sc_access" style="display: none;">
+        <div class="wpaa-page" id="wpaa_access" style="display: none;">
             <?php include(WP_AUTOAGENT_PLUGIN_DIR . 'pages/access.php'); ?>
         </div>
     </div>
