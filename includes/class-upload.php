@@ -55,7 +55,8 @@ class Upload {
         error_log('api_response: ' . print_r($api_response, true));
 
         if (is_wp_error($api_response)) {
-            wp_send_json_error('Failed to complete the api call.');
+            $api_error_msg = $api_response->get_error_message(); 
+            wp_send_json_error('Failed to complete the api call with error: ' . $api_error_msg);
             return;
         }
 
@@ -65,7 +66,8 @@ class Upload {
         } else {
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
             $api_msg = $api_response_body['message'];
-            wp_send_json_success('The article has been uploaded and processed with the following api message: ' . $api_msg);
+            #$api_msg1 = wp_remote_retrieve_response_message($api_response);
+            wp_send_json_success('The article has been uploaded and processed with api call message: ' . $api_msg);
         }
 
     }
