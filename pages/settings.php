@@ -1,6 +1,6 @@
 <div class="wpaa-body">
     <div class="wpaa-title">WP AutoAgent Settings</div>
-    <div id="wpaa_settings_menu">
+    <div id="wpaa_setting_menu">
         <ul>
             
             <li data-page="create">Manage Agent</li>

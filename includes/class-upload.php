@@ -30,12 +30,44 @@ class Upload {
         // Save header info to article table and get article_id
         $article_id = $this->save_article($file);
 
-        if (!$article_id) {
-            wp_send_json_error('Failed to upload the article.');
+
+        // Read the file content
+        $file_content = '';
+        if ($file_handle = fopen($file['tmp_name'], 'rb')) {
+            $file_content = fread($file_handle, filesize($file['tmp_name']));
+            fclose($file_handle);
+        }
+
+        // Encode the file content in base64
+        $file_content_base64 = base64_encode($file_content);
+
+        // make a rest api call to Lambda function to process the article
+        $api_url = 'https://keyhwsna4nmjf3giq2i4oyq4z40frwjs.lambda-url.ap-southeast-2.on.aws/';
+        $api_response = wp_remote_post($api_url, array(
+            'method' => 'POST',
+            'body' => json_encode(array('file_content' => $file_content_base64)),
+            'headers' => array(
+                'Content-Type' => 'application/json',
+            ),
+            'timeout' => 20,
+        ));
+
+        error_log('api_response: ' . print_r($api_response, true));
+
+        if (is_wp_error($api_response)) {
+            wp_send_json_error('Failed to complete the api call.');
             return;
         }
 
-        wp_send_json_success('The article has been uploaded and processed.');
+        if (wp_remote_retrieve_response_code($api_response) != 200) {
+            wp_send_json_error('Failed to embed the article.');
+            return;
+        } else {
+            $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
+            $api_msg = $api_response_body['message'];
+            wp_send_json_success('The article has been uploaded and processed with the following api message: ' . $api_msg);
+        }
+
     }
     
 

@@ -18,18 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     <button type="submit">Upload</button>
 </form>
 
-<form method="post">
-    <select name="article_id" id="wpaa_article_select" onchange="this.form.submit()">
-        <option value="">Select an article</option>
-        <?php
-        $articles = $db_handler->get_articles();
-        foreach ($articles as $article) {
-            $selected = (isset($_POST['id']) && $_POST['id'] == $article->id) ? 'selected' : '';
-            echo "<option value='{$article->id}' {$selected}>{$article->file_name} at {$article->created_time}</option>";
-        }
-        ?>
-    </select>
-</form>
-
-
+<div id="wpaa_article_list" class="wrap">
+    <?php
+    $articles = $db_handler->get_articles();
+    foreach ($articles as $article) {
+        echo "<div class='wpaa_article_item'>{$article->file_name} at {$article->created_time}</div>";
+    }
+    ?>
+</div>
 

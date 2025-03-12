@@ -5,7 +5,7 @@
     margin: 20px 0 20px 0;
 }
 
-#wpaa_settings_menu {
+#wpaa_setting_menu {
     width: 250px;
     float: left;
     background-color: #fff;
@@ -14,19 +14,19 @@
     padding: 20px 0;
 }
 
-#wpaa_settings_menu ul {
+#wpaa_setting_menu ul {
     list-style: none;
     padding: 0;
 }
 
-#wpaa_settings_menu li {
+#wpaa_setting_menu li {
     padding: 12px 20px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
     border-left: 4px solid transparent;
 }
 
-#wpaa_settings_menu li:hover {
+#wpaa_setting_menu li:hover {
     background-color: rgba(52, 152, 219, 0.1);
     border-left-color: var(--primary-color);
 }
