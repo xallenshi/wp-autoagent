@@ -26,10 +26,7 @@ class Upload {
         }
 
         $file = $_FILES['article_file'];
-
-        // Save header info to article table and get article_id
-        $article_id = $this->save_article($file);
-
+        $file_name = $file['name'];
 
         // Read the file content
         $file_content = '';
@@ -45,14 +42,14 @@ class Upload {
         $api_url = 'https://keyhwsna4nmjf3giq2i4oyq4z40frwjs.lambda-url.ap-southeast-2.on.aws/';
         $api_response = wp_remote_post($api_url, array(
             'method' => 'POST',
-            'body' => json_encode(array('file_content' => $file_content_base64)),
+            'body' => json_encode(array('file_content' => $file_content_base64, 'file_name' => $file_name)),
             'headers' => array(
                 'Content-Type' => 'application/json',
             ),
             'timeout' => 20,
         ));
 
-        error_log('api_response: ' . print_r($api_response, true));
+        //error_log('api_response: ' . print_r($api_response, true));
 
         if (is_wp_error($api_response)) {
             $api_error_msg = $api_response->get_error_message(); 
@@ -66,20 +63,28 @@ class Upload {
         } else {
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
             $api_msg = $api_response_body['message'];
-            #$api_msg1 = wp_remote_retrieve_response_message($api_response);
+            $file_id = $api_response_body['file_id'];
+            $vector_id = $api_response_body['vector_id'];
+
+            // Save file info including file_id and vector_id to table_article
+            $article_id = $this->save_article($file, $file_id, $vector_id);
+
             wp_send_json_success('The article has been uploaded and processed with api call message: ' . $api_msg);
+            return;
         }
 
     }
     
 
-    private function save_article($file) {
+    private function save_article($file, $file_id, $vector_id) {
         global $wpdb;
 
         $result = $wpdb->insert($this->table_article, array(
             'file_type' => $file['type'],
             'file_name' => $file['name'],
             'file_size' => $file['size'],
+            'file_id' => $file_id,
+            'vector_id' => $vector_id,
             'created_time' => current_time('mysql'),
         ));
 

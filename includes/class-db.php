@@ -40,7 +40,7 @@ class DB {
                 file_name varchar(255) NOT NULL,
                 file_size int UNSIGNED NOT NULL,
                 file_id varchar(255) NOT NULL,
-                vector_store_id varchar(255) NOT NULL,
+                vector_id varchar(255) NOT NULL,
                 created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 PRIMARY KEY  (id)
             ) $charset_collate;";
