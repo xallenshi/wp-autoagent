@@ -1,6 +1,5 @@
 <?php
 namespace WPAutoAgent\Core;
-
 $db_handler = new DBHandler();
 
 // Handle form submission

@@ -4,11 +4,12 @@ namespace WPAutoAgent\Core;
 class DBHandler {
     private $wpdb;
     private $table_article;
-
+    private $table_agent;
     public function __construct() {
         global $wpdb;
         $this->wpdb = $wpdb;
         $this->table_article = Config::get_table_name('article');
+        $this->table_agent = Config::get_table_name('agent');
     }
 
     public function get_articles() {

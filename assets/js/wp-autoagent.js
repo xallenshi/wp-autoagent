@@ -18,6 +18,7 @@ jQuery(document).ready(function($) {
     // Trigger click on the first item to show it by default (Upload Article)
     $('#wpaa_setting_menu li:first').trigger('click');
 
+    // Upload Article
     $('#wpaa_upload_article_form').submit(function(event) {
         event.preventDefault();
         var formData = new FormData(this);
@@ -38,6 +39,29 @@ jQuery(document).ready(function($) {
             }
         });
     });
+
+    // Create Agent
+    $('#wpaa_create_agent_form').submit(function(event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        formData.append('action', 'wpaa_create_agent');
+        formData.append('nonce', wpaa_nonce.nonce);
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert(response.data);
+            },
+            error: function(response) {
+                alert(response.data);
+            }
+        });
+    });
+
 
 
 });

@@ -58,5 +58,33 @@ class DB {
             error_log("Table {$this->table_article} already exists.");
         }
 
+        // Check if the agent table exists
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$this->table_agent}'") != $this->table_agent) {
+            $sql = "CREATE TABLE {$this->table_agent} (
+                id int UNSIGNED NOT NULL AUTO_INCREMENT,
+                agent_id varchar(255) NOT NULL,
+                agent_name varchar(255) NOT NULL,
+                agent_instruction varchar(255) NOT NULL,
+                model varchar(255) NOT NULL,
+                tools varchar(255) NOT NULL,
+                file_id_internal varchar(255) NOT NULL,
+                vector_id varchar(255) NOT NULL,
+                created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                PRIMARY KEY  (id)
+            ) $charset_collate;";
+
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+
+            // Log the result for debugging
+            if (empty($wpdb->last_error)) {
+                error_log("Table {$this->table_agent} was created successfully.");
+            } else {
+                error_log("Error creating table {$this->table_agent}: " . $wpdb->last_error);
+            }
+        } else {
+            error_log("Table {$this->table_agent} already exists.");
+        }
+
     }
 }

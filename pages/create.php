@@ -1,5 +1,6 @@
 <?php
 namespace WPAutoAgent\Core;
+$db_handler = new DBHandler();
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <div class="wpaa-plugin-container">
-    <form id="wpaa_create_ai_assistant_form" method="post">
+    <form id="wpaa_create_agent_form" method="post" enctype="multipart/form-data">
     <h1>Create Your AI Agent</h1>
     <h4>The AI Agent is a large language model driven assistant assist your customers with a collection of tools and instructions in answering questions and automating tasks.</h4>
     
@@ -36,14 +37,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Knowledge Base -->
         <h2>Knowledge Base</h2>
         <label>Select Files:</label>
-        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-            <input type="checkbox" id="file1" name="files[]" value="file1">
-            <label for="file1" style="margin-left: 8px;">File 1</label>
-        </div>
-        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-            <input type="checkbox" id="file2" name="files[]" value="file2">
-            <label for="file2" style="margin-left: 8px;">File 2</label>
-        </div>
+        <?php
+        
+        $articles = $db_handler->get_articles();
+        if ($articles) {
+            foreach ($articles as $article) {
+                ?>
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="checkbox" id="file_<?php echo esc_attr($article->id); ?>" name="files[]" value="<?php echo esc_attr($article->id); ?>">
+                    <label for="file_<?php echo esc_attr($article->id); ?>" ><?php echo esc_html($article->file_name); ?></label>
+                </div>
+                <?php
+            }
+        } else {
+            ?>
+            <div>No files uploaded yet.</div>
+            <?php
+        }
+        ?>
         <!-- Add more files as needed -->
 
         <!-- Function Enablement -->

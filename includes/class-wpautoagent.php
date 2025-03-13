@@ -20,6 +20,7 @@ class WPAutoAgent {
         $this->menu = new Menu();
         $this->frontend = new Frontend();
         $this->upload = new Upload();
+        $this->create = new Create();
         $this->api = new API();
     }
 

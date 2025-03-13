@@ -1,13 +1,10 @@
 <?php
 namespace WPAutoAgent\Core;
 
-use PhpOffice\PhpWord\IOFactory as WordIOFactory;
-use PhpOffice\PhpSpreadsheet\IOFactory as SpreadsheetIOFactory;
 use WPAutoAgent\Core\API;
 
 class Upload {
     private $table_article;
-    private $table_article_chunk;
 
     public function __construct() {
         $this->table_article = Config::get_table_name('article');
