@@ -36,7 +36,7 @@ class Upload {
         $file_content_base64 = base64_encode($file_content);
 
         // make a rest api call to Lambda function to process the article
-        $api_url = 'https://keyhwsna4nmjf3giq2i4oyq4z40frwjs.lambda-url.ap-southeast-2.on.aws/';
+        $api_url = 'https://tdbarn5h3ctyhzqjkgmmztkac40olzcm.lambda-url.ap-southeast-2.on.aws/';
         $api_response = wp_remote_post($api_url, array(
             'method' => 'POST',
             'body' => json_encode(array('file_content' => $file_content_base64, 'file_name' => $file_name)),

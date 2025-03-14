@@ -18,30 +18,29 @@ class Create {
             return;
         }
 
-        if (!isset($_POST['agent_name'])) {
+        if (!isset($_POST['name'])) {
             wp_send_json_error('No agent name provided.');
             return;
         }
 
-        $agent_name = $_POST['agent_name'];
-        $agent_instruction = $_POST['agent_instruction'];
+        $name = $_POST['name'];
+        $instructions = $_POST['instructions'];
         $model = $_POST['model'];
         $selected_files = $_POST['files'] ?? [];
         $selected_functions = $_POST['functions'] ?? [];
-        $vector_id = 'vs_67d2bcd739f48191ae35186082ca779d';
+        $vector_store_ids = ['vs_67d2bcd739f48191ae35186082ca779d'];
 
         // make a rest api call to Lambda function to process the article
         $api_url = 'https://pbe3crai7j4vy6eoo35pss3pzm0xcpxb.lambda-url.ap-southeast-2.on.aws/';
         $api_response = wp_remote_post($api_url, array(
             'method' => 'POST',
-            'body' => json_encode(array('agent_name' => $agent_name, 'agent_instruction' => $agent_instruction, 'model' => $model, 'vector_id' => $vector_id)),
+            'body' => json_encode(array('name' => $name, 'instructions' => $instructions, 'model' => $model, 'vector_store_ids' => $vector_store_ids)),
             'headers' => array(
                 'Content-Type' => 'application/json',
             ),
             'timeout' => 20,
         ));
 
-        error_log('api_url: ' . $api_url);
         error_log('api_response: ' . print_r($api_response, true));
 
         if (is_wp_error($api_response)) {
@@ -59,7 +58,7 @@ class Create {
             $assistant_id = $api_response_body['assistant_id'];
 
             // Save file info including file_id and vector_id to table_article
-            $agent_id = $this->save_agent($agent_name, $agent_instruction, $model, $assistant_id);
+            $agent_id = $this->save_agent($name, $instructions, $model, $vector_store_ids, $assistant_id);
 
             wp_send_json_success('The agent has been created with api call message: ' . $api_msg);
             return;
@@ -68,14 +67,15 @@ class Create {
     }
     
 
-    private function save_agent($agent_name, $agent_instruction, $model, $assistant_id) {
+    private function save_agent($name, $instructions, $model, $vector_store_ids, $assistant_id) {
         global $wpdb;
-
+        
         $result = $wpdb->insert($this->table_agent, array(
-            'agent_id' => $assistant_id,
-            'agent_name' => $agent_name,
-            'agent_instruction' => $agent_instruction,
+            'assistant_id' => $assistant_id,
+            'name' => $name,
+            'instructions' => $instructions,
             'model' => $model,
+            'vector_store_ids' => json_encode($vector_store_ids),
             'created_time' => current_time('mysql'),
         ));
 

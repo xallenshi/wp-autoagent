@@ -1,17 +1,9 @@
 <?php
 namespace WPAutoAgent\Core;
-$db_handler = new DBHandler();
 
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Process the form data here
-    $assistant_name = $_POST['assistant_name'] ?? '';
-    $instruction = $_POST['instruction'] ?? '';
-    $model = $_POST['model'] ?? '';
-    $selected_files = $_POST['files'] ?? [];
-    $selected_functions = $_POST['functions'] ?? [];
-    // Add logic to handle the creation of the AI Assistant
-}
+$db_handler = new DBHandler();
+$articles = $db_handler->get_articles();
+
 ?>
 
 <div class="wpaa-plugin-container">
@@ -21,16 +13,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
         <!-- Basic Info -->
         <h2>Basic Info</h2>
-        <label for="agent_name">AI Agent Name:</label>
-        <input type="text" id="agent_name" name="agent_name" required>
+        <label for="name">AI Agent Name:</label>
+        <input type="text" id="name" name="name" required>
 
-        <label for="agent_instruction">Agent Instruction:</label>
-        <textarea id="agent_instruction" name="agent_instruction" required></textarea>
+        <label for="instructions">Agent Instructions:</label>
+        <textarea id="instructions" name="instructions" required></textarea>
 
         <label for="model">Model:</label>
         <select id="model" name="model">
-            <option value="gpt-40">gpt-40</option>
-            <option value="gpt-mini">gpt-mini</option>
+            <option value="gpt-4o">gpt-4o</option>
+            <option value="gpt-4o-mini">gpt-4o-mini</option>
             <!-- Add more models as needed -->
         </select>
 
@@ -39,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label>Select Files:</label>
         <?php
         
-        $articles = $db_handler->get_articles();
+        
         if ($articles) {
             foreach ($articles as $article) {
                 ?>
