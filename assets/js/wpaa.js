@@ -62,47 +62,4 @@ jQuery(document).ready(function($) {
         });
     });
 
-
-
-
-
-    //chat
-    $('#wpaa-send-button').click(function() {
-        var message = $('#wpaa-chat-input').val();
-        if (message.trim() === '') return;
-
-        // Display the user's message
-        var chatHistory = $('#wpaa-chat-history');
-        chatHistory.append('<div class="user-message">You: ' + message + '</div>');
-
-        // Send AJAX request to the server
-        $.ajax({
-            url: ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'wpaa_run_agent',
-                nonce: wpaa_nonce.nonce,
-                agent_id: 1,
-                thread_id: 1,
-                instructions: message,
-                content: message
-            },
-            success: function(response) {
-                if (response.success) {
-                    chatHistory.append('<div class="llm-response">LLM: ' + response.data + '</div>');
-                } else {
-                    chatHistory.append('<div class="error-message">LLM: ' + response.data + '</div>');
-                }
-            },
-            error: function(xhr, status, error) {
-                chatHistory.append('<div class="error-message">LLM: ' + error + '</div>');
-            }
-        });
-
-        // Clear the input
-        $('#wpaa-chat-input').val('');
-    });
-
-
-
 });

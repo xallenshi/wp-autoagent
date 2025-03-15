@@ -13,7 +13,7 @@ class Run {
 
     public function wpaa_run_agent() {
 
-        if (!check_ajax_referer('wpaa_setting', 'nonce', false)) {
+        if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }
@@ -65,7 +65,8 @@ class Run {
             // Save file info including file_id and vector_id to table_article
             $conversation_id = $this->save_conversation($agent_id, $thread_id, $content, $api_msg);
 
-            wp_send_json_success(json_encode($api_msg));
+            #wp_send_json_success(json_encode($api_msg));
+            wp_send_json_success($api_msg);
             return;
         }
 

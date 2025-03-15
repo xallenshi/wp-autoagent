@@ -118,14 +118,14 @@
     position: fixed;
     bottom: 0;
     right: 0;
-    width: 300px;
+    width: 400px;
     border: 1px solid #ccc;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .wpaa-chat-history {
-    height: 200px;
+    height: 400px;
     overflow-y: auto;
     padding: 10px;
     border-bottom: 1px solid #ccc;
@@ -146,4 +146,23 @@
     color: #fff;
     border: none;
     cursor: pointer;
+}
+
+
+.wpaa-chat-user {
+    color: black;
+    text-align: left;
+    margin-bottom: 10px;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.wpaa-chat-agent {
+    color: darkblue;
+    text-align: right;
+    margin-bottom: 10px;
+    background-color: #f6f6f6;
+    padding: 10px;
+    border-radius: 5px;
 }
