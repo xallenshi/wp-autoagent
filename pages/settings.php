@@ -7,6 +7,7 @@
             <li data-page="upload">Knowledge Base</li>
             <li data-page="publish">Publish Agent</li>
             <li data-page="access">Access Key</li>
+            <li data-page="chat">Chat</li>
         </ul>
     </div>
 
@@ -26,6 +27,9 @@
         </div>
         <div class="wpaa-page" id="wpaa_access" style="display: none;">
             <?php include(WP_AUTOAGENT_PLUGIN_DIR . 'pages/access.php'); ?>
+        </div>
+        <div class="wpaa-page" id="wpaa_chat" style="display: none;">
+            <?php include(WP_AUTOAGENT_PLUGIN_DIR . 'pages/chat.php'); ?>
         </div>
     </div>
 </div>

@@ -106,3 +106,44 @@
 .wpaa-plugin-container div {
     margin-bottom: 10px;
 }
+
+
+
+
+
+
+
+
+.wpaa-chat-popup {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 300px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.wpaa-chat-history {
+    height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+#wpaa-chat-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: none;
+    border-top: 1px solid #ccc;
+}
+
+#wpaa-send-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0073aa;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}

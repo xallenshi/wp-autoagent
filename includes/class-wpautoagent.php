@@ -21,6 +21,7 @@ class WPAutoAgent {
         $this->frontend = new Frontend();
         $this->upload = new Upload();
         $this->create = new Create();
+        $this->run = new Run();
         $this->api = new API();
     }
 

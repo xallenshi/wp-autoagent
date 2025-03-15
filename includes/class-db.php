@@ -42,7 +42,7 @@ class DB {
                 file_id varchar(255) NOT NULL,
                 vector_id varchar(255) NOT NULL,
                 created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                PRIMARY KEY  (id)
+                PRIMARY KEY (id)
             ) $charset_collate;";
 
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -70,7 +70,7 @@ class DB {
                 article_id int UNSIGNED NOT NULL,
                 vector_store_ids varchar(255) NOT NULL,
                 created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                PRIMARY KEY  (id)
+                PRIMARY KEY (id)
             ) $charset_collate;";
 
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -85,6 +85,32 @@ class DB {
         } else {
             error_log("Table {$this->table_agent} already exists.");
         }
+
+        // Check if the conversation table exists
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$this->table_conversation}'") != $this->table_conversation) {
+            $sql = "CREATE TABLE {$this->table_conversation} (
+                id int UNSIGNED NOT NULL AUTO_INCREMENT,
+                agent_id int UNSIGNED NOT NULL,
+                thread_id varchar(255) NOT NULL,
+                content varchar(255) NOT NULL,
+                response varchar(255) NOT NULL,
+                created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                PRIMARY KEY (id)
+            ) $charset_collate;";
+
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+
+            // Log the result for debugging
+            if (empty($wpdb->last_error)) {
+                error_log("Table {$this->table_conversation} was created successfully.");
+            } else {
+                error_log("Error creating table {$this->table_conversation}: " . $wpdb->last_error);
+            }
+        } else {
+            error_log("Table {$this->table_conversation} already exists.");
+        }
+
 
     }
 }
