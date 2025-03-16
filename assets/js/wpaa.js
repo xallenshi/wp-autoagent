@@ -23,7 +23,7 @@ jQuery(document).ready(function($) {
         event.preventDefault();
         var formData = new FormData(this);
         formData.append('action', 'wpaa_article_upload');
-        formData.append('nonce', wpaa_nonce.nonce);
+        formData.append('nonce', wpaa_setting_nonce.nonce);
 
         $.ajax({
             url: ajaxurl,
@@ -45,7 +45,7 @@ jQuery(document).ready(function($) {
         event.preventDefault();
         var formData = new FormData(this);
         formData.append('action', 'wpaa_create_agent');
-        formData.append('nonce', wpaa_nonce.nonce);
+        formData.append('nonce', wpaa_setting_nonce.nonce);
 
         $.ajax({
             url: ajaxurl,

@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
 <h4>Upload your article to the knowledge base to enhance the AI Agent's ability to provide context-aware answers based on your specific knowledge.</h4>
 <h4>For example, your product catalog, product manual, user guide, etc.</h4>
 <form id="wpaa_upload_article_form" method="post" enctype="multipart/form-data">
-    <input type="file" name="article_file" accept=".txt,.doc,.docx,.xls,.xlsx" required>
+    <input type="file" name="article_file" accept=".txt,.doc,.docx,.xls,.xlsx,.pdf" required>
     <button type="submit">Upload</button>
 </form>
 

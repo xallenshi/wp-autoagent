@@ -27,7 +27,7 @@ jQuery(document).ready(function($) {
             type: 'POST',
             data: {
                 action: 'wpaa_run_agent',
-                nonce: wpaa_nonce.nonce,
+                nonce: wpaa_request_nonce.nonce,
                 agent_id: 1,
                 thread_id: 1,
                 instructions: message,

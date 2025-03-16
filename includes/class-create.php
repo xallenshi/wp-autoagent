@@ -28,7 +28,7 @@ class Create {
         $model = $_POST['model'];
         $selected_files = $_POST['files'] ?? [];
         $selected_functions = $_POST['functions'] ?? [];
-        $vector_store_ids = ['vs_67d2bcd739f48191ae35186082ca779d'];
+        $vector_store_ids = ['vs_67d6248d4eec8191b0d64ef291a55a8d'];
 
         // make a rest api call to Lambda function to process the article
         $api_url = 'https://pbe3crai7j4vy6eoo35pss3pzm0xcpxb.lambda-url.ap-southeast-2.on.aws/';

@@ -1,0 +1,33 @@
+{
+  "name": "subscribe_to_mailpoet",
+  "description": "Subscribes a user to the MailPoet mailing list",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "required": [
+      "email",
+      "list_id",
+      "first_name",
+      "last_name"
+    ],
+    "properties": {
+      "email": {
+        "type": "string",
+        "description": "The email address of the user to be subscribed"
+      },
+      "list_id": {
+        "type": "string",
+        "description": "The unique identifier for the MailPoet mailing list"
+      },
+      "first_name": {
+        "type": "string",
+        "description": "The first name of the user (optional)"
+      },
+      "last_name": {
+        "type": "string",
+        "description": "The last name of the user (optional)"
+      }
+    },
+    "additionalProperties": false
+  }
+}

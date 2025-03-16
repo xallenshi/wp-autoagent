@@ -52,19 +52,37 @@ $articles = $db_handler->get_articles();
         <!-- Function Enablement -->
         <h2>Function Enablement</h2>
         <label>Select Functions:</label>
-        <div>
-            <input type="checkbox" id="function1" name="functions[]" value="Submit Forminator Form">
-            <label for="function1">Submit Forminator Form</label>
-        </div>
-        <div>
-            <input type="checkbox" id="function2" name="functions[]" value="Subscribe to MailPoet Maillist">
-            <label for="function2">Subscribe to MailPoet Maillist</label>
-        </div>
-        <div>
-            <input type="checkbox" id="function3" name="functions[]" value="Track WooCommerce Order">
-            <label for="function3">Track WooCommerce Order</label>
-        </div>
-        <!-- Add more functions as needed -->
+        
+        <?php
+        $functions_dir = plugin_dir_path(__FILE__) . '../functions/';
+        $functions = [];
+        
+        // Scan the functions directory for JSON files
+        $json_files = glob($functions_dir . '*.json');
+        
+        foreach ($json_files as $file) {
+            $json_content = file_get_contents($file);
+            $function_data = json_decode($json_content, true);
+            
+            if ($function_data && isset($function_data['name']) && isset($function_data['description'])) {
+                $functions[] = [
+                    'name' => $function_data['name'],
+                    'description' => $function_data['description']
+                ];
+            }
+        }
+
+        foreach ($functions as $function) {
+            ?>
+            <div>
+                <input type="checkbox" id="function_<?php echo esc_attr($function['name']); ?>" name="functions[]" value="<?php echo esc_attr($function['name']); ?>">
+                <label for="function_<?php echo esc_attr($function['name']); ?>">
+                    <?php echo esc_html($function['name']); ?> - <?php echo esc_html($function['description']); ?>
+                </label>
+            </div>
+            <?php
+        }
+        ?>
 
         <button type="submit">Create AI Assistant</button>
     </form>

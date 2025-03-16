@@ -30,16 +30,16 @@ class Run {
         $content = $_POST['content'];
         */
         
-        $agent_id = 'asst_hndXQSviQQ0wLe5Uo6o0xluN';
-        $thread_id = 'thread_VkQbAnFOuXPewlbG3YcNZ1lK';
-        $instructions = 'Introdue yourself as a Online Helper first.';
+        $assistant_id = 'asst_bd5fdXl3JHIZqKCa9jkTO8Ej';
+        $thread_id = 'thread_4QV9LGmwPEwCIsMfRoJ8sYAR';
+        $instructions = 'Answer questions only based on given info in vector store. If you can not find any relevant info, then say "I don\'t know."';
         $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';
 
         // make a rest api call to Lambda function to run the agent
         $api_url = 'https://jebcqgsrc7k5wffddjuof6feke0edirw.lambda-url.ap-southeast-2.on.aws/';
         $api_response = wp_remote_post($api_url, array(
             'method' => 'POST',
-            'body' => json_encode(array('agent_id' => $agent_id, 'thread_id' => $thread_id, 'instructions' => $instructions, 'content' => $content)),
+            'body' => json_encode(array('assistant_id' => $assistant_id, 'thread_id' => $thread_id, 'instructions' => $instructions, 'content' => $content)),
             'headers' => array(
                 'Content-Type' => 'application/json',
             ),
@@ -63,7 +63,7 @@ class Run {
             $thread_id = $api_response_body['thread_id'];
 
             // Save file info including file_id and vector_id to table_article
-            $conversation_id = $this->save_conversation($agent_id, $thread_id, $content, $api_msg);
+            $conversation_id = $this->save_conversation($assistant_id, $thread_id, $content, $api_msg);
 
             #wp_send_json_success(json_encode($api_msg));
             wp_send_json_success($api_msg);
@@ -73,11 +73,11 @@ class Run {
     }
     
 
-    private function save_conversation($agent_id, $thread_id, $content, $api_msg) {
+    private function save_conversation($assistant_id, $thread_id, $content, $api_msg) {
         global $wpdb;
         
         $result = $wpdb->insert($this->table_conversation, array(
-            'agent_id' => $agent_id,
+            'assistant_id' => $assistant_id,
             'thread_id' => $thread_id,
             'content' => $content,
             'response' => $api_msg,

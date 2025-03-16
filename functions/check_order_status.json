@@ -1,0 +1,22 @@
+{
+  "name": "check_order_status",
+  "description": "Fetch the status of a user's WooCommerce order by order ID",
+  "strict": false,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "order_id": {
+        "type": "string",
+        "description": "The WooCommerce order ID (e.g., #1234)"
+      },
+      "user_id": {
+        "type": "string",
+        "description": "WordPress user ID for authentication"
+      }
+    },
+    "required": [
+      "order_id",
+      "user_id"
+    ]
+  }
+}

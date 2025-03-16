@@ -61,10 +61,10 @@ class Upload {
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
             $api_msg = $api_response_body['message'];
             $file_id = $api_response_body['file_id'];
-            $vector_id = $api_response_body['vector_id'];
+            $vector_store_id = $api_response_body['vector_store_id'];
 
             // Save file info including file_id and vector_id to table_article
-            $article_id = $this->save_article($file, $file_id, $vector_id);
+            $article_id = $this->save_article($file, $file_id, $vector_store_id);
 
             wp_send_json_success('The article has been uploaded and processed with api call message: ' . $api_msg);
             return;
@@ -73,7 +73,7 @@ class Upload {
     }
     
 
-    private function save_article($file, $file_id, $vector_id) {
+    private function save_article($file, $file_id, $vector_store_id) {
         global $wpdb;
 
         $result = $wpdb->insert($this->table_article, array(
@@ -81,7 +81,7 @@ class Upload {
             'file_name' => $file['name'],
             'file_size' => $file['size'],
             'file_id' => $file_id,
-            'vector_id' => $vector_id,
+            'vector_store_id' => $vector_store_id,
             'created_time' => current_time('mysql'),
         ));
 
