@@ -30,9 +30,9 @@ class Run {
         $content = $_POST['content'];
         */
         
-        $assistant_id = 'asst_bd5fdXl3JHIZqKCa9jkTO8Ej';
-        $thread_id = 'thread_4QV9LGmwPEwCIsMfRoJ8sYAR';
-        $instructions = 'Answer questions only based on given info in vector store. If you can not find any relevant info, then say "I don\'t know."';
+        $assistant_id = 'asst_f9ctHJeBYNUxnCLKM9RWwwDJ';
+        $thread_id = '';
+        $instructions = 'Answer questions only based on given info in vector store. If you can not find any relevant info, then say "I do not know."';
         $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';
 
         // make a rest api call to Lambda function to run the agent
@@ -43,10 +43,10 @@ class Run {
             'headers' => array(
                 'Content-Type' => 'application/json',
             ),
-            'timeout' => 30,
+            'timeout' => 60,
         ));
 
-        error_log('api_response: ' . print_r($api_response, true));
+        //error_log('api_response: ' . print_r($api_response, true));
 
         if (is_wp_error($api_response)) {
             $api_error_msg = $api_response->get_error_message(); 
@@ -61,6 +61,8 @@ class Run {
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
             $api_msg = $api_response_body['message'];
             $thread_id = $api_response_body['thread_id'];
+
+            error_log('api_response_body: ' . print_r($api_response_body, true));
 
             // Save file info including file_id and vector_id to table_article
             $conversation_id = $this->save_conversation($assistant_id, $thread_id, $content, $api_msg);

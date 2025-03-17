@@ -3,6 +3,12 @@ namespace WPAutoAgent\Core;
 
 use WPAutoAgent\Core\API;
 
+global $wpdb;
+$db_handler = new DBHandler();
+$articles = $db_handler->get_articles();
+$functions = $db_handler->get_functions();
+
+
 class Create {
     private $table_agent;
 
@@ -29,19 +35,29 @@ class Create {
         $selected_files = $_POST['files'] ?? [];
         $selected_functions = $_POST['functions'] ?? [];
         $vector_store_ids = ['vs_67d6248d4eec8191b0d64ef291a55a8d'];
+        $tools_object = $this->get_tools_object($selected_files, $selected_functions);
+        $tools = $tools_object['tools'];
+        $tool_resources = $tools_object['tool_resources'];
 
         // make a rest api call to Lambda function to process the article
         $api_url = 'https://pbe3crai7j4vy6eoo35pss3pzm0xcpxb.lambda-url.ap-southeast-2.on.aws/';
         $api_response = wp_remote_post($api_url, array(
             'method' => 'POST',
-            'body' => json_encode(array('name' => $name, 'instructions' => $instructions, 'model' => $model, 'vector_store_ids' => $vector_store_ids)),
+            'body' => json_encode(array(
+                'name' => $name,
+                'instructions' => $instructions,
+                'model' => $model,
+                'vector_store_ids' => $vector_store_ids,
+                'tools' => $tools,
+                'tool_resources' => $tool_resources
+            )),
             'headers' => array(
                 'Content-Type' => 'application/json',
             ),
             'timeout' => 20,
         ));
 
-        error_log('api_response: ' . print_r($api_response, true));
+        //error_log('api_response: ' . print_r($api_response, true));
 
         if (is_wp_error($api_response)) {
             $api_error_msg = $api_response->get_error_message(); 
@@ -87,5 +103,48 @@ class Create {
         return $wpdb->insert_id;
     }
 
+
+    private function get_tools_object($file_ids, $function_ids) {
+        global $wpdb;
+        $tools = [];
+        $tool_resources = [];
+        $vector_store_ids = [];
+
+        $db_handler = new DBHandler();
+
+        // Add file search tool
+        foreach ($file_ids as $file_id) {
+            $vector_store_id = $db_handler->get_vector_store_id_by_article_id($file_id);
+            if ($vector_store_id) {
+                $vector_store_ids[] = $vector_store_id;
+            }
+        }
+
+        if (!empty($vector_store_ids)) {
+            $tools[] = array('type' => 'file_search');
+            $tool_resources = [
+                'file_search' => [
+                    'vector_store_ids' => $vector_store_ids
+                ]
+            ];
+        }
+
+        // Add function tools
+        foreach ($function_ids as $function_id) {
+            $function_data = $db_handler->get_function_by_id($function_id);
+
+            if ($function_data) {
+                $tools[] = array(
+                    'type' => 'function',
+                    'function' => json_decode($function_data->definition, true)
+                );
+            }
+        }
+
+        return [
+            'tools' => $tools,
+            'tool_resources' => $tool_resources
+        ];
+    }
 
 }

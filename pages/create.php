@@ -1,8 +1,10 @@
 <?php
 namespace WPAutoAgent\Core;
 
+global $wpdb;
 $db_handler = new DBHandler();
 $articles = $db_handler->get_articles();
+$functions = $db_handler->get_functions();
 
 ?>
 
@@ -28,6 +30,7 @@ $articles = $db_handler->get_articles();
 
         <!-- Knowledge Base -->
         <h2>Knowledge Base</h2>
+        <h2>Only 1 vector store allowed for now</h2>
         <label>Select Files:</label>
         <?php
         
@@ -54,32 +57,21 @@ $articles = $db_handler->get_articles();
         <label>Select Functions:</label>
         
         <?php
-        $functions_dir = plugin_dir_path(__FILE__) . '../functions/';
-        $functions = [];
-        
-        // Scan the functions directory for JSON files
-        $json_files = glob($functions_dir . '*.json');
-        
-        foreach ($json_files as $file) {
-            $json_content = file_get_contents($file);
-            $function_data = json_decode($json_content, true);
-            
-            if ($function_data && isset($function_data['name']) && isset($function_data['description'])) {
-                $functions[] = [
-                    'name' => $function_data['name'],
-                    'description' => $function_data['description']
-                ];
+    
+        if ($functions) {
+            foreach ($functions as $function) {
+                ?>
+                <div>
+                    <input type="checkbox" id="<?php echo esc_attr($function->id); ?>" name="functions[]" value="<?php echo esc_attr($function->id); ?>">
+                    <label for="function_<?php echo esc_attr($function->id); ?>">
+                        <?php echo esc_html($function->name); ?> - <?php echo esc_html($function->description); ?>
+                    </label>
+                </div>
+                <?php
             }
-        }
-
-        foreach ($functions as $function) {
+        } else {
             ?>
-            <div>
-                <input type="checkbox" id="function_<?php echo esc_attr($function['name']); ?>" name="functions[]" value="<?php echo esc_attr($function['name']); ?>">
-                <label for="function_<?php echo esc_attr($function['name']); ?>">
-                    <?php echo esc_html($function['name']); ?> - <?php echo esc_html($function['description']); ?>
-                </label>
-            </div>
+            <div>No functions available.</div>
             <?php
         }
         ?>
