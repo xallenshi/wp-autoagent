@@ -30,7 +30,7 @@ class Run {
         $content = $_POST['content'];
         */
         
-        $assistant_id = 'asst_f9ctHJeBYNUxnCLKM9RWwwDJ';
+        $assistant_id = 'asst_Z0AwhG89hAJHNQaq1kketqG0';
         $thread_id = '';
         $instructions = 'Answer questions only based on given info in vector store. If you can not find any relevant info, then say "I do not know."';
         $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';

@@ -39,7 +39,8 @@ $functions = $db_handler->get_functions();
             foreach ($articles as $article) {
                 ?>
                 <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <input type="checkbox" id="file_<?php echo esc_attr($article->id); ?>" name="files[]" value="<?php echo esc_attr($article->id); ?>">
+                    <!-- <input type="radio" id="file_<?php echo esc_attr($article->id); ?>" name="files" value="<?php echo esc_attr($article->id); ?>"> -->
+                    <input type="radio" id="file_<?php echo esc_attr($article->id); ?>" name="files" value="<?php echo esc_attr($article->id); ?>">
                     <label for="file_<?php echo esc_attr($article->id); ?>" ><?php echo esc_html($article->file_name); ?></label>
                 </div>
                 <?php
@@ -54,6 +55,7 @@ $functions = $db_handler->get_functions();
 
         <!-- Function Enablement -->
         <h2>Function Enablement</h2>
+        <h2>Disabled for now</h2>
         <label>Select Functions:</label>
         
         <?php
@@ -62,7 +64,7 @@ $functions = $db_handler->get_functions();
             foreach ($functions as $function) {
                 ?>
                 <div>
-                    <input type="checkbox" id="<?php echo esc_attr($function->id); ?>" name="functions[]" value="<?php echo esc_attr($function->id); ?>">
+                    <input disabled type="checkbox" id="<?php echo esc_attr($function->id); ?>" name="functions[]" value="<?php echo esc_attr($function->id); ?>">
                     <label for="function_<?php echo esc_attr($function->id); ?>">
                         <?php echo esc_html($function->name); ?> - <?php echo esc_html($function->description); ?>
                     </label>
