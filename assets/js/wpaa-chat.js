@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Only show the chat icon on wp-autoagent admin pages
+    const currentUrl = window.location.href;
+    if (!currentUrl.includes('/wp-admin/admin.php?page=wp-autoagent') && !currentUrl.includes('/faq') && !currentUrl.includes('localhost:10003/faq/')) {
+        return;
+    }
+    
     // Create chat icon element
     const chatIcon = document.createElement('div');
     chatIcon.id = 'wpaa-chat-icon';
@@ -46,16 +52,62 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add user message to chat history
             const userDiv = document.createElement('div');
             userDiv.className = 'wpaa-chat-user';
-            userDiv.textContent = userMessage;
+            userDiv.textContent = 'You: ' + userMessage;
             chatHistory.appendChild(userDiv);
             
             // Clear input field
             chatInput.value = '';
             
-            // Here you would typically make an AJAX call to handle the message
-            // and get a response from your AI agent
-            // For now, we'll just scroll to the bottom
+            // Show loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'wpaa-chat-agent wpaa-loading';
+            loadingDiv.textContent = 'Typing...';
+            chatHistory.appendChild(loadingDiv);
+            
+            // Scroll to bottom
             chatHistory.scrollTop = chatHistory.scrollHeight;
+            
+            // Make AJAX call to WordPress to run the agent
+            jQuery.ajax({
+                url: ajaxurl, // Fixed typo in ajaxUrl
+                type: 'POST',
+                data: {
+                    action: 'wpaa_run_agent',
+                    nonce: wpaa_request_nonce.nonce,
+                    agent_id: '', // Added missing agent_id parameter
+                    content: userMessage
+                },
+                success: function(response) {
+                    // Remove loading indicator
+                    chatHistory.removeChild(loadingDiv);
+                    
+                    // Create agent response element
+                    const agentDiv = document.createElement('div');
+                    agentDiv.className = 'wpaa-chat-agent';
+                    
+                    if (response.success) {
+                        agentDiv.textContent = 'Agent: ' + response.data;
+                    } else {
+                        agentDiv.textContent = 'System: ' + response.data;
+                        agentDiv.classList.add('wpaa-error');
+                    }
+                    
+                    chatHistory.appendChild(agentDiv);
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                },
+                error: function(xhr, status, error) {
+                    // Remove loading indicator
+                    chatHistory.removeChild(loadingDiv);
+                    
+                    // Create error message
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'wpaa-chat-agent wpaa-error';
+                    errorDiv.textContent = 'System: An error occurred while processing your request.';
+                    
+                    chatHistory.appendChild(errorDiv);
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                }
+            });
         }
     });
     
