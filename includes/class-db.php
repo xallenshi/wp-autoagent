@@ -67,8 +67,8 @@ class DB {
                 instructions varchar(255) NOT NULL,
                 model varchar(255) NOT NULL,
                 tools varchar(255) NOT NULL,
-                article_id int UNSIGNED NOT NULL,
                 vector_store_ids varchar(255) NOT NULL,
+                scope text NOT NULL,
                 created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 PRIMARY KEY (id)
             ) $charset_collate;";

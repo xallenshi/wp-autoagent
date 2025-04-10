@@ -32,10 +32,10 @@ class Create {
         $name = $_POST['name'];
         $instructions = $_POST['instructions'];
         $model = $_POST['model'];
-        $selected_files = $_POST['files'] ?? [];
+        $selected_articles = $_POST['articles'] ?? [];
         $selected_functions = $_POST['functions'] ?? [];
         $vector_store_ids = ['vs_67d6248d4eec8191b0d64ef291a55a8d'];
-        $tools_object = $this->get_tools_object($selected_files, $selected_functions);
+        $tools_object = $this->get_tools_object($selected_articles, $selected_functions);
         $tools = $tools_object['tools'];
         $tool_resources = $tools_object['tool_resources'];
 
@@ -104,7 +104,7 @@ class Create {
     }
 
 
-    private function get_tools_object($file_ids, $function_ids) {
+    private function get_tools_object($article_ids, $function_ids) {
         global $wpdb;
         $tools = [];
         $tool_resources = [];
@@ -113,8 +113,8 @@ class Create {
         $db_handler = new DBHandler();
 
         // Add file search tool
-        foreach ($file_ids as $file_id) {
-            $vector_store_id = $db_handler->get_vector_store_id_by_article_id($file_id);
+        foreach ($article_ids as $article_id) {
+            $vector_store_id = $db_handler->get_vector_store_id_by_article_id($article_id);
             if ($vector_store_id) {
                 $vector_store_ids[] = $vector_store_id;
             }

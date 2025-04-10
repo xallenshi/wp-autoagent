@@ -30,7 +30,7 @@ class Run {
         $content = $_POST['content'];
         */
         
-        $assistant_id = 'asst_Z0AwhG89hAJHNQaq1kketqG0';
+        $assistant_id = 'asst_IeRv5eHIMomSS0vjVSNOO8Cb';
         $thread_id = '';
         $instructions = 'Answer questions only based on given info in vector store. If you can not find any relevant info, then say "I do not know."';
         $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';
@@ -65,9 +65,8 @@ class Run {
             error_log('api_response_body: ' . print_r($api_response_body, true));
 
             // Save file info including file_id and vector_id to table_article
-            $conversation_id = $this->save_conversation($assistant_id, $thread_id, $content, $api_msg);
+            $conversation_id = $this->save_conversation($assistant_id, $thread_id, $content, json_encode($api_msg));
 
-            #wp_send_json_success(json_encode($api_msg));
             wp_send_json_success($api_msg);
             return;
         }

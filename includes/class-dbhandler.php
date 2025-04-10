@@ -40,6 +40,11 @@ class DBHandler {
         $query = "SELECT id, name, description, definition FROM {$this->table_function} WHERE id = %d";
         return $this->wpdb->get_row($this->wpdb->prepare($query, $id));
     }
+
+    public function get_agents() {
+        $query = "SELECT id, name, scope FROM {$this->table_agent}";
+        return $this->wpdb->get_results($query);
+    }
     
 
 }

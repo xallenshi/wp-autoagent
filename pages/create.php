@@ -39,9 +39,9 @@ $functions = $db_handler->get_functions();
             foreach ($articles as $article) {
                 ?>
                 <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <!-- <input type="radio" id="file_<?php echo esc_attr($article->id); ?>" name="files" value="<?php echo esc_attr($article->id); ?>"> -->
-                    <input type="radio" id="file_<?php echo esc_attr($article->id); ?>" name="files" value="<?php echo esc_attr($article->id); ?>">
-                    <label for="file_<?php echo esc_attr($article->id); ?>" ><?php echo esc_html($article->file_name); ?></label>
+                    <!-- <input type="radio" id="article_<?php echo esc_attr($article->id); ?>" name="articles" value="<?php echo esc_attr($article->id); ?>"> -->
+                    <input type="checkbox" id="article_<?php echo esc_attr($article->id); ?>" name="articles[]" value="<?php echo esc_attr($article->id); ?>">
+                    <label for="article_<?php echo esc_attr($article->id); ?>" ><?php echo esc_html($article->file_name); ?></label>
                 </div>
                 <?php
             }
