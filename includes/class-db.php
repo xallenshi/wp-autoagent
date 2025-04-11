@@ -9,6 +9,9 @@ class DB {
 
     public function __construct() {
         $this->table_article = Config::get_table_name('article');
+        $this->table_agent = Config::get_table_name('agent');
+        $this->table_conversation = Config::get_table_name('conversation');
+        $this->table_function = Config::get_table_name('function');
         error_log("wp_autoagent_DB class instantiated.");
     }
 
