@@ -3,7 +3,9 @@ namespace WPAutoAgent\Core;
 
 class DB {
     private $table_article;
-    private $table_article_chunk;
+    private $table_agent;
+    private $table_conversation;
+    private $table_function;
 
     public function __construct() {
         $this->table_article = Config::get_table_name('article');
