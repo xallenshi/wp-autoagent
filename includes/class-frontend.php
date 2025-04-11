@@ -17,7 +17,8 @@ class Frontend {
             'nonce' => wp_create_nonce('wpaa_setting')
         ));
         wp_localize_script('wpaa-chat-js', 'wpaa_request_nonce', array(
-            'nonce' => wp_create_nonce('wpaa_request')
+            'nonce' => wp_create_nonce('wpaa_request'),
+            'ajaxurl' => admin_url('admin-ajax.php')
         ));
     }
 

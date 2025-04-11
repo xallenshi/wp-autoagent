@@ -32,10 +32,10 @@ class Create {
         $name = $_POST['name'];
         $instructions = $_POST['instructions'];
         $model = $_POST['model'];
-        $selected_articles = $_POST['articles'] ?? [];
+        $selected_article = $_POST['articles'] ?? [];
         $selected_functions = $_POST['functions'] ?? [];
         $vector_store_ids = ['vs_67d6248d4eec8191b0d64ef291a55a8d'];
-        $tools_object = $this->get_tools_object($selected_articles, $selected_functions);
+        $tools_object = $this->get_tools_object($selected_article_ids, $selected_functions);
         $tools = $tools_object['tools'];
         $tool_resources = $tools_object['tool_resources'];
 

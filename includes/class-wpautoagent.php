@@ -7,7 +7,8 @@ class WPAutoAgent {
     private $upload;
     private $api;
     private $frontend;
-
+    private $chat;
+    
     public function __construct() {
         // Constructor is now empty
     }
@@ -23,6 +24,7 @@ class WPAutoAgent {
         $this->create = new Create();
         $this->run = new Run();
         $this->api = new API();
+        $this->chat = new Chat();
     }
 
 }

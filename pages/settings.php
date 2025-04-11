@@ -28,8 +28,5 @@
         <div class="wpaa-page" id="wpaa_access" style="display: none;">
             <?php include(WP_AUTOAGENT_PLUGIN_DIR . 'pages/access.php'); ?>
         </div>
-        <div class="wpaa-page" id="wpaa_chat" style="display: none;">
-            <?php include(WP_AUTOAGENT_PLUGIN_DIR . 'pages/chat.php'); ?>
-        </div>
     </div>
 </div>

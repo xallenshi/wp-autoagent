@@ -4,6 +4,8 @@ namespace WPAutoAgent\Core;
 global $wpdb;
 $db_handler = new DBHandler();
 $agents = $db_handler->get_agents();
+
+$table_agent = Config::get_table_name('agent');
 $pages = get_pages();
 
 // Handle form submission
@@ -13,9 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_pages']) && 
     
     // Convert selected pages to JSON
     $scope_json = json_encode($selected_pages);
-    
-    // Update the database
-    $table_agent = $wpdb->prefix . 'autoagent_agent';
+
     $result = $wpdb->update(
         $table_agent,
         ['scope' => $scope_json],
