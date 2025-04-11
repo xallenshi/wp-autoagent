@@ -17,23 +17,20 @@ class DB {
 
     public function network_activate($network_wide) {
         if (is_multisite() && $network_wide) {
-            error_log("Activating on multisite network");
             $sites = get_sites();
-
             foreach ($sites as $site) {
                 switch_to_blog($site->blog_id);
                 $this->create_tables();
                 restore_current_blog();
             }
+            error_log("WP Auto Agent: Activated on multisite network");
         } else {
-            error_log("Activating on single site");
             $this->create_tables();
+            error_log("WP Auto Agent: Activated on single site");
         }
     }
 
     public function create_tables() {
-        error_log("create_tables method called.");
-
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
 
@@ -138,8 +135,7 @@ class DB {
             }
         } else {
             error_log("Table {$this->table_function} already exists.");
-        }   
-
+        }
 
 
     }
