@@ -23,16 +23,16 @@ class Run {
             return;
         }
 
-        /*
         $agent_id = $_POST['agent_id'];
-        $thread_id = $_POST['thread_id'];
-        $instructions = $_POST['instructions'];
-        $content = $_POST['content'];
-        */
-        
-        $assistant_id = 'asst_IeRv5eHIMomSS0vjVSNOO8Cb';
+        $db_handler = new DBHandler();
+        $agent = $db_handler->get_agent($agent_id);
+
+        error_log('agent: ' . print_r($agent, true));
+            
+        $assistant_id = $agent->assistant_id;
+        $instructions = $agent->instructions;
         $thread_id = '';
-        $instructions = 'Answer questions only based on given info in vector store. If you can not find any relevant info, then say "I do not know."';
+        
         $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';
 
         // make a rest api call to Lambda function to run the agent

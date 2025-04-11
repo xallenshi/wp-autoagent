@@ -45,6 +45,10 @@ class DBHandler {
         $query = "SELECT id, name, scope FROM {$this->table_agent}";
         return $this->wpdb->get_results($query);
     }
-    
+
+    public function get_agent($id) {    
+        $query = "SELECT * FROM {$this->table_agent} WHERE id = %d";
+        return $this->wpdb->get_row($this->wpdb->prepare($query, $id));
+    }
 
 }
