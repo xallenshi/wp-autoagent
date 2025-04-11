@@ -26,8 +26,6 @@ class Run {
         $agent_id = $_POST['agent_id'];
         $db_handler = new DBHandler();
         $agent = $db_handler->get_agent($agent_id);
-
-        error_log('agent: ' . print_r($agent, true));
             
         $assistant_id = $agent->assistant_id;
         $instructions = $agent->instructions;
