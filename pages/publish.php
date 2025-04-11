@@ -9,12 +9,13 @@ $table_agent = Config::get_table_name('agent');
 $pages = get_pages();
 
 // Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_pages']) && isset($_POST['agent_id'])) {
-    $selected_pages = $_POST['selected_pages'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset($_POST['selected_pages']) || isset($_POST['selected_admin_pages']))) {
     $agent_id = intval($_POST['agent_id']);
-    
+    $selected_pages = isset($_POST['selected_pages']) ? $_POST['selected_pages'] : array();
+    $selected_admin_pages = isset($_POST['selected_admin_pages']) ? $_POST['selected_admin_pages'] : array();
+
     // Convert selected pages to JSON
-    $scope_json = json_encode($selected_pages);
+    $scope_json = json_encode(array_merge($selected_pages, $selected_admin_pages));
 
     $result = $wpdb->update(
         $table_agent,
@@ -46,11 +47,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_pages']) && 
 
         <!-- Page Selection -->
         <h2>Select Pages for Agent Scope</h2>
-        <select name="selected_pages[]" multiple required style="height: 200px;">
-            <?php foreach ($pages as $page): ?>
-                <option value="<?php echo esc_attr($page->ID); ?>"><?php echo esc_html($page->post_title); ?></option>
-            <?php endforeach; ?>
-        </select>
+        <div style="display: flex; gap: 20px;">
+            <div>
+                <h3>Frontend Pages</h3>
+                <select name="selected_pages[]" multiple required style="height: 200px;">
+                    <?php foreach ($pages as $page): ?>
+                        <option value="<?php echo esc_attr($page->ID); ?>"><?php echo esc_html($page->post_title); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div>
+                <h3>Admin Pages</h3>
+                <select name="selected_admin_pages[]" multiple style="height: 200px;">
+                    <option value="index.php">Dashboard</option>
+                    <option value="edit.php">Posts</option>
+                    <option value="upload.php">Media Library</option>
+                    <option value="edit.php?post_type=page">Pages</option>
+                    <option value="edit-comments.php">Comments</option>
+                    <option value="themes.php">Themes</option>
+                    <option value="plugins.php">Plugins</option>
+                    <option value="users.php">Users</option>
+                    <option value="tools.php">Tools</option>
+                    <option value="options-general.php">Settings</option>
+                </select>
+            </div>
+        </div>
 
         <button type="submit">Publish Agent</button>
     </form>

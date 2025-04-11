@@ -1,4 +1,7 @@
 jQuery(document).ready(function($) {
+    // Capture the current page slug
+    const currentPageSlug = window.location.pathname + window.location.search;
+
     // Check if current page is in scope via AJAX
     $.ajax({
         url: wpaa_request_nonce.ajaxurl,
@@ -6,7 +9,8 @@ jQuery(document).ready(function($) {
         data: {
             action: 'wpaa_check_agent_scope',
             nonce: wpaa_request_nonce.nonce,
-            current_url: window.location.href
+            current_url: window.location.href,
+            page_slug: currentPageSlug
         },
         success: function(response) {
             if (!response.success) {
