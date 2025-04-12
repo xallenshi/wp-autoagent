@@ -32,10 +32,10 @@ class Create {
         $name = $_POST['name'];
         $instructions = $_POST['instructions'];
         $model = $_POST['model'];
-        $selected_article = $_POST['articles'] ?? [];
+        $selected_articles = $_POST['articles'] ?? [];
         $selected_functions = $_POST['functions'] ?? [];
         
-        $tools_object = $this->get_tools_object($selected_article, $selected_functions);
+        $tools_object = $this->get_tools_object($selected_articles, $selected_functions);
         $tools = $tools_object['tools'];
         $tool_resources = $tools_object['tool_resources'];
         $vector_store_ids = $tools_object['vector_store_ids'];
@@ -75,7 +75,7 @@ class Create {
             $assistant_id = $api_response_body['assistant_id'];
 
             // Save file info including file_id and vector_id to table_article
-            $agent_id = $this->save_agent($name, $instructions, $model, $vector_store_ids, $assistant_id);
+            $agent_id = $this->save_agent($name, $instructions, $model, $selected_articles, $vector_store_ids, $assistant_id);
 
             wp_send_json_success('The agent has been created with api call message: ' . $api_msg);
             return;
@@ -84,7 +84,7 @@ class Create {
     }
     
 
-    private function save_agent($name, $instructions, $model, $vector_store_ids, $assistant_id) {
+    private function save_agent($name, $instructions, $model, $article_ids, $vector_store_ids, $assistant_id) {
         global $wpdb;
         
         $result = $wpdb->insert($this->table_agent, array(
@@ -92,6 +92,7 @@ class Create {
             'name' => $name,
             'instructions' => $instructions,
             'model' => $model,
+            'article_ids' => json_encode($article_ids),
             'vector_store_ids' => json_encode($vector_store_ids),
             'created_time' => current_time('mysql'),
         ));

@@ -146,6 +146,7 @@ jQuery(document).ready(function($) {
             $('input[name="articles[]"]').prop('checked', false);
             // Set page title for new agent
             $('.wpaa-plugin-container h1').text('Create Your AI Agent');
+            $('#wpaa_create_agent_button').text('Create AI Assistant');
             return;
         }
 
@@ -164,13 +165,18 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     // Fill form with agent data
+                    $('.wpaa-plugin-container h1').text('Update Your AI Agent');
+                    $('#wpaa_create_agent_button').text('Update AI Assistant');
+
                     $('#name').val(response.data.name);
                     $('#instructions').val(response.data.instructions);
                     $('#model').val(response.data.model);
                     
                     // Check selected articles
-                    if (response.data.articles) {
-                        response.data.articles.forEach(function(article_id) {
+                    $('input[name="articles[]"]').prop('checked', false);
+                    if (response.data.article_ids) {
+                        var articleIds = JSON.parse(response.data.article_ids);
+                        articleIds.forEach(function(article_id) {
                             $('#article_' + article_id).prop('checked', true);
                         });
                     }

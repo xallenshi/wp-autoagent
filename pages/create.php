@@ -101,6 +101,6 @@ $functions = $db_handler->get_functions();
         }
         ?>
 
-        <button type="submit">Create AI Assistant</button>
+        <button type="submit" id="wpaa_create_agent_button">Create AI Assistant</button>
     </form>
 </div>
