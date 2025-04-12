@@ -236,13 +236,9 @@
     gap: 20px;
 }
 
-.wpaa-publish-scope-container select[name="selected_pages[]"] option:hover {
-    background-color: #e8f0fe !important;
-    cursor: pointer;
-}
-
+.wpaa-publish-scope-container select[name="selected_pages[]"] option:hover,
 .wpaa-publish-scope-container select[name="selected_admin_pages[]"] option:hover {
-    background-color: #fff3e0 !important;
+    background-color: #e8f0fe !important;
     cursor: pointer;
 }
 
@@ -252,8 +248,16 @@
     height: 200px;
 }
 
+.wpaa-publish-scope-container select[multiple] option {
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
 .wpaa-publish-scope-container select[multiple] option:checked {
     background: #4CAF50 linear-gradient(0deg, #4CAF50 0%, #4CAF50 100%) !important;
     color: #ffffff;
+    font-weight: bold;
 }
 

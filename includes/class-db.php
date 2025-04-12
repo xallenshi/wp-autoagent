@@ -95,7 +95,7 @@ class DB {
                 assistant_id varchar(255) NOT NULL,
                 thread_id varchar(255) NOT NULL,
                 content varchar(255) NOT NULL,
-                response varchar(255) NOT NULL,
+                response text NOT NULL,
                 created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 PRIMARY KEY (id)
             ) $charset_collate;";

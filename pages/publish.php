@@ -8,6 +8,8 @@ $agents = $db_handler->get_agents();
 $table_agent = Config::get_table_name('agent');
 $pages = get_pages();
 
+
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset($_POST['selected_pages']) || isset($_POST['selected_admin_pages']))) {
     $agent_id = intval($_POST['agent_id']);
@@ -38,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
     
         <!-- Agent Selection -->
         <h2>Select Agent</h2>
+        <p><small>Selecting an agent will load its current scope settings.</small></p>
         <select name="agent_id" required>
             <option value="">Select an agent...</option>
             <?php foreach ($agents as $agent): ?>
@@ -50,7 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
         <div class="wpaa-publish-scope-container">
             <div>
                 <h3>Frontend Pages</h3>
-                <select name="selected_pages[]" multiple required>
+                <p><small>Simply click an option to select it. Click again to unselect.</small></p>
+                <select name="selected_pages[]" multiple size="10">
                     <?php foreach ($pages as $page): ?>
                         <option value="<?php echo esc_attr($page->ID); ?>"><?php echo esc_html($page->post_title); ?></option>
                     <?php endforeach; ?>
@@ -58,7 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
             </div>
             <div>
                 <h3>Admin Pages</h3>
-                <select name="selected_admin_pages[]" multiple>
+                <p><small>Simply click an option to select it. Click again to unselect.</small></p>
+                <select name="selected_admin_pages[]" multiple size="10">
                     <option value="index.php">Dashboard</option>
                     <option value="edit.php">Posts</option>
                     <option value="upload.php">Media Library</option>

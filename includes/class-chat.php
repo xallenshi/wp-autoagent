@@ -60,4 +60,4 @@ class Chat {
         
         wp_send_json_error('Page is not in scope for any agent.');
     }
-} 
+}
