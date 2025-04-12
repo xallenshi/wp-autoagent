@@ -8,7 +8,6 @@ $db_handler = new DBHandler();
 $articles = $db_handler->get_articles();
 $functions = $db_handler->get_functions();
 
-
 class Create {
     private $table_agent;
 

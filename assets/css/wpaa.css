@@ -113,7 +113,7 @@
     bottom: 15px;
     right: 15px;
     width: 350px;
-    border: 1px solid #ccc;
+    
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -122,6 +122,7 @@
 }
 
 .wpaa-chat-header {
+    
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -190,6 +191,14 @@
 }
 
 
+.wpaa-chat-input-container textarea {
+    min-height: 30px !important;
+    max-height: 150px !important;
+    resize: none !important; 
+    overflow-y: auto !important;
+}
+
+
 
 /* Chat Icon Styles */
 .wpaa-chat-icon {
@@ -219,3 +228,32 @@
     height: 25px;
     color: white;
 }
+
+
+/* Multiselect Styles */
+.wpaa-publish-scope-container {
+    display: flex;
+    gap: 20px;
+}
+
+.wpaa-publish-scope-container select[name="selected_pages[]"] option:hover {
+    background-color: #e8f0fe !important;
+    cursor: pointer;
+}
+
+.wpaa-publish-scope-container select[name="selected_admin_pages[]"] option:hover {
+    background-color: #fff3e0 !important;
+    cursor: pointer;
+}
+
+.wpaa-publish-scope-container select[multiple] {
+    padding: 5px;
+    width: 200px;
+    height: 200px;
+}
+
+.wpaa-publish-scope-container select[multiple] option:checked {
+    background: #4CAF50 linear-gradient(0deg, #4CAF50 0%, #4CAF50 100%) !important;
+    color: #ffffff;
+}
+

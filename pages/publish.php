@@ -47,10 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
 
         <!-- Page Selection -->
         <h2>Select Pages for Agent Scope</h2>
-        <div style="display: flex; gap: 20px;">
+        <div class="wpaa-publish-scope-container">
             <div>
                 <h3>Frontend Pages</h3>
-                <select name="selected_pages[]" multiple required style="height: 200px;">
+                <select name="selected_pages[]" multiple required>
                     <?php foreach ($pages as $page): ?>
                         <option value="<?php echo esc_attr($page->ID); ?>"><?php echo esc_html($page->post_title); ?></option>
                     <?php endforeach; ?>
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
             </div>
             <div>
                 <h3>Admin Pages</h3>
-                <select name="selected_admin_pages[]" multiple style="height: 200px;">
+                <select name="selected_admin_pages[]" multiple>
                     <option value="index.php">Dashboard</option>
                     <option value="edit.php">Posts</option>
                     <option value="upload.php">Media Library</option>

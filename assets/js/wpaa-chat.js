@@ -63,7 +63,7 @@ jQuery(document).ready(function($) {
             // Close chat when close button clicked
             document.getElementById('wpaa-chat-close-button').addEventListener('click', function() {
                 chatPopup.style.display = 'none';
-                chatIcon.style.display = 'block';
+                chatIcon.style.display = 'flex';
             });
             
             // Handle the send button click
@@ -77,7 +77,7 @@ jQuery(document).ready(function($) {
                     // Add user message to chat history
                     const userDiv = document.createElement('div');
                     userDiv.className = 'wpaa-chat-user';
-                    userDiv.textContent = 'You: ' + userMessage;
+                    userDiv.innerHTML = '<b>You:</b> ' + userMessage;
                     chatHistory.appendChild(userDiv);
                     
                     // Clear input field
@@ -86,7 +86,7 @@ jQuery(document).ready(function($) {
                     // Show loading indicator
                     const loadingDiv = document.createElement('div');
                     loadingDiv.className = 'wpaa-chat-agent wpaa-loading';
-                    loadingDiv.textContent = 'Thinking...';
+                    loadingDiv.innerHTML = 'Thinking...';
                     chatHistory.appendChild(loadingDiv);
                     
                     // Scroll to bottom
@@ -111,9 +111,9 @@ jQuery(document).ready(function($) {
                             agentDiv.className = 'wpaa-chat-agent';
                             
                             if (response.success) {
-                                agentDiv.textContent = 'Agent: ' + response.data;
+                                agentDiv.innerHTML = '<b>Agent:</b> ' + response.data;
                             } else {
-                                agentDiv.textContent = 'System: ' + response.data;
+                                agentDiv.innerHTML = '<b>System:</b> ' + response.data;
                                 agentDiv.classList.add('wpaa-error');
                             }
                             
@@ -127,7 +127,7 @@ jQuery(document).ready(function($) {
                             // Create error message
                             const errorDiv = document.createElement('div');
                             errorDiv.className = 'wpaa-chat-agent wpaa-error';
-                            errorDiv.textContent = 'System: An error occurred. Please try again later.';
+                            errorDiv.innerHTML = '<b>System:</b> An error occurred. Please try again later.';
                             
                             chatHistory.appendChild(errorDiv);
                             chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -147,13 +147,13 @@ jQuery(document).ready(function($) {
                 }
             });
 
-            // Auto-resize textarea as user types (max 150px height)
-            chatInput.addEventListener('input', function() {
-                this.style.height = 'auto';
-                const maxHeight = 150;
-                const newHeight = Math.min(this.scrollHeight, maxHeight);
-                this.style.height = newHeight + 'px';
-            });
+            // Auto-resize textarea as user types
+            const autoResizeTextarea = () => {
+                chatInput.style.height = 'auto'; // Reset height first
+                chatInput.style.height = `${chatInput.scrollHeight}px`;
+            };
+
+            chatInput.addEventListener('input', autoResizeTextarea);
 
         },
         error: function(xhr, status, error) {
