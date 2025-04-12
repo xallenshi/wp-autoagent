@@ -33,7 +33,7 @@ jQuery(document).ready(function($) {
                 url: ajaxurl,
                 type: 'POST',
                 data: {
-                    action: 'wpaa_get_agent_scope',
+                    action: 'get_agent_scope',
                     nonce: wpaa_setting_nonce.nonce,
                     agent_id: agent_id
                 },
@@ -122,6 +122,67 @@ jQuery(document).ready(function($) {
     });
 
 
+    // Knowledge Base Link
+    $(document).on('click', '.wpaa-kb-link', function(e) {
+        e.preventDefault();
+        var page = $(this).data('page');
+        $('#wpaa_setting_menu li[data-page="' + page + '"]').trigger('click');
+    });
+
+
+    // Agent List
+    $(document).on('click', '.wpaa-agent-list .agent-item', function(e) {
+        e.preventDefault();
+        var agent_id = $(this).data('agent_id');
+        
+        // If clicking "New Agent", just open create page with blank form
+        if (agent_id === 'new') {
+            $('#wpaa_setting_menu li[data-page="create"]').trigger('click');
+            // Clear form fields
+            $('#name').val('');
+            $('#instructions').val('');
+            $('#model').val('gpt-4o'); // Set default model
+            // Uncheck all articles
+            $('input[name="articles[]"]').prop('checked', false);
+            // Set page title for new agent
+            $('.wpaa-plugin-container h1').text('Create Your AI Agent');
+            return;
+        }
+
+        // Otherwise load existing agent
+        $('#wpaa_setting_menu li[data-page="create"]').trigger('click');
+
+        // Load agent info from database
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'wpaa_get_agent',
+                nonce: wpaa_setting_nonce.nonce,
+                agent_id: agent_id
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Fill form with agent data
+                    $('#name').val(response.data.name);
+                    $('#instructions').val(response.data.instructions);
+                    $('#model').val(response.data.model);
+                    
+                    // Check selected articles
+                    if (response.data.articles) {
+                        response.data.articles.forEach(function(article_id) {
+                            $('#article_' + article_id).prop('checked', true);
+                        });
+                    }
+                } else {
+                    alert('Error loading agent data');
+                }
+            },
+            error: function() {
+                alert('Error loading agent data');
+            }
+        });
+    });
 
 
 

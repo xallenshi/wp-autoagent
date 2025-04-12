@@ -13,10 +13,11 @@ class Create {
 
     public function __construct() {
         $this->table_agent = Config::get_table_name('agent');
-        add_action('wp_ajax_wpaa_create_agent', array($this, 'wpaa_create_agent'));
+        add_action('wp_ajax_wpaa_create_agent', array($this, 'create_agent'));
+        add_action('wp_ajax_wpaa_get_agent', array($this, 'get_agent'));
     }
 
-    public function wpaa_create_agent() {
+    public function create_agent() {
 
         if (!check_ajax_referer('wpaa_setting', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
@@ -146,6 +147,13 @@ class Create {
             'tool_resources' => $tool_resources,
             'vector_store_ids' => $vector_store_ids
         ];
+    }
+
+    public function get_agent() {
+        global $wpdb;
+        $agent_id = $_POST['agent_id'];
+        $agent = $wpdb->get_row("SELECT * FROM " . $this->table_agent . " WHERE id = " . $agent_id);
+        wp_send_json_success($agent);
     }
 
 }

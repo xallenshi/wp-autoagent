@@ -261,3 +261,35 @@
     font-weight: bold;
 }
 
+/* Knowledge Base Link */
+.wpaa-kb-link {
+    display: inline-block;
+    color: #0073aa;
+    text-decoration: none;
+    margin-bottom: 15px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    border-bottom: 1px dashed #0073aa;
+    padding-bottom: 2px;
+}
+
+.wpaa-kb-link:hover {
+    color: #00a0d2;
+    border-bottom-style: solid;
+}
+
+.wpaa-kb-link:before {
+    content: "→ ";
+    font-size: 14px;
+}
+
+
+.wpaa-agent-list {
+    float: left;
+    margin-right: 20px;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+

@@ -40,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
     
         <!-- Agent Selection -->
         <h2>Select Agent</h2>
-        <p><small>Selecting an agent will load its current scope settings.</small></p>
         <select name="agent_id" required>
             <option value="">Select an agent...</option>
             <?php foreach ($agents as $agent): ?>

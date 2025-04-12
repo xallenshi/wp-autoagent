@@ -2,12 +2,10 @@
     <div class="wpaa-title">WP AutoAgent Settings</div>
     <div id="wpaa_setting_menu">
         <ul>
-            
             <li data-page="create">Manage Agent</li>
             <li data-page="upload">Knowledge Base</li>
             <li data-page="publish">Publish Agent</li>
             <li data-page="access">Access Key</li>
-            <li data-page="chat">Chat</li>
         </ul>
     </div>
 

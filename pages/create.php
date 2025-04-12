@@ -8,6 +8,29 @@ $functions = $db_handler->get_functions();
 
 ?>
 
+
+<div class="wpaa-agent-list">
+    <h2>Your AI Agents</h2>
+    <ul>
+        <li><a href="#" class="agent-item" data-agent_id="new">+ New Agent</a></li>
+        <?php
+        // Get agents from database
+        $agents = $db_handler->get_agents();
+        if ($agents) {
+            foreach ($agents as $agent) {
+                ?>
+                <li>
+                    <a href="#" class="agent-item" data-agent_id="<?php echo esc_attr($agent->id); ?>">
+                        <?php echo esc_html($agent->name); ?>
+                    </a>
+                </li>
+                <?php
+            }
+        }
+        ?>
+    </ul>
+</div>
+
 <div class="wpaa-plugin-container">
     <form id="wpaa_create_agent_form" method="post" enctype="multipart/form-data">
     <h1>Create Your AI Agent</h1>
@@ -32,8 +55,8 @@ $functions = $db_handler->get_functions();
         <h2>Knowledge Base</h2>
         <h2>Only 1 vector store allowed for now</h2>
         <label>Select Files:</label>
+        <a href="#" class="wpaa-kb-link" data-page="upload">Upload Your Knowledge Base</a>
         <?php
-        
         
         if ($articles) {
             foreach ($articles as $article) {
