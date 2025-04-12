@@ -60,7 +60,7 @@ class Run {
             $api_msg = $api_response_body['message'];
             $thread_id = $api_response_body['thread_id'];
 
-            error_log('api_response_body: ' . print_r($api_response_body, true));
+            //error_log('api_response_body: ' . print_r($api_response_body, true));
 
             // Save file info including file_id and vector_id to table_article
             $conversation_id = $this->save_conversation($assistant_id, $thread_id, $content, json_encode($api_msg));
