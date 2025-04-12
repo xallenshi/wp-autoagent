@@ -38,12 +38,12 @@ jQuery(document).ready(function($) {
             chatPopup.innerHTML = `
                 <div id="wpaa-chat-header" class="wpaa-chat-header">
                     <span>Chat Assistant</span>
-                    <button id="wpaa-close-button" class="wpaa-close-button">&times;</button>
+                    <button id="wpaa-chat-close-button" class="wpaa-chat-close-button">&times;</button>
                 </div>
                 <div id="wpaa-chat-history" class="wpaa-chat-history"></div>
                 <div class="wpaa-chat-input-container">
                     <textarea id="wpaa-chat-input" placeholder="Type your message..."></textarea>
-                    <button id="wpaa-send-button">Send</button>
+                    <button id="wpaa-chat-send-button">Send</button>
                 </div>
             `;
             
@@ -61,13 +61,13 @@ jQuery(document).ready(function($) {
             });
 
             // Close chat when close button clicked
-            document.getElementById('wpaa-close-button').addEventListener('click', function() {
+            document.getElementById('wpaa-chat-close-button').addEventListener('click', function() {
                 chatPopup.style.display = 'none';
                 chatIcon.style.display = 'block';
             });
             
             // Handle the send button click
-            const sendButton = document.getElementById('wpaa-send-button');
+            const sendButton = document.getElementById('wpaa-chat-send-button');
             const chatInput = document.getElementById('wpaa-chat-input');
             const chatHistory = document.getElementById('wpaa-chat-history');
             
@@ -86,7 +86,7 @@ jQuery(document).ready(function($) {
                     // Show loading indicator
                     const loadingDiv = document.createElement('div');
                     loadingDiv.className = 'wpaa-chat-agent wpaa-loading';
-                    loadingDiv.textContent = 'Typing...';
+                    loadingDiv.textContent = 'Thinking...';
                     chatHistory.appendChild(loadingDiv);
                     
                     // Scroll to bottom
@@ -147,11 +147,14 @@ jQuery(document).ready(function($) {
                 }
             });
 
-            // Auto-resize textarea as user types
+            // Auto-resize textarea as user types (max 150px height)
             chatInput.addEventListener('input', function() {
                 this.style.height = 'auto';
-                this.style.height = (this.scrollHeight) + 'px';
+                const maxHeight = 150;
+                const newHeight = Math.min(this.scrollHeight, maxHeight);
+                this.style.height = newHeight + 'px';
             });
+
         },
         error: function(xhr, status, error) {
             console.error('Error checking page scope:', error);
