@@ -33,7 +33,7 @@ jQuery(document).ready(function($) {
                 url: ajaxurl,
                 type: 'POST',
                 data: {
-                    action: 'get_agent_scope',
+                    action: 'wpaa_get_agent_scope',
                     nonce: wpaa_setting_nonce.nonce,
                     agent_id: agent_id
                 },
@@ -55,7 +55,6 @@ jQuery(document).ready(function($) {
                     }
                 },
                 error: function() {
-                    loadingMsg.remove();
                     $('.wpaa-plugin-container form').prepend('<div class="error"><p>Error loading agent scope.</p></div>');
                 }
             });
@@ -130,8 +129,8 @@ jQuery(document).ready(function($) {
     });
 
 
-    // Agent List
-    $(document).on('click', '.wpaa-agent-list .agent-item', function(e) {
+    // Agent List on Create Page
+    $(document).on('click', '.wpaa-agent-list1 .agent-item', function(e) {
         e.preventDefault();
         var agent_id = $(this).data('agent_id');
         
@@ -191,6 +190,18 @@ jQuery(document).ready(function($) {
     });
 
 
+    // Agent List on Publish Page
+    $(document).on('click', '.wpaa-agent-list2 .agent-item', function(e) {
+        e.preventDefault();
+        var agent_id = $(this).data('agent_id');
+        
+        // Update selected state in the list
+        $('.wpaa-agent-list2 .agent-item').removeClass('active');
+        $(this).addClass('active');
+        
+        // Update the select and trigger change
+        $('select[name="agent_id"]').val(agent_id).trigger('change');
+    });
 
 
 

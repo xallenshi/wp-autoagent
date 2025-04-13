@@ -33,6 +33,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
 }
 ?>
 
+<div class="wpaa-agent-list2">
+    <h2>Your AI Agents</h2>
+    <ul>
+        <?php
+        // Get agents from database
+        $agents = $db_handler->get_agents();
+        if ($agents) {
+            foreach ($agents as $agent) {
+                ?>
+                <li>
+                    <a href="#" class="agent-item" data-agent_id="<?php echo esc_attr($agent->id); ?>">
+                        <?php echo esc_html($agent->name); ?>
+                    </a>
+                </li>
+                <?php
+            }
+        }
+        ?>
+    </ul>
+</div>
+
 <div class="wpaa-plugin-container">
     <form method="post">
     <h1>Publish Agent</h1>
@@ -40,7 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
     
         <!-- Agent Selection -->
         <h2>Select Agent</h2>
-        <select name="agent_id" required>
+        <p><small>Please select an agent from the list above</small></p>
+        <select name="agent_id" required id="agent-select" style="pointer-events: none; background-color: white; opacity: 1;">
             <option value="">Select an agent...</option>
             <?php foreach ($agents as $agent): ?>
                 <option value="<?php echo esc_attr($agent->id); ?>"><?php echo esc_html($agent->name); ?></option>

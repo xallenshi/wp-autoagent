@@ -9,7 +9,7 @@ $functions = $db_handler->get_functions();
 ?>
 
 
-<div class="wpaa-agent-list">
+<div class="wpaa-agent-list1">
     <h2>Your AI Agents</h2>
     <ul>
         <li><a href="#" class="agent-item" data-agent_id="new">+ New Agent</a></li>
