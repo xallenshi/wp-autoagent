@@ -9,6 +9,7 @@ class Run {
     public function __construct() {
         $this->table_conversation = Config::get_table_name('conversation');
         add_action('wp_ajax_wpaa_run_agent', array($this, 'wpaa_run_agent'));
+        add_action('wp_ajax_nopriv_wpaa_run_agent', array($this, 'wpaa_run_agent'));
     }
 
     public function wpaa_run_agent() {
