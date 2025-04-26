@@ -100,5 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
         </div>
 
         <button type="submit">Publish Agent</button>
+        <label for="wpaa-agent-instructions">Same selected pages take the newest agent.</label>
     </form>
 </div>
