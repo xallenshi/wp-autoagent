@@ -75,29 +75,6 @@ jQuery(document).ready(function($) {
     });
 
 
-    // Upload Article
-    $('#wpaa_upload_article_form').submit(function(event) {
-        event.preventDefault();
-        var formData = new FormData(this);
-        formData.append('action', 'wpaa_article_upload');
-        formData.append('nonce', wpaa_setting_nonce.nonce);
-
-        $.ajax({
-            url: ajaxurl,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                alert(response.data);
-            },
-            error: function(response) {
-                alert(response.data);
-            }
-        });
-    });
-
-
     // Create Agent
     $('#wpaa_create_agent_form').submit(function(event) {
         event.preventDefault();
@@ -124,8 +101,88 @@ jQuery(document).ready(function($) {
     // Knowledge Base Link
     $(document).on('click', '.wpaa-kb-link', function(e) {
         e.preventDefault();
-        var page = $(this).data('page');
-        $('#wpaa_setting_menu li[data-page="' + page + '"]').trigger('click');
+        // Modal HTML
+        var modalHtml = `
+            <div class="wpaa-modal-overlay">
+                <div class="wpaa-modal">
+                    <button class="wpaa-modal-close" title="Close">&times;</button>
+                    <h1>Upload Your Article</h1>
+                    <h4>Upload your article to the knowledge base to enhance the AI Agent's ability to provide context-aware answers based on your specific knowledge.</h4>
+                    <h4>For example, your product catalog, product manual, user guide, etc.</h4>
+                    <form id="wpaa_upload_article_form" method="post" enctype="multipart/form-data">
+                        <input type="file" name="article_file" accept=".txt,.doc,.docx,.xls,.xlsx,.pdf" required>
+                        <button type="submit">Upload</button>
+                    </form>
+                    <div id="wpaa_article_list" class="wrap"></div>
+                </div>
+            </div>
+        `;
+        // Remove any existing modal
+        $('.wpaa-modal-overlay').remove();
+        // Append modal to body
+        $('body').append(modalHtml);
+
+        // Load article list via AJAX
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'wpaa_get_article_list',
+                nonce: wpaa_setting_nonce.nonce
+            },
+            success: function(response) {
+                if (response.success && response.data) {
+                    $('#wpaa_article_list').html(response.data);
+                } else {
+                    $('#wpaa_article_list').html('<div>No articles found.</div>');
+                }
+            },
+            error: function() {
+                $('#wpaa_article_list').html('<div>Error loading articles.</div>');
+            }
+        });
+    });
+
+    // Close modal on click
+    $(document).on('click', '.wpaa-modal-close, .wpaa-modal-overlay', function(e) {
+        if ($(e.target).hasClass('wpaa-modal-close') || $(e.target).hasClass('wpaa-modal-overlay')) {
+            $('.wpaa-modal-overlay').remove();
+        }
+    });
+
+    // Handle upload in modal
+    $(document).on('submit', '#wpaa_upload_article_form', function(event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        formData.append('action', 'wpaa_article_upload');
+        formData.append('nonce', wpaa_setting_nonce.nonce);
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert(response.data);
+                // Reload article list after upload
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'wpaa_get_article_list',
+                        nonce: wpaa_setting_nonce.nonce
+                    },
+                    success: function(response) {
+                        if (response.success && response.data) {
+                            $('#wpaa_article_list').html(response.data);
+                        }
+                    }
+                });
+            },
+            error: function(response) {
+                alert(response.data);
+            }
+        });
     });
 
 
@@ -202,7 +259,6 @@ jQuery(document).ready(function($) {
         // Update the select and trigger change
         $('select[name="agent_id"]').val(agent_id).trigger('change');
     });
-
 
 
 

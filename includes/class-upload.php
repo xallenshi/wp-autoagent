@@ -9,6 +9,7 @@ class Upload {
     public function __construct() {
         $this->table_article = Config::get_table_name('article');
         add_action('wp_ajax_wpaa_article_upload', array($this, 'wpaa_article_upload'));
+        add_action('wp_ajax_wpaa_get_article_list', array($this, 'wpaa_get_article_list'));
     }
 
     public function wpaa_article_upload() {
@@ -72,6 +73,25 @@ class Upload {
 
     }
     
+    public function wpaa_get_article_list() {
+        if (!check_ajax_referer('wpaa_setting', 'nonce', false)) {
+            wp_send_json_error('Invalid nonce.');
+            return;
+        }
+        //require_once __DIR__ . '/class-dbhandler.php';
+        $db_handler = new DBHandler();
+        $articles = $db_handler->get_articles();
+        ob_start();
+        if ($articles && count($articles) > 0) {
+            foreach ($articles as $article) {
+                echo "<div class='wpaa_article_item'>{$article->file_name} at {$article->created_time}</div>";
+            }
+        } else {
+            echo "<div>No articles found.</div>";
+        }
+        $html = ob_get_clean();
+        wp_send_json_success($html);
+    }
 
     private function save_article($file, $file_id, $vector_store_id) {
         global $wpdb;

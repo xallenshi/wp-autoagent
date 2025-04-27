@@ -55,7 +55,7 @@ $functions = $db_handler->get_functions();
         <h2>Knowledge Base</h2>
         <h2>Only 1 vector store allowed for now</h2>
         <label>Select Files:</label>
-        <a href="#" class="wpaa-kb-link" data-page="upload">Upload Your Knowledge Base</a>
+        <a href="#" class="wpaa-kb-link" data-page="upload">Upload Your New Knowledge Article</a>
         <?php
         
         if ($articles) {
@@ -74,7 +74,6 @@ $functions = $db_handler->get_functions();
             <?php
         }
         ?>
-        <!-- Add more files as needed -->
 
         <!-- Function Enablement -->
         <h2>Function Enablement</h2>
