@@ -1,0 +1,54 @@
+import os
+import json
+from openai import OpenAI
+import logging
+logging.basicConfig(level=logging.ERROR)
+
+def lambda_handler(event, context):
+
+    api_key = os.getenv("OpenAI_API_Key")
+
+    client = OpenAI(api_key=api_key)
+
+    if 'body' in event:
+        body = json.loads(event['body'])
+        assistant_id = body.get('assistant_id')
+        name = body.get('name')
+        instructions = body.get('instructions')
+        model = body.get('model')
+        tools = body.get('tools', [])
+        tool_resources = body.get('tool_resources', {})
+        #vector_store_ids = body.get('vector_store_ids')
+
+        logging.error("body: %s", body)
+
+        if not name:
+            return {'status_code': 400, 'body': json.dumps("No agent name found in the request")}
+    else:
+        return {'status_code': 400, 'body': json.dumps("No agent name found in the request")}
+
+    #create new assistant
+    logging.error("assistant_id: %s", assistant_id)
+    
+    if not assistant_id:
+        assistant = client.beta.assistants.create(
+            name=name,
+            instructions = instructions,
+            tools = tools,
+            tool_resources = tool_resources,
+            #tools = [{"type": "file_search"}],
+            #tool_resources = {"file_search": {"vector_store_ids": vector_store_ids}},
+            model = model,
+        )
+    #update assistant
+    else:
+        assistant = client.beta.assistants.update(
+            assistant_id=assistant_id,
+            name=name,
+            instructions = instructions,
+            tools = tools,
+            tool_resources = tool_resources,
+            model = model,
+        )
+
+    return {'status_code': 200, 'message': '!yes!', 'assistant_id': assistant.id}
