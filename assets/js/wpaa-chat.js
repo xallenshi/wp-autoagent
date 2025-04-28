@@ -75,10 +75,20 @@ jQuery(document).ready(function($) {
                 const userMessage = chatInput.value.trim();
                 if (userMessage) {
                     // Add user message to chat history
+                    const userWrapper = document.createElement('div');
+                    userWrapper.className = 'wpaa-chat-user';
+
+                    const userNameDiv = document.createElement('div');
+                    userNameDiv.className = 'wpaa-chat-user-name';
+                    userNameDiv.innerHTML = '<b>You:</b>';
+
                     const userDiv = document.createElement('div');
-                    userDiv.className = 'wpaa-chat-user';
-                    userDiv.innerHTML = '<b>You:</b> ' + userMessage;
-                    chatHistory.appendChild(userDiv);
+                    userDiv.className = 'wpaa-chat-user-message';
+                    userDiv.innerHTML = userMessage;
+
+                    userWrapper.appendChild(userNameDiv);
+                    userWrapper.appendChild(userDiv);
+                    chatHistory.appendChild(userWrapper);
                     
                     // Clear input field
                     chatInput.value = '';
@@ -106,18 +116,32 @@ jQuery(document).ready(function($) {
                             // Remove loading indicator
                             chatHistory.removeChild(loadingDiv);
                             
-                            // Create agent response element
+                            // Create agent response wrapper
+                            const agentWrapper = document.createElement('div');
+                            agentWrapper.className = 'wpaa-chat-agent';
+
+                            // Create agent name element
+                            const agentNameDiv = document.createElement('div');
+                            agentNameDiv.className = 'wpaa-chat-agent-name';
+                            agentNameDiv.innerHTML = '<b>Agent:</b>';
+
+                            // Create agent message bubble
                             const agentDiv = document.createElement('div');
-                            agentDiv.className = 'wpaa-chat-agent';
+                            agentDiv.className = 'wpaa-chat-agent-message';
                             
                             if (response.success) {
-                                agentDiv.innerHTML = '<b>Agent:</b> ' + response.data;
+                                agentDiv.innerHTML = response.data;
                             } else {
-                                agentDiv.innerHTML = '<b>System:</b> ' + response.data;
+                                agentDiv.innerHTML = '<b>System:</b><br>' + response.data;
                                 agentDiv.classList.add('wpaa-error');
                             }
+
+                            // Append name and message to wrapper
+                            agentWrapper.appendChild(agentNameDiv);
+                            agentWrapper.appendChild(agentDiv);
                             
-                            chatHistory.appendChild(agentDiv);
+                            // Append wrapper to chat history
+                            chatHistory.appendChild(agentWrapper);
                             chatHistory.scrollTop = chatHistory.scrollHeight;
                         },
                         error: function(xhr, status, error) {

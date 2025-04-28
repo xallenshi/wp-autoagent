@@ -9,6 +9,8 @@ class Frontend {
 
     public function enqueue_scripts() {
         wp_enqueue_style('wpaa-css', WP_AUTOAGENT_PLUGIN_URL . 'assets/css/wpaa.css', array(), WP_AUTOAGENT_VERSION);
+        wp_enqueue_style('wpaa-chat-css', WP_AUTOAGENT_PLUGIN_URL . 'assets/css/wpaa-chat.css', array(), WP_AUTOAGENT_VERSION);
+        
         wp_enqueue_script('wpaa-js', WP_AUTOAGENT_PLUGIN_URL . 'assets/js/wpaa.js', array('jquery'), WP_AUTOAGENT_VERSION, true);
         wp_enqueue_script('wpaa-chat-js', WP_AUTOAGENT_PLUGIN_URL . 'assets/js/wpaa-chat.js', array('jquery'), WP_AUTOAGENT_VERSION, true);
         
