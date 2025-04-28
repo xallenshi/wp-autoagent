@@ -78,6 +78,20 @@ jQuery(document).ready(function($) {
     // Create Agent
     $('#wpaa_create_agent_form').submit(function(event) {
         event.preventDefault();
+
+        const checkboxes = document.querySelectorAll('input[name="articles[]"]');
+        let checkedOne = false;
+        checkboxes.forEach(function(checkbox) {
+            if (checkbox.checked) {
+                checkedOne = true;
+            }
+        });
+        if (!checkedOne) {
+            alert('Please select at least one knowledge article.');
+            return;
+        }
+
+
         var formData = new FormData(this);
         formData.append('action', 'wpaa_create_agent');
         formData.append('nonce', wpaa_setting_nonce.nonce);
@@ -195,6 +209,7 @@ jQuery(document).ready(function($) {
         if (agent_id === 'new') {
             $('#wpaa_setting_menu li[data-page="create"]').trigger('click');
             // Clear form fields
+            $('#assistant_id').val('');
             $('#name').val('');
             $('#instructions').val('');
             $('#model').val('gpt-4o'); // Set default model
@@ -224,6 +239,7 @@ jQuery(document).ready(function($) {
                     $('.wpaa-plugin-container h1').text('Update Your AI Agent');
                     $('#wpaa_create_agent_button').text('Update AI Assistant');
 
+                    $('#assistant_id').val(response.data.assistant_id);
                     $('#name').val(response.data.name);
                     $('#instructions').val(response.data.instructions);
                     $('#model').val(response.data.model);

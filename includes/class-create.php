@@ -29,6 +29,7 @@ class Create {
             return;
         }
 
+        $assistant_id = isset($_POST['assistant_id']) ? $_POST['assistant_id'] : null;
         $name = $_POST['name'];
         $instructions = $_POST['instructions'];
         $model = $_POST['model'];
@@ -45,6 +46,7 @@ class Create {
         $api_response = wp_remote_post($api_url, array(
             'method' => 'POST',
             'body' => json_encode(array(
+                'assistant_id' => $assistant_id,
                 'name' => $name,
                 'instructions' => $instructions,
                 'model' => $model,
@@ -67,7 +69,7 @@ class Create {
         }
 
         if (wp_remote_retrieve_response_code($api_response) != 200) {
-            wp_send_json_error('Failed to create the agent.');
+            wp_send_json_error('Failed to create/update the agent.');
             return;
         } else {
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
@@ -77,7 +79,7 @@ class Create {
             // Save file info including file_id and vector_id to table_article
             $agent_id = $this->save_agent($name, $instructions, $model, $selected_articles, $vector_store_ids, $assistant_id);
 
-            wp_send_json_success('The agent has been created with api call message: ' . $api_msg);
+            wp_send_json_success('The agent has been created/updated with api call message: ' . $api_msg);
             return;
         }
 

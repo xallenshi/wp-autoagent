@@ -14,7 +14,7 @@ jQuery(document).ready(function($) {
         },
         success: function(response) {
             if (!response.success) {
-                console.log('No agent found for this page.');
+                console.log('No agent published for this page.');
                 return;
             }
             
