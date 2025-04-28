@@ -73,14 +73,19 @@ class Create {
             return;
         } else {
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
-            $api_msg = $api_response_body['message'];
-            $assistant_id = $api_response_body['assistant_id'];
 
-            // Save file info including file_id and vector_id to table_article
-            $agent_id = $this->save_agent($name, $instructions, $model, $selected_articles, $vector_store_ids, $assistant_id);
+            if ($assistant_id) {
+                $api_msg = $api_response_body['message'];
+                $this->update_agent($name, $instructions, $model, $selected_articles, $vector_store_ids, $assistant_id);
+                wp_send_json_success('The agent has been updated with api call message: ' . $api_msg);
 
-            wp_send_json_success('The agent has been created/updated with api call message: ' . $api_msg);
-            return;
+            } else {
+                $api_msg = $api_response_body['message'];
+                $assistant_id = $api_response_body['assistant_id'];
+                $agent_id = $this->save_agent($name, $instructions, $model, $selected_articles, $vector_store_ids, $assistant_id);
+                wp_send_json_success('The agent has been created with api call message: ' . $api_msg);
+
+            }
         }
 
     }
@@ -97,6 +102,7 @@ class Create {
             'article_ids' => json_encode($article_ids),
             'vector_store_ids' => json_encode($vector_store_ids),
             'created_time' => current_time('mysql'),
+            'updated_time' => current_time('mysql'),
         ));
 
         if ($result === false) {
@@ -105,6 +111,26 @@ class Create {
         }
 
         return $wpdb->insert_id;
+    }
+
+    private function update_agent($name, $instructions, $model, $article_ids, $vector_store_ids, $assistant_id) {
+        global $wpdb;
+        
+        $result = $wpdb->update($this->table_agent, array(
+            'name' => $name,
+            'instructions' => $instructions,
+            'model' => $model,
+            'article_ids' => json_encode($article_ids),
+            'vector_store_ids' => json_encode($vector_store_ids),
+            'updated_time' => current_time('mysql'),
+        ), array('assistant_id' => $assistant_id));
+
+        if ($result === false) {
+            error_log('Database update error: ' . $wpdb->last_error);
+            return false;
+        }
+
+        return true;
     }
 
 

@@ -73,6 +73,7 @@ class DB {
                 vector_store_ids varchar(255) NOT NULL,
                 scope text NOT NULL,
                 created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                updated_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 PRIMARY KEY (id)
             ) $charset_collate;";
 
