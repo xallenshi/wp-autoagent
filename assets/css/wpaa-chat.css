@@ -1,5 +1,3 @@
-
-
 .wpaa-chat-popup {
     position: fixed;
     bottom: 15px;
@@ -116,13 +114,12 @@
     box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
-.wpaa-chat-agent.wpaa-loading {
-    color: #0056b3;
-    font-size: 14px;
-    text-align: right;
-    margin-bottom: 2px;
-    width: 100%;
-    font-weight: bold;
+.wpaa-chat-agent-message.loading {
+    width: 80px;
+}
+
+.wpaa-chat-agent-message.error {
+    color: red;
 }
 
 .wpaa-chat-input-container textarea {
@@ -131,8 +128,6 @@
     resize: none !important; 
     overflow-y: auto !important;
 }
-
-
 
 /* Chat Icon Styles */
 .wpaa-chat-icon {

@@ -93,14 +93,30 @@ jQuery(document).ready(function($) {
                     // Clear input field
                     chatInput.value = '';
                     
-                    // Show loading indicator
-                    const loadingDiv = document.createElement('div');
-                    loadingDiv.className = 'wpaa-chat-agent wpaa-loading';
-                    loadingDiv.innerHTML = 'Thinking...';
-                    chatHistory.appendChild(loadingDiv);
+                    // Show loading indicator (same structure as agent message)
+                    const loadingWrapper = document.createElement('div');
+                    loadingWrapper.className = 'wpaa-chat-agent';
+
+                    const loadingNameDiv = document.createElement('div');
+                    loadingNameDiv.className = 'wpaa-chat-agent-name';
+                    loadingNameDiv.innerHTML = '<b>Agent:</b>';
+
+                    const loadingMsgDiv = document.createElement('div');
+                    loadingMsgDiv.className = 'wpaa-chat-agent-message loading';
+                    loadingMsgDiv.innerHTML = 'Analyzing...';
+
+                    loadingWrapper.appendChild(loadingNameDiv);
+                    loadingWrapper.appendChild(loadingMsgDiv);
+                    chatHistory.appendChild(loadingWrapper);
                     
-                    // Scroll to bottom
-                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                    // Animate the loading message
+                    let dotCount = 0;
+                    const maxDots = 3;
+                    const baseText = 'Analyzing';
+                    const loadingInterval = setInterval(() => {
+                        loadingMsgDiv.innerHTML = baseText + '.'.repeat(dotCount);
+                        dotCount = dotCount < maxDots ? dotCount + 1 : 1;
+                    }, 500);
                     
                     // Make AJAX call to WordPress to run the agent
                     $.ajax({
@@ -114,7 +130,8 @@ jQuery(document).ready(function($) {
                         },
                         success: function(response) {
                             // Remove loading indicator
-                            chatHistory.removeChild(loadingDiv);
+                            clearInterval(loadingInterval);
+                            chatHistory.removeChild(loadingWrapper);
                             
                             // Create agent response wrapper
                             const agentWrapper = document.createElement('div');
@@ -146,11 +163,12 @@ jQuery(document).ready(function($) {
                         },
                         error: function(xhr, status, error) {
                             // Remove loading indicator
-                            chatHistory.removeChild(loadingDiv);
+                            clearInterval(loadingInterval);
+                            chatHistory.removeChild(loadingWrapper);
                             
                             // Create error message
                             const errorDiv = document.createElement('div');
-                            errorDiv.className = 'wpaa-chat-agent wpaa-error';
+                            errorDiv.className = 'wpaa-chat-agent-message error';
                             errorDiv.innerHTML = '<b>System:</b> An error occurred. Please try again later.';
                             
                             chatHistory.appendChild(errorDiv);
