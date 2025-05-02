@@ -149,7 +149,7 @@ jQuery(document).ready(function($) {
                             if (response.success) {
                                 agentDiv.innerHTML = response.data;
                             } else {
-                                agentDiv.innerHTML = '<b>System:</b><br>' + response.data;
+                                agentDiv.innerHTML = '<b>[System]</b> ' + response.data;
                                 agentDiv.classList.add('wpaa-error');
                             }
 
@@ -169,7 +169,7 @@ jQuery(document).ready(function($) {
                             // Create error message
                             const errorDiv = document.createElement('div');
                             errorDiv.className = 'wpaa-chat-agent-message error';
-                            errorDiv.innerHTML = '<b>System:</b> An error occurred. Please try again later.';
+                            errorDiv.innerHTML = '<b>[System]</b> An error occurred. Please try again later.';
                             
                             chatHistory.appendChild(errorDiv);
                             chatHistory.scrollTop = chatHistory.scrollHeight;
