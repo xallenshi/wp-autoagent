@@ -29,7 +29,7 @@ class Create {
             return;
         }
 
-        $assistant_id = isset($_POST['assistant_id']) ? $_POST['assistant_id'] : null;
+        $agent_id = isset($_POST['agent_id']) ? $_POST['agent_id'] : null;
         $name = $_POST['name'];
         $instructions = $_POST['instructions'];
         $model = $_POST['model'];
@@ -38,69 +38,31 @@ class Create {
         
         $tools_object = $this->get_tools_object($selected_articles, $selected_functions);
         $tools = $tools_object['tools'];
-        $tool_resources = $tools_object['tool_resources'];
-        $vector_store_ids = $tools_object['vector_store_ids'];
 
-        // make a rest api call to Lambda function to process the article
-        $api_url = 'https://pbe3crai7j4vy6eoo35pss3pzm0xcpxb.lambda-url.ap-southeast-2.on.aws/';
-        $api_response = wp_remote_post($api_url, array(
-            'method' => 'POST',
-            'body' => json_encode(array(
-                'assistant_id' => $assistant_id,
-                'name' => $name,
-                'instructions' => $instructions,
-                'model' => $model,
-                'vector_store_ids' => $vector_store_ids,
-                'tools' => $tools,
-                'tool_resources' => $tool_resources
-            )),
-            'headers' => array(
-                'Content-Type' => 'application/json',
-            ),
-            'timeout' => 20,
-        ));
+        if ($agent_id) {
 
-        //error_log('api_response: ' . print_r($api_response, true));
+            $this->update_agent($name, $instructions, $model, $selected_articles, $selected_functions, $tools, $agent_id);
+            wp_send_json_success('The agent has been updated');
 
-        if (is_wp_error($api_response)) {
-            $api_error_msg = $api_response->get_error_message(); 
-            wp_send_json_error('Failed to complete the api call with error: ' . $api_error_msg);
-            return;
-        }
-
-        if (wp_remote_retrieve_response_code($api_response) != 200) {
-            wp_send_json_error('Failed to create/update the agent.');
-            return;
         } else {
-            $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
+ 
+            $agent_id = $this->save_agent($name, $instructions, $model, $selected_articles, $selected_functions, $tools);
+            wp_send_json_success('The agent has been created');
 
-            if ($assistant_id) {
-                $api_msg = $api_response_body['message'];
-                $this->update_agent($name, $instructions, $model, $selected_articles, $vector_store_ids, $assistant_id);
-                wp_send_json_success('The agent has been updated with api call message: ' . $api_msg);
-
-            } else {
-                $api_msg = $api_response_body['message'];
-                $assistant_id = $api_response_body['assistant_id'];
-                $agent_id = $this->save_agent($name, $instructions, $model, $selected_articles, $vector_store_ids, $assistant_id);
-                wp_send_json_success('The agent has been created with api call message: ' . $api_msg);
-
-            }
         }
 
     }
-    
 
-    private function save_agent($name, $instructions, $model, $article_ids, $vector_store_ids, $assistant_id) {
+    private function save_agent($name, $instructions, $model, $article_ids, $function_ids, $tools) {
         global $wpdb;
         
         $result = $wpdb->insert($this->table_agent, array(
-            'assistant_id' => $assistant_id,
             'name' => $name,
             'instructions' => $instructions,
             'model' => $model,
             'article_ids' => json_encode($article_ids),
-            'vector_store_ids' => json_encode($vector_store_ids),
+            'function_ids' => json_encode($function_ids),
+            'tools' => json_encode($tools),
             'created_time' => current_time('mysql'),
             'updated_time' => current_time('mysql'),
         ));
@@ -113,7 +75,7 @@ class Create {
         return $wpdb->insert_id;
     }
 
-    private function update_agent($name, $instructions, $model, $article_ids, $vector_store_ids, $assistant_id) {
+    private function update_agent($name, $instructions, $model, $article_ids, $function_ids, $tools, $agent_id) {
         global $wpdb;
         
         $result = $wpdb->update($this->table_agent, array(
@@ -121,9 +83,10 @@ class Create {
             'instructions' => $instructions,
             'model' => $model,
             'article_ids' => json_encode($article_ids),
-            'vector_store_ids' => json_encode($vector_store_ids),
+            'function_ids' => json_encode($function_ids),
+            'tools' => json_encode($tools),
             'updated_time' => current_time('mysql'),
-        ), array('assistant_id' => $assistant_id));
+        ), array('id' => $agent_id));
 
         if ($result === false) {
             error_log('Database update error: ' . $wpdb->last_error);
@@ -137,8 +100,6 @@ class Create {
     private function get_tools_object($article_ids, $function_ids) {
         global $wpdb;
         $tools = [];
-        $tool_resources = [];
-        $vector_store_ids = [];
 
         $db_handler = new DBHandler();
 
@@ -151,12 +112,11 @@ class Create {
         }
 
         if (!empty($vector_store_ids)) {
-            $tools[] = array('type' => 'file_search');
-            $tool_resources = [
-                'file_search' => [
-                    'vector_store_ids' => $vector_store_ids
-                ]
-            ];
+            $tools[] = array(
+                'type' => 'file_search',
+                'vector_store_ids' => $vector_store_ids,
+                "max_num_results" => 3
+            );
         }
 
         // Add function tools
@@ -172,9 +132,7 @@ class Create {
         }
 
         return [
-            'tools' => $tools,
-            'tool_resources' => $tool_resources,
-            'vector_store_ids' => $vector_store_ids
+            'tools' => $tools
         ];
     }
 

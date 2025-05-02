@@ -64,13 +64,12 @@ class DB {
         if ($wpdb->get_var("SHOW TABLES LIKE '{$this->table_agent}'") != $this->table_agent) {
             $sql = "CREATE TABLE {$this->table_agent} (
                 id int UNSIGNED NOT NULL AUTO_INCREMENT,
-                assistant_id varchar(255) NOT NULL,
                 name varchar(255) NOT NULL,
                 instructions varchar(255) NOT NULL,
                 model varchar(255) NOT NULL,
-                tools varchar(255) NOT NULL,
-                article_ids varchar(255) NOT NULL,
-                vector_store_ids varchar(255) NOT NULL,
+                tools text NOT NULL,
+                article_ids text NOT NULL,
+                function_ids text NOT NULL,
                 scope text NOT NULL,
                 created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 updated_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -94,8 +93,6 @@ class DB {
         if ($wpdb->get_var("SHOW TABLES LIKE '{$this->table_conversation}'") != $this->table_conversation) {
             $sql = "CREATE TABLE {$this->table_conversation} (
                 id int UNSIGNED NOT NULL AUTO_INCREMENT,
-                assistant_id varchar(255) NOT NULL,
-                thread_id varchar(255) NOT NULL,
                 content varchar(255) NOT NULL,
                 response text NOT NULL,
                 created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,

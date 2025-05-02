@@ -209,7 +209,7 @@ jQuery(document).ready(function($) {
         if (agent_id === 'new') {
             $('#wpaa_setting_menu li[data-page="create"]').trigger('click');
             // Clear form fields
-            $('#assistant_id').val('');
+            $('#agent_id').val('');
             $('#name').val('');
             $('#instructions').val('');
             $('#model').val('gpt-4o'); // Set default model
@@ -239,7 +239,7 @@ jQuery(document).ready(function($) {
                     $('.wpaa-plugin-container h1').text('Update Your AI Agent');
                     $('#wpaa_create_agent_button').text('Update AI Assistant');
 
-                    $('#assistant_id').val(response.data.assistant_id);
+                    $('#agent_id').val(response.data.id);
                     $('#name').val(response.data.name);
                     $('#instructions').val(response.data.instructions);
                     $('#model').val(response.data.model);

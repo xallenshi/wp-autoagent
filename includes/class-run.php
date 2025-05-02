@@ -28,17 +28,20 @@ class Run {
         $db_handler = new DBHandler();
         $agent = $db_handler->get_agent($agent_id);
             
-        $assistant_id = $agent->assistant_id;
+        $agent_id = $agent->id;
+        $model = $agent->model;
         $instructions = $agent->instructions;
-        $thread_id = '';
-        
+        $tools = $agent->tools;
+
         $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';
+        $input[] = array('role' => 'user', 'content' => $content);
+
 
         // make a rest api call to Lambda function to run the agent
         $api_url = 'https://jebcqgsrc7k5wffddjuof6feke0edirw.lambda-url.ap-southeast-2.on.aws/';
         $api_response = wp_remote_post($api_url, array(
             'method' => 'POST',
-            'body' => json_encode(array('assistant_id' => $assistant_id, 'thread_id' => $thread_id, 'instructions' => $instructions, 'content' => $content)),
+            'body' => json_encode(array('model' => $model, 'input' => $input, 'tools' => $tools)),
             'headers' => array(
                 'Content-Type' => 'application/json',
             ),

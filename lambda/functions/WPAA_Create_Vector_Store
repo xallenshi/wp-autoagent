@@ -33,7 +33,7 @@ def get_openai_api_key():
 
 
 def create_vector_store_id(client):
-    result = client.beta.vector_stores.create(name="knowledge_Base")
+    result = client.vector_stores.create(name="knowledge_base")
     return result.id
 
 def create_file(client, file_name, file_content_base64):
@@ -46,10 +46,10 @@ def create_file(client, file_name, file_content_base64):
     return result.id
 
 def create_vector_store(client, vector_store_id, file_id):
-    result = client.beta.vector_stores.files.create(
+    result = client.vector_stores.files.create(
         vector_store_id=vector_store_id,
         file_id=file_id
-    )   
+    )
     return result
 
 

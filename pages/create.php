@@ -38,7 +38,7 @@ $functions = $db_handler->get_functions();
     
         <!-- Basic Info -->
         <h2>Basic Info</h2>
-        <input type="hidden" id="assistant_id" name="assistant_id" value="">
+        <input type="hidden" id="agent_id" name="agent_id" value="">
         <label for="name">AI Agent Name:</label>
         <input type="text" id="name" name="name" required>
 
