@@ -31,7 +31,7 @@ class Run {
         $agent_id = $agent->id;
         $model = $agent->model;
         $instructions = $agent->instructions;
-        $tools = $agent->tools;
+        $tools = json_decode($agent->tools, true);
 
         $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';
         $input[] = array('role' => 'user', 'content' => $content);

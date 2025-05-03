@@ -108,6 +108,7 @@ jQuery(document).ready(function($) {
                     loadingWrapper.appendChild(loadingNameDiv);
                     loadingWrapper.appendChild(loadingMsgDiv);
                     chatHistory.appendChild(loadingWrapper);
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
                     
                     // Animate the loading message
                     let dotCount = 0;
