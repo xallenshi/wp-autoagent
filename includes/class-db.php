@@ -93,7 +93,9 @@ class DB {
         if ($wpdb->get_var("SHOW TABLES LIKE '{$this->table_conversation}'") != $this->table_conversation) {
             $sql = "CREATE TABLE {$this->table_conversation} (
                 id int UNSIGNED NOT NULL AUTO_INCREMENT,
-                content varchar(255) NOT NULL,
+                agent_id int UNSIGNED NOT NULL,
+                response_id varchar(255) NOT NULL,
+                content text NOT NULL,
                 response text NOT NULL,
                 created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 PRIMARY KEY (id)
