@@ -167,12 +167,24 @@ jQuery(document).ready(function($) {
                             clearInterval(loadingInterval);
                             chatHistory.removeChild(loadingWrapper);
                             
+                            // Create agent response wrapper
+                            const agentWrapper = document.createElement('div');
+                            agentWrapper.className = 'wpaa-chat-agent';
+
+                            // Create agent name element
+                            const agentNameDiv = document.createElement('div');
+                            agentNameDiv.className = 'wpaa-chat-agent-name';
+                            agentNameDiv.innerHTML = '<b>Agent:</b>';
+
                             // Create error message
                             const errorDiv = document.createElement('div');
                             errorDiv.className = 'wpaa-chat-agent-message error';
                             errorDiv.innerHTML = '<b>[System]</b> An error occurred. Please try again later.';
+
+                            agentWrapper.appendChild(agentNameDiv);
+                            agentWrapper.appendChild(errorDiv);
                             
-                            chatHistory.appendChild(errorDiv);
+                            chatHistory.appendChild(agentWrapper);
                             chatHistory.scrollTop = chatHistory.scrollHeight;
                         }
                     });

@@ -52,10 +52,24 @@ class DBHandler {
         return $this->wpdb->get_row($this->wpdb->prepare($query, $id));
     }
 
-    public function get_latest_response_id($agent_id) {
-        $query = "SELECT response_id FROM {$this->table_conversation} WHERE agent_id = %d ORDER BY created_time DESC LIMIT 1";
-        $result = $this->wpdb->get_var($this->wpdb->prepare($query, $agent_id));
-        return $result !== null ? $result : null;
+
+    public function get_latest_response_id($agent_id, $session_id) {
+        $query = "SELECT response_id, created_time FROM {$this->table_conversation} WHERE agent_id = %d AND session_id = %s ORDER BY created_time DESC LIMIT 1";
+        $result = $this->wpdb->get_row($this->wpdb->prepare($query, $agent_id, $session_id));
+
+        #reset conversation state if it's older than 5 minutes
+        if ($result) {
+            $conversation_pause = time() - strtotime($result->created_time);
+            //error_log('conversation_pause: ' . $conversation_pause);
+
+            if ($conversation_pause >= 300 || $result->response_id == null) {
+                return null;
+            } else {
+                return $result->response_id;
+            }
+        }
+        
+        return null;
     }
 
 }

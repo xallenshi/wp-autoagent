@@ -102,7 +102,7 @@ class Upload {
             'file_size' => $file['size'],
             'file_id' => $file_id,
             'vector_store_id' => $vector_store_id,
-            'created_time' => current_time('mysql'),
+            'created_time' => gmdate('Y-m-d H:i:s'),
         ));
 
         if ($result === false) {

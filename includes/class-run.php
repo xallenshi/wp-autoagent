@@ -25,20 +25,22 @@ class Run {
         }
 
         $agent_id = $_POST['agent_id'];
+        $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';
+
         $db_handler = new DBHandler();
         $agent = $db_handler->get_agent($agent_id);
-            
         $agent_id = $agent->id;
         $model = $agent->model;
         $instructions = $agent->instructions;
         $tools = json_decode($agent->tools, true);
 
         #keep conversation state
-        $response_id = $db_handler->get_latest_response_id($agent_id);
-
-        $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';
+        $session_id = wp_get_session_token();
+        $response_id = $db_handler->get_latest_response_id($agent_id, $session_id);
+        #add system level instructions
+        $input[] = array('role' => 'system', 'content' => $instructions);
+        #add user question
         $input[] = array('role' => 'user', 'content' => $content);
-
 
         // make a rest api call to Lambda function to run the agent
         $api_url = 'https://jebcqgsrc7k5wffddjuof6feke0edirw.lambda-url.ap-southeast-2.on.aws/';
@@ -52,7 +54,6 @@ class Run {
         ));
 
         //error_log('api_response: ' . print_r($api_response, true));
-
         if (is_wp_error($api_response)) {
             $api_error_msg = $api_response->get_error_message(); 
             wp_send_json_error('Failed to complete the api call with error: ' . $api_error_msg);
@@ -81,12 +82,18 @@ class Run {
     private function save_conversation($agent_id, $response_id, $content, $api_msg) {
         global $wpdb;
         
+        #get non-logged-in/logged-in user session id
+        $session_id = wp_get_session_token();
+        $user_id = is_user_logged_in() ? get_current_user_id() : null;
+
         $result = $wpdb->insert($this->table_conversation, array(
             'agent_id' => $agent_id,
+            'session_id' => $session_id,
+            'user_id' => $user_id,
             'response_id' => $response_id,
             'content' => $content,
             'response' => $api_msg,
-            'created_time' => current_time('mysql'),
+            'created_time' => gmdate('Y-m-d H:i:s'),
         ));
 
         if ($result === false) {

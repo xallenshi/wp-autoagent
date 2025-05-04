@@ -94,7 +94,9 @@ class DB {
             $sql = "CREATE TABLE {$this->table_conversation} (
                 id int UNSIGNED NOT NULL AUTO_INCREMENT,
                 agent_id int UNSIGNED NOT NULL,
-                response_id varchar(255) NOT NULL,
+                session_id varchar(255) NOT NULL,
+                user_id int UNSIGNED NULL,
+                response_id varchar(255) NULL,
                 content text NOT NULL,
                 response text NOT NULL,
                 created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,

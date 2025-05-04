@@ -63,8 +63,8 @@ class Create {
             'article_ids' => json_encode($article_ids),
             'function_ids' => json_encode($function_ids),
             'tools' => json_encode($tools),
-            'created_time' => current_time('mysql'),
-            'updated_time' => current_time('mysql'),
+            'created_time' => gmdate('Y-m-d H:i:s'),
+            'updated_time' => gmdate('Y-m-d H:i:s'),
         ));
 
         if ($result === false) {
@@ -85,7 +85,7 @@ class Create {
             'article_ids' => json_encode($article_ids),
             'function_ids' => json_encode($function_ids),
             'tools' => json_encode($tools),
-            'updated_time' => current_time('mysql'),
+            'updated_time' => gmdate('Y-m-d H:i:s'),
         ), array('id' => $agent_id));
 
         if ($result === false) {
