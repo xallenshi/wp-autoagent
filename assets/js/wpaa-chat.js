@@ -1,3 +1,32 @@
+// Utility: Create an element with optional class and innerHTML
+function createElement(tag, className = '', innerHTML = '') {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (innerHTML) el.innerHTML = innerHTML;
+    return el;
+}
+
+// Utility: Scroll chat history to bottom
+function scrollToBottom(el) {
+    el.scrollTop = el.scrollHeight;
+}
+
+// Utility: Render a chat message (user or agent)
+function renderMessage({ type, name, message, isError = false }) {
+    const wrapper = createElement('div', `wpaa-chat-${type}`);
+    const nameDiv = createElement('div', `wpaa-chat-${type}-name`, `<b>${name}:</b>`);
+    const msgDiv = createElement('div', `wpaa-chat-${type}-message${isError ? ' wpaa-error' : ''}`);
+    msgDiv.innerHTML = message;
+    wrapper.appendChild(nameDiv);
+    wrapper.appendChild(msgDiv);
+    return wrapper;
+}
+
+// Utility: Show/hide elements
+function show(el) { el.style.display = 'block'; }
+function hide(el) { el.style.display = 'none'; }
+function flex(el) { el.style.display = 'flex'; }
+
 jQuery(document).ready(function($) {
     // Capture the current page slug
     const currentPageSlug = window.location.pathname + window.location.search;
@@ -21,21 +50,15 @@ jQuery(document).ready(function($) {
             const agentId = response.data.agent_id;
             console.log('Agent ID: ' + agentId);
             
-            // Create chat icon element
-            const chatIcon = document.createElement('div');
-            chatIcon.id = 'wpaa-chat-icon';
-            chatIcon.className = 'wpaa-chat-icon';
-            chatIcon.innerHTML = `
+            // --- UI Elements ---
+            const chatIcon = createElement('div', 'wpaa-chat-icon', `
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="currentColor"/>
                 </svg>
-            `;
+            `);
+            chatIcon.id = 'wpaa-chat-icon';
             
-            // Create chat popup element
-            const chatPopup = document.createElement('div');
-            chatPopup.id = 'wpaa-chat-popup';
-            chatPopup.className = 'wpaa-chat-popup';
-            chatPopup.innerHTML = `
+            const chatPopup = createElement('div', 'wpaa-chat-popup', `
                 <div id="wpaa-chat-header" class="wpaa-chat-header">
                     <span>Chat Assistant</span>
                     <button id="wpaa-chat-close-button" class="wpaa-chat-close-button">&times;</button>
@@ -45,190 +68,112 @@ jQuery(document).ready(function($) {
                     <textarea id="wpaa-chat-input" placeholder="Type your message..."></textarea>
                     <button id="wpaa-chat-send-button">Send</button>
                 </div>
-            `;
+            `);
+            chatPopup.id = 'wpaa-chat-popup';
             
             // Append elements to body
             document.body.appendChild(chatIcon);
             document.body.appendChild(chatPopup);
             
             // Initially hide the chat popup
-            chatPopup.style.display = 'none';
+            hide(chatPopup);
             
-            // Toggle chat popup when icon is clicked
-            chatIcon.addEventListener('click', function() {
-                chatPopup.style.display = 'block';
-                chatIcon.style.display = 'none';
-            });
-
-            // Close chat when close button clicked
-            document.getElementById('wpaa-chat-close-button').addEventListener('click', function() {
-                chatPopup.style.display = 'none';
-                chatIcon.style.display = 'flex';
-            });
-            
-            // Handle the send button click
+            // --- DOM References ---
             const sendButton = document.getElementById('wpaa-chat-send-button');
             const chatInput = document.getElementById('wpaa-chat-input');
             const chatHistory = document.getElementById('wpaa-chat-history');
+            const closeButton = document.getElementById('wpaa-chat-close-button');
             
-            function sendMessage() {
-                const userMessage = chatInput.value.trim();
-                if (userMessage) {
-                    // Add user message to chat history
-                    const userWrapper = document.createElement('div');
-                    userWrapper.className = 'wpaa-chat-user';
-
-                    const userNameDiv = document.createElement('div');
-                    userNameDiv.className = 'wpaa-chat-user-name';
-                    userNameDiv.innerHTML = '<b>You:</b>';
-
-                    const userDiv = document.createElement('div');
-                    userDiv.className = 'wpaa-chat-user-message';
-                    userDiv.innerHTML = userMessage;
-
-                    userWrapper.appendChild(userNameDiv);
-                    userWrapper.appendChild(userDiv);
-                    chatHistory.appendChild(userWrapper);
-                    
-                    // Clear input field
-                    chatInput.value = '';
-                    
-                    // Show loading indicator (same structure as agent message)
-                    const loadingWrapper = document.createElement('div');
-                    loadingWrapper.className = 'wpaa-chat-agent';
-
-                    const loadingNameDiv = document.createElement('div');
-                    loadingNameDiv.className = 'wpaa-chat-agent-name';
-                    loadingNameDiv.innerHTML = '<b>Agent:</b>';
-
-                    const loadingMsgDiv = document.createElement('div');
-                    loadingMsgDiv.className = 'wpaa-chat-agent-message loading';
-                    loadingMsgDiv.innerHTML = 'Analyzing...';
-
-                    loadingWrapper.appendChild(loadingNameDiv);
-                    loadingWrapper.appendChild(loadingMsgDiv);
-                    chatHistory.appendChild(loadingWrapper);
-                    chatHistory.scrollTop = chatHistory.scrollHeight;
-                    
-                    // Animate the loading message
-                    let dotCount = 0;
-                    const maxDots = 3;
-                    const baseText = 'Analyzing';
-                    const loadingInterval = setInterval(() => {
-                        loadingMsgDiv.innerHTML = baseText + '.'.repeat(dotCount);
-                        dotCount = dotCount < maxDots ? dotCount + 1 : 1;
-                    }, 500);
-                    
-                    // Make AJAX call to WordPress to run the agent
-                    $.ajax({
-                        url: wpaa_request_nonce.ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'wpaa_run_agent',
-                            nonce: wpaa_request_nonce.nonce,
-                            agent_id: agentId,
-                            content: userMessage
-                        },
-                        success: function(response) {
-                            // Remove loading indicator
-                            clearInterval(loadingInterval);
-                            chatHistory.removeChild(loadingWrapper);
-                            
-                            // Create agent response wrapper
-                            const agentWrapper = document.createElement('div');
-                            agentWrapper.className = 'wpaa-chat-agent';
-
-                            // Create agent name element
-                            const agentNameDiv = document.createElement('div');
-                            agentNameDiv.className = 'wpaa-chat-agent-name';
-                            agentNameDiv.innerHTML = '<b>Agent:</b>';
-
-                            // Create agent message bubble
-                            const agentDiv = document.createElement('div');
-                            agentDiv.className = 'wpaa-chat-agent-message';
-                            
-                            if (response.success) {
-                                agentDiv.innerHTML = response.data;
-                            } else {
-                                agentDiv.innerHTML = '<b>[System]</b> ' + response.data;
-                                agentDiv.classList.add('wpaa-error');
-                            }
-
-                            // Append name and message to wrapper
-                            agentWrapper.appendChild(agentNameDiv);
-                            agentWrapper.appendChild(agentDiv);
-                            
-                            // Append wrapper to chat history
-                            chatHistory.appendChild(agentWrapper);
-                            chatHistory.scrollTop = chatHistory.scrollHeight;
-                        },
-                        error: function(xhr, status, error) {
-                            // Remove loading indicator
-                            clearInterval(loadingInterval);
-                            chatHistory.removeChild(loadingWrapper);
-                            
-                            // Create agent response wrapper
-                            const agentWrapper = document.createElement('div');
-                            agentWrapper.className = 'wpaa-chat-agent';
-
-                            // Create agent name element
-                            const agentNameDiv = document.createElement('div');
-                            agentNameDiv.className = 'wpaa-chat-agent-name';
-                            agentNameDiv.innerHTML = '<b>Agent:</b>';
-
-                            // Create error message
-                            const errorDiv = document.createElement('div');
-                            errorDiv.className = 'wpaa-chat-agent-message error';
-                            errorDiv.innerHTML = '<b>[System]</b> An error occurred. Please try again later.';
-
-                            agentWrapper.appendChild(agentNameDiv);
-                            agentWrapper.appendChild(errorDiv);
-                            
-                            chatHistory.appendChild(agentWrapper);
-                            chatHistory.scrollTop = chatHistory.scrollHeight;
-                        }
-                    });
-                }
-            }
-
-            // Send message on button click
+            // --- UI Events ---
+            chatIcon.addEventListener('click', function() {
+                show(chatPopup);
+                hide(chatIcon);
+            });
+            closeButton.addEventListener('click', function() {
+                hide(chatPopup);
+                flex(chatIcon);
+            });
+            
+            // Auto-resize textarea as user types
+            chatInput.addEventListener('input', function() {
+                chatInput.style.height = 'auto';
+                chatInput.style.height = `${chatInput.scrollHeight}px`;
+            });
+            
+            // Send message on button click or Enter (not Shift+Enter)
             sendButton.addEventListener('click', sendMessage);
-            
-            // Send message on Enter key (but allow Shift+Enter for new lines)
             chatInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
                 }
             });
-
-            // Auto-resize textarea as user types
-            const autoResizeTextarea = () => {
-                chatInput.style.height = 'auto'; // Reset height first
-                chatInput.style.height = `${chatInput.scrollHeight}px`;
-            };
-
-            chatInput.addEventListener('input', autoResizeTextarea);
-
-
-
-            // Load chat history from server
+            
+            // --- Chat Logic ---
+            function sendMessage() {
+                const userMessage = chatInput.value.trim();
+                if (!userMessage) return;
+                
+                // Add user message
+                chatHistory.appendChild(renderMessage({ type: 'user', name: 'You', message: userMessage }));
+                chatInput.value = '';
+                
+                // Add loading indicator
+                const loadingMsg = renderMessage({ type: 'agent', name: 'Agent', message: 'Analyzing...', isError: false });
+                loadingMsg.querySelector('.wpaa-chat-agent-message').classList.add('loading');
+                chatHistory.appendChild(loadingMsg);
+                scrollToBottom(chatHistory);
+                
+                // Animate loading
+                let dotCount = 0;
+                const maxDots = 3;
+                const baseText = 'Analyzing';
+                const loadingDiv = loadingMsg.querySelector('.wpaa-chat-agent-message');
+                const loadingInterval = setInterval(() => {
+                    loadingDiv.innerHTML = baseText + '.'.repeat(dotCount);
+                    dotCount = dotCount < maxDots ? dotCount + 1 : 1;
+                }, 500);
+                
+                // AJAX: run agent
+                $.ajax({
+                    url: wpaa_request_nonce.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'wpaa_run_agent',
+                        nonce: wpaa_request_nonce.nonce,
+                        agent_id: agentId,
+                        content: userMessage
+                    },
+                    success: function(response) {
+                        clearInterval(loadingInterval);
+                        chatHistory.removeChild(loadingMsg);
+                        if (response.success) {
+                            chatHistory.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: response.data }));
+                        } else {
+                            chatHistory.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: `<b>[System]</b> ${response.data}`, isError: true }));
+                        }
+                        scrollToBottom(chatHistory);
+                    },
+                    error: function() {
+                        clearInterval(loadingInterval);
+                        chatHistory.removeChild(loadingMsg);
+                        chatHistory.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: '<b>[System]</b> An error occurred. Please try again later.', isError: true }));
+                        scrollToBottom(chatHistory);
+                    }
+                });
+            }
+            
+            // --- Load chat history from server ---
             const sessionId = wpaa_request_nonce.session_id;
             loadChatHistoryFromServer(agentId, sessionId, chatHistory, function() {
-                // Show chat popup after history is loaded
-                chatPopup.style.display = 'block';
-                chatIcon.style.display = 'none';
+                show(chatPopup);
+                hide(chatIcon);
             });
-
-
         },
         error: function(xhr, status, error) {
             console.error('Error checking page scope:', error);
         }
     });
-
-
-
 
     function loadChatHistoryFromServer(agentId, sessionId, chatHistoryElement, callback) {
         jQuery.ajax({
@@ -241,46 +186,17 @@ jQuery(document).ready(function($) {
                 session_id: sessionId
             },
             success: function(response) {
+                chatHistoryElement.innerHTML = '';
                 if (response.success && Array.isArray(response.data)) {
-                    // Clear current history
-                    chatHistoryElement.innerHTML = '';
-                    // Render each message pair
                     response.data.forEach(function(entry) {
-                        // User message
-                        const userWrapper = document.createElement('div');
-                        userWrapper.className = 'wpaa-chat-user';
-                        const userNameDiv = document.createElement('div');
-                        userNameDiv.className = 'wpaa-chat-user-name';
-                        userNameDiv.innerHTML = '<b>You:</b>';
-                        const userDiv = document.createElement('div');
-                        userDiv.className = 'wpaa-chat-user-message';
-                        userDiv.innerHTML = entry.content;
-                        userWrapper.appendChild(userNameDiv);
-                        userWrapper.appendChild(userDiv);
-                        chatHistoryElement.appendChild(userWrapper);
-
-                        // Agent response
+                        chatHistoryElement.appendChild(renderMessage({ type: 'user', name: 'You', message: entry.content }));
                         if (entry.response) {
-                            const agentWrapper = document.createElement('div');
-                            agentWrapper.className = 'wpaa-chat-agent';
-                            const agentNameDiv = document.createElement('div');
-                            agentNameDiv.className = 'wpaa-chat-agent-name';
-                            agentNameDiv.innerHTML = '<b>Agent:</b>';
-                            const agentDiv = document.createElement('div');
-                            agentDiv.className = 'wpaa-chat-agent-message';
-                            agentDiv.innerHTML = entry.response;
-                            agentWrapper.appendChild(agentNameDiv);
-                            agentWrapper.appendChild(agentDiv);
-                            chatHistoryElement.appendChild(agentWrapper);
-                            chatHistoryElement.scrollTop = chatHistoryElement.scrollHeight;
+                            chatHistoryElement.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: entry.response }));
                         }
                     });
-                    chatHistoryElement.scrollTop = chatHistoryElement.scrollHeight;
-                    if (typeof callback === 'function') callback();
-                } else {
-                    // No history or error
-                    if (typeof callback === 'function') callback();
                 }
+                scrollToBottom(chatHistoryElement);
+                if (typeof callback === 'function') callback();
             },
             error: function() {
                 if (typeof callback === 'function') callback();
