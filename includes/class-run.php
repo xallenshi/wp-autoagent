@@ -10,6 +10,9 @@ class Run {
         $this->table_conversation = Config::get_table_name('conversation');
         add_action('wp_ajax_wpaa_run_agent', array($this, 'wpaa_run_agent'));
         add_action('wp_ajax_nopriv_wpaa_run_agent', array($this, 'wpaa_run_agent'));
+
+        add_action('wp_ajax_wpaa_get_chat_history', array($this, 'wpaa_get_chat_history'));
+        add_action('wp_ajax_nopriv_wpaa_get_chat_history', array($this, 'wpaa_get_chat_history'));
     }
 
     public function wpaa_run_agent() {
@@ -35,7 +38,7 @@ class Run {
         $tools = json_decode($agent->tools, true);
 
         #keep conversation state
-        $session_id = wp_get_session_token();
+        $session_id = $this->wpaa_get_session_id();
         $response_id = $db_handler->get_latest_response_id($agent_id, $session_id);
         #add system level instructions
         $input[] = array('role' => 'system', 'content' => $instructions);
@@ -83,26 +86,100 @@ class Run {
         global $wpdb;
         
         #get non-logged-in/logged-in user session id
-        $session_id = wp_get_session_token();
-        $user_id = is_user_logged_in() ? get_current_user_id() : null;
+        $session_id = $this->wpaa_get_session_id();
+        if($session_id) {
+            $user_id = is_user_logged_in() ? get_current_user_id() : null;
+            $result = $wpdb->insert($this->table_conversation, array(
+                'agent_id' => $agent_id,
+                'session_id' => $session_id,
+                'user_id' => $user_id,
+                'response_id' => $response_id,
+                'content' => $content,
+                'response' => $api_msg,
+                'created_time' => gmdate('Y-m-d H:i:s'),
+            ));
+    
+            if ($result === false) {
+                error_log('Database insert error: ' . $wpdb->last_error);
+                return false;
+            }
+    
+            return $wpdb->insert_id;
 
-        $result = $wpdb->insert($this->table_conversation, array(
-            'agent_id' => $agent_id,
-            'session_id' => $session_id,
-            'user_id' => $user_id,
-            'response_id' => $response_id,
-            'content' => $content,
-            'response' => $api_msg,
-            'created_time' => gmdate('Y-m-d H:i:s'),
-        ));
+        } else {
+            return null;
+        }
+    }
 
-        if ($result === false) {
-            error_log('Database insert error: ' . $wpdb->last_error);
-            return false;
+    public function wpaa_get_chat_history() {
+        if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
+            wp_send_json_error('Invalid nonce.');
+            return;
         }
 
-        return $wpdb->insert_id;
+        $agent_id = intval($_POST['agent_id']);
+        $session_id = $this->wpaa_get_session_id();
+
+        $db_handler = new DBHandler();
+        $results = $db_handler->get_chat_history($agent_id, $session_id);
+
+        wp_send_json_success($results);
     }
+
+
+    public function wpaa_get_session_id() {
+        static $session_id = null;
+        # 1. Handle logged-in users
+        if (is_user_logged_in()) {
+            $user_id = get_current_user_id();
+            $token = wp_get_session_token();
+            $session_id = 'user_' . ($token ?: wp_generate_uuid4());
+            return $session_id;
+        }
+
+        # 2. Guest users - cookie-based
+        # Multisite-compatible
+        $cookie_name = 'gid_' . COOKIEHASH; 
+        
+        if (isset($_COOKIE[$cookie_name])) {
+            $session_id = 'guest_' . sanitize_key($_COOKIE[$cookie_name]);
+            return $session_id;
+        }
+
+        # New guest - generate ID
+        $guest_id = wp_generate_uuid4();
+        
+        # Set cookie (30 days, HTTP-only, Secure)
+        $params = [
+            'expires'  => time() + 30 * DAY_IN_SECONDS,
+            'path'     => COOKIEPATH,
+            'domain'   => COOKIE_DOMAIN,
+            'secure'   => is_ssl(),
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ];
+        
+        if (PHP_VERSION_ID >= 70300) {
+            setcookie($cookie_name, $guest_id, $params);
+        } else {
+            # PHP < 7.3 fallback
+            setcookie(
+                $cookie_name,
+                $guest_id,
+                $params['expires'],
+                $params['path'],
+                $params['domain'],
+                $params['secure'],
+                $params['httponly']
+            );
+        }
+
+        $_COOKIE[$cookie_name] = $guest_id;
+        $session_id = 'guest_' . $guest_id;
+        
+        return $session_id;
+    }
+
 
 
 }

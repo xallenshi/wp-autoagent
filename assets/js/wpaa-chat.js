@@ -210,9 +210,83 @@ jQuery(document).ready(function($) {
 
             chatInput.addEventListener('input', autoResizeTextarea);
 
+
+
+            // Load chat history from server
+            const sessionId = wpaa_request_nonce.session_id;
+            loadChatHistoryFromServer(agentId, sessionId, chatHistory, function() {
+                // Show chat popup after history is loaded
+                chatPopup.style.display = 'block';
+                chatIcon.style.display = 'none';
+            });
+
+
         },
         error: function(xhr, status, error) {
             console.error('Error checking page scope:', error);
         }
     });
+
+
+
+
+    function loadChatHistoryFromServer(agentId, sessionId, chatHistoryElement, callback) {
+        jQuery.ajax({
+            url: wpaa_request_nonce.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'wpaa_get_chat_history',
+                nonce: wpaa_request_nonce.nonce,
+                agent_id: agentId,
+                session_id: sessionId
+            },
+            success: function(response) {
+                if (response.success && Array.isArray(response.data)) {
+                    // Clear current history
+                    chatHistoryElement.innerHTML = '';
+                    // Render each message pair
+                    response.data.forEach(function(entry) {
+                        // User message
+                        const userWrapper = document.createElement('div');
+                        userWrapper.className = 'wpaa-chat-user';
+                        const userNameDiv = document.createElement('div');
+                        userNameDiv.className = 'wpaa-chat-user-name';
+                        userNameDiv.innerHTML = '<b>You:</b>';
+                        const userDiv = document.createElement('div');
+                        userDiv.className = 'wpaa-chat-user-message';
+                        userDiv.innerHTML = entry.content;
+                        userWrapper.appendChild(userNameDiv);
+                        userWrapper.appendChild(userDiv);
+                        chatHistoryElement.appendChild(userWrapper);
+
+                        // Agent response
+                        if (entry.response) {
+                            const agentWrapper = document.createElement('div');
+                            agentWrapper.className = 'wpaa-chat-agent';
+                            const agentNameDiv = document.createElement('div');
+                            agentNameDiv.className = 'wpaa-chat-agent-name';
+                            agentNameDiv.innerHTML = '<b>Agent:</b>';
+                            const agentDiv = document.createElement('div');
+                            agentDiv.className = 'wpaa-chat-agent-message';
+                            agentDiv.innerHTML = entry.response;
+                            agentWrapper.appendChild(agentNameDiv);
+                            agentWrapper.appendChild(agentDiv);
+                            chatHistoryElement.appendChild(agentWrapper);
+                            chatHistoryElement.scrollTop = chatHistoryElement.scrollHeight;
+                        }
+                    });
+                    chatHistoryElement.scrollTop = chatHistoryElement.scrollHeight;
+                    if (typeof callback === 'function') callback();
+                } else {
+                    // No history or error
+                    if (typeof callback === 'function') callback();
+                }
+            },
+            error: function() {
+                if (typeof callback === 'function') callback();
+            }
+        });
+    }
+
+    
 });
