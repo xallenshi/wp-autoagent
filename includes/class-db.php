@@ -65,7 +65,9 @@ class DB {
             $sql = "CREATE TABLE {$this->table_agent} (
                 id int UNSIGNED NOT NULL AUTO_INCREMENT,
                 name varchar(255) NOT NULL,
-                instructions varchar(255) NOT NULL,
+                instructions text NOT NULL,
+                greeting_message text NOT NULL,
+                fallback_message text NOT NULL,
                 model varchar(255) NOT NULL,
                 tools text NOT NULL,
                 article_ids text NOT NULL,

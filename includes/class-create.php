@@ -32,6 +32,8 @@ class Create {
         $agent_id = isset($_POST['agent_id']) ? $_POST['agent_id'] : null;
         $name = $_POST['name'];
         $instructions = $_POST['instructions'];
+        $greeting_message = $_POST['greeting_message'];
+        $fallback_message = $_POST['fallback_message'];
         $model = $_POST['model'];
         $selected_articles = $_POST['articles'] ?? [];
         $selected_functions = $_POST['functions'] ?? [];
@@ -40,25 +42,23 @@ class Create {
         $tools = $tools_object['tools'];
 
         if ($agent_id) {
-
-            $this->update_agent($name, $instructions, $model, $selected_articles, $selected_functions, $tools, $agent_id);
+            $this->update_agent($name, $instructions, $greeting_message, $fallback_message, $model, $selected_articles, $selected_functions, $tools, $agent_id);
             wp_send_json_success('The agent has been updated');
-
         } else {
- 
-            $agent_id = $this->save_agent($name, $instructions, $model, $selected_articles, $selected_functions, $tools);
+            $agent_id = $this->save_agent($name, $instructions, $greeting_message, $fallback_message, $model, $selected_articles, $selected_functions, $tools);
             wp_send_json_success('The agent has been created');
-
         }
 
     }
 
-    private function save_agent($name, $instructions, $model, $article_ids, $function_ids, $tools) {
+    private function save_agent($name, $instructions, $greeting_message, $fallback_message, $model, $article_ids, $function_ids, $tools) {
         global $wpdb;
         
         $result = $wpdb->insert($this->table_agent, array(
             'name' => $name,
             'instructions' => $instructions,
+            'greeting_message' => $greeting_message,
+            'fallback_message' => $fallback_message,
             'model' => $model,
             'article_ids' => json_encode($article_ids),
             'function_ids' => json_encode($function_ids),
@@ -75,12 +75,14 @@ class Create {
         return $wpdb->insert_id;
     }
 
-    private function update_agent($name, $instructions, $model, $article_ids, $function_ids, $tools, $agent_id) {
+    private function update_agent($name, $instructions, $greeting_message, $fallback_message, $model, $article_ids, $function_ids, $tools, $agent_id) {
         global $wpdb;
         
         $result = $wpdb->update($this->table_agent, array(
             'name' => $name,
             'instructions' => $instructions,
+            'greeting_message' => $greeting_message,
+            'fallback_message' => $fallback_message,
             'model' => $model,
             'article_ids' => json_encode($article_ids),
             'function_ids' => json_encode($function_ids),

@@ -87,6 +87,7 @@ jQuery(document).ready(function($) {
             // --- UI Events ---
             chatIcon.addEventListener('click', function() {
                 show(chatPopup);
+                scrollToBottom(chatHistory);
                 hide(chatIcon);
             });
             closeButton.addEventListener('click', function() {
@@ -166,14 +167,16 @@ jQuery(document).ready(function($) {
             // --- Load chat history from server ---
             const sessionId = wpaa_request_nonce.session_id;
             loadChatHistoryFromServer(agentId, sessionId, chatHistory, function() {
-                show(chatPopup);
-                hide(chatIcon);
+                flex(chatIcon);
+                hide(chatPopup);
             });
+            
         },
         error: function(xhr, status, error) {
             console.error('Error checking page scope:', error);
         }
     });
+
 
     function loadChatHistoryFromServer(agentId, sessionId, chatHistoryElement, callback) {
         jQuery.ajax({
@@ -187,13 +190,35 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 chatHistoryElement.innerHTML = '';
-                if (response.success && Array.isArray(response.data)) {
+                let hasHistory = false;
+                if (response.success && Array.isArray(response.data) && response.data.length > 0) {
+                    hasHistory = true;
                     response.data.forEach(function(entry) {
-                        chatHistoryElement.appendChild(renderMessage({ type: 'user', name: 'You', message: entry.content }));
+                        if (entry.content) {
+                            chatHistoryElement.appendChild(renderMessage({ type: 'user', name: 'You', message: entry.content }));
+                        }
                         if (entry.response) {
                             chatHistoryElement.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: entry.response }));
                         }
                     });
+                }
+                // If no history, show greeting
+                if (!hasHistory) {
+                    chatHistoryElement.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: 'Hi! How can I help you today?' }));
+                    jQuery.ajax({
+                        url: wpaa_request_nonce.ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'wpaa_save_conversation',
+                            nonce: wpaa_request_nonce.nonce,
+                            agent_id: agentId,
+                            session_id: sessionId,
+                            content: null,
+                            api_msg: 'Hi! How can I help you today?'
+                        }
+                    });
+
+                    
                 }
                 scrollToBottom(chatHistoryElement);
                 if (typeof callback === 'function') callback();

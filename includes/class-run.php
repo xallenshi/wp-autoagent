@@ -13,6 +13,9 @@ class Run {
 
         add_action('wp_ajax_wpaa_get_chat_history', array($this, 'wpaa_get_chat_history'));
         add_action('wp_ajax_nopriv_wpaa_get_chat_history', array($this, 'wpaa_get_chat_history'));
+
+        add_action('wp_ajax_wpaa_save_conversation', array($this, 'wpaa_save_conversation'));
+        add_action('wp_ajax_nopriv_wpaa_save_conversation', array($this, 'wpaa_save_conversation'));
     }
 
     public function wpaa_run_agent() {
@@ -110,6 +113,43 @@ class Run {
             return null;
         }
     }
+
+
+    public function wpaa_save_conversation() {
+        global $wpdb;
+
+        $agent_id = $_POST['agent_id'];
+        $response_id = $_POST['response_id'];
+        $content = $_POST['content'];
+        $api_msg = $_POST['api_msg'];
+        
+        #get non-logged-in/logged-in user session id
+        $session_id = $this->wpaa_get_session_id();
+        if($session_id) {
+            $user_id = is_user_logged_in() ? get_current_user_id() : null;
+            $result = $wpdb->insert($this->table_conversation, array(
+                'agent_id' => $agent_id,
+                'session_id' => $session_id,
+                'user_id' => $user_id,
+                'response_id' => $response_id,
+                'content' => $content,
+                'response' => $api_msg,
+                'created_time' => gmdate('Y-m-d H:i:s'),
+            ));
+    
+            if ($result === false) {
+                error_log('Database insert error: ' . $wpdb->last_error);
+                return false;
+            }
+    
+            return $wpdb->insert_id;
+
+        } else {
+            return null;
+        }
+    }
+
+
 
     public function wpaa_get_chat_history() {
         if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
