@@ -278,4 +278,64 @@ jQuery(document).ready(function($) {
 
 
 
+
+
+
+    // Copy theme styles to Chat Panel
+    function copyThemeStyles() {
+
+        const $siteHeader = $('#site-header, .site-header, header.site-header, .header, #header, header.header');
+        const $chatHeader = $('#wpaa-chat-header');
+        const $chatSendButton = $('#wpaa-chat-send-button');
+        const $chatCloseButton = $('.wpaa-chat-close-button');
+        const $chatIcon = $('.wpaa-chat-icon');
+    
+        if (!$siteHeader.length) {
+            console.log("Could not find site-header css object!");
+            return false;
+        }
+    
+        const headerStyles = window.getComputedStyle($siteHeader[0]);
+        $chatHeader.css({
+            'background': headerStyles.background,
+            'color': headerStyles.color
+        });
+        $chatSendButton.css({
+            'background': headerStyles.background,
+            'color': headerStyles.color
+        });
+        $chatCloseButton.css({
+            'color': headerStyles.color
+        });
+        $chatIcon.css({
+            'background': headerStyles.background,
+            'color': headerStyles.color
+        });
+    
+        return true;
+    }
+    
+
+    // If the element is loaded dynamically (e.g., via AJAX), keep checking
+    const maxAttempts = 3;
+    let attempts = 0;
+    
+    const checkForChatHeader = setInterval(function() {
+        if ($('.wpaa-chat-header').length) {
+            copyThemeStyles();
+            clearInterval(checkForChatHeader);
+        } else if (attempts >= maxAttempts) {
+            console.log("Giving up after 3 attempts, site-header not found.");
+            clearInterval(checkForChatHeader);
+        }
+        attempts++;
+    }, 500);
+
+
+
+
 });
+
+
+
+

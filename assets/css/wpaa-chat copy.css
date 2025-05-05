@@ -3,24 +3,24 @@
     bottom: 15px;
     right: 15px;
     width: 350px;
+    
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
     z-index: 9998;
-    font-family: inherit;
-    color: inherit;
-    background: inherit;
-    border: 1px solid black;
-    box-shadow: 0 0 10px rgb(255, 255, 255);
+    transition: all 0.3s ease;
 }
 
 .wpaa-chat-header {
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px;
     border-bottom: 1px solid #ccc;
-    border-radius: unset;
-    background: darkblue;
-    color: white;
-    font-size: inherit;
+    background-color: #0073aa;
+    color: #fff;
+    border-radius: 8px 8px 0 0;
 }
 
 .wpaa-chat-close-button {
@@ -35,6 +35,7 @@
     height: 350px;
     overflow-y: auto;
     padding: 10px;
+    border-bottom: 1px solid #ccc;
 }
 
 #wpaa-chat-input {
@@ -44,20 +45,18 @@
     padding: 10px;
     border: none;
     border-top: 1px solid #ccc;
-    border: 1px dotted black;
-    background: inherit;
-    color: inherit;
 }
 
 #wpaa-chat-send-button {
     width: 100%;
-    padding: 10px;
-    font-size: inherit;
+    padding: 15px;
+    background-color: #0073aa;
+    color: #fff;
+    font-size: 16px;
     border: none;
     cursor: pointer;
-    color: white;
-    background: darkblue;
-    border-radius: unset;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 #wpaa-chat-send-button:hover {
@@ -69,52 +68,50 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 
 .wpaa-chat-user-header {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
 }
 
 .wpaa-chat-user-photo {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    border: 2px solid #0056b3;
 }
 
 .wpaa-chat-user-name-time {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
 }
 
 .wpaa-chat-user-name {
-    color: #2c3e50;
+    color: #333;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .wpaa-chat-user-time {
-    color: #95a5a6;
+    color: #666;
     font-size: 12px;
     margin-left: auto;
 }
 
 .wpaa-chat-user-message {
+    color: #000;
     font-size: 14px;
-    background: #1e90ff;
-    color: #ffffff;
-    border-radius: 18px 18px 18px 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 14px 18px;
+    background-color: #f0f0f0;
+    padding: 12px;
+    border-radius: 8px;
     max-width: 80%;
     margin-top: 8px;
-    line-height: 1.5;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 /* Agent Message Styles */
@@ -122,62 +119,62 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 
 .wpaa-chat-agent-header {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
     flex-direction: row-reverse;
 }
 
 .wpaa-chat-agent-photo {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    border: 2px solid #34495e;
 }
 
 .wpaa-chat-agent-name-time {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
 }
 
 .wpaa-chat-agent-name {
-    color: #34495e;
+    color: #0056b3;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .wpaa-chat-agent-time {
-    color: #95a5a6;
+    color: #666;
     font-size: 12px;
     margin-right: auto;
 }
 
 .wpaa-chat-agent-message {
+    color: #00008b;
     font-size: 14px;
-    background: #3d566f;
-    color: #ffffff;
-    border-radius: 18px 18px 4px 18px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 14px 18px;
+    background-color: #f6f6f6;
+    padding: 12px;
+    border-radius: 8px;
     max-width: 80%;
     margin-top: 8px;
-    line-height: 1.5;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 .wpaa-chat-agent-message.loading {
-    width: 110px;
+    width: 80px;
 }
 
 .wpaa-chat-agent-message.error {
     color: red;
 }
+
+
 
 .wpaa-chat-input-container textarea {
     height: 52px;
@@ -194,20 +191,19 @@
     right: 15px;
     width: 50px;
     height: 50px;
+    background-color: #007bff;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 9999;
-    color: inherit;
-    box-shadow: none;
-    border: 1px solid black;
-    box-shadow: 0 0 10px rgb(255, 255, 255);
-    background: navy;
+    transition: all 0.3s ease;
 }
 
 .wpaa-chat-icon:hover {
+    background-color: #0056b3;
     transform: scale(1.05);
 }
 
