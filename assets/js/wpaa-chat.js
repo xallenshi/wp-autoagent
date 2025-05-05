@@ -36,7 +36,8 @@ function renderMessage({ type, name, message, isError = false }) {
     headerRow.appendChild(nameTimeContainer);
     
     const msgDiv = createElement('div', `wpaa-chat-${type}-message${isError ? ' wpaa-error' : ''}`);
-    msgDiv.innerHTML = message;
+    const safeMessage = linkify(message);
+    msgDiv.innerHTML = safeMessage;
     
     wrapper.appendChild(headerRow);
     wrapper.appendChild(msgDiv);
@@ -47,6 +48,54 @@ function renderMessage({ type, name, message, isError = false }) {
 function show(el) { el.style.display = 'block'; }
 function hide(el) { el.style.display = 'none'; }
 function flex(el) { el.style.display = 'flex'; }
+
+
+function linkify111(text) {
+    // Improved regex to match URLs including:
+    // - http(s):// URLs
+    // - www. URLs
+    // - naked domains (like example.com)
+    // - avoids matching trailing punctuation
+    const urlPattern = /\b(?:https?:\/\/|www\.)[^\s<>\]]+\b(?<!\.|,|;|:)/gi;
+    
+    return text.replace(urlPattern, function(match) {
+        let href = match;
+        let displayUrl = match;
+        
+        // Add protocol if missing
+        if (!/^https?:\/\//i.test(href)) {
+            href = 'https://' + href;
+        }
+        
+        // Remove trailing slashes
+        href = href.replace(/\/+$/, '');
+        displayUrl = displayUrl.replace(/\/+$/, '');
+        
+        // Remove trailing punctuation that might have been captured
+        displayUrl = displayUrl.replace(/[.,;:!?]+$/, '');
+        
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${displayUrl}</a>`;
+    });
+}
+
+
+function linkify(text) {
+    const urlPattern = /\b(?:https?:\/\/|www\.)[^\s<>\]]+\b(?<!\.|,|;|:)/gi;
+    let linked = text.replace(urlPattern, function(match) {
+        let href = match;
+        let displayUrl = match;
+        if (!/^https?:\/\//i.test(href)) {
+            href = 'https://' + href;
+        }
+        href = href.replace(/\/+$/, '');
+        displayUrl = displayUrl.replace(/\/+$/, '');
+        displayUrl = displayUrl.replace(/[.,;:!?]+$/, '');
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${displayUrl}</a>`;
+    });
+    // Replace newlines with <br>
+    return linked.replace(/\n/g, '<br>');
+}
+
 
 jQuery(document).ready(function($) {
     // Capture the current page slug
@@ -94,13 +143,13 @@ jQuery(document).ready(function($) {
                 </div>
             `);
             chatPopup.id = 'wpaa-chat-popup';
-            
-            // Append elements to body
+
+            // --- Append elements to body ---
             document.body.appendChild(chatIcon);
             document.body.appendChild(chatPopup);
-            
             // Initially hide the chat popup
             hide(chatPopup);
+            hide(chatIcon);
             
             // --- DOM References ---
             const sendButton = document.getElementById('wpaa-chat-send-button');
@@ -194,6 +243,7 @@ jQuery(document).ready(function($) {
                 flex(chatIcon);
                 hide(chatPopup);
             });
+
             
         },
         error: function(xhr, status, error) {

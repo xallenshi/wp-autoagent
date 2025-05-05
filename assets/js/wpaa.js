@@ -212,7 +212,6 @@ jQuery(document).ready(function($) {
             $('#name').val('');
             $('#instructions').val('');
             $('#greeting_message').val('');
-            $('#fallback_message').val('');
             $('#model').val('gpt-4o'); // Set default model
             // Uncheck all articles
             $('input[name="articles[]"]').prop('checked', false);
@@ -244,7 +243,6 @@ jQuery(document).ready(function($) {
                     $('#name').val(response.data.name);
                     $('#instructions').val(response.data.instructions);
                     $('#greeting_message').val(response.data.greeting_message);
-                    $('#fallback_message').val(response.data.fallback_message);
                     $('#model').val(response.data.model);
                     
                     // Check selected articles

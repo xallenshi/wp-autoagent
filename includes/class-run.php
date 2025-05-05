@@ -122,13 +122,13 @@ class Run {
         global $wpdb;
 
         $agent_id = $_POST['agent_id'];
-        $response_id = $_POST['response_id'];
-        $content = $_POST['content'];
-        $api_msg = $_POST['api_msg'];
+        $response_id = $_POST['response_id'] ?? null;
+        $content = $_POST['content'] ?? null;
+        $api_msg = $_POST['api_msg'] ?? null;
         
         #get non-logged-in/logged-in user session id
         $session_id = $this->wpaa_get_session_id();
-        if($session_id) {
+        if($agent_id && $session_id) {
             $user_id = is_user_logged_in() ? get_current_user_id() : null;
             $result = $wpdb->insert($this->table_conversation, array(
                 'agent_id' => $agent_id,

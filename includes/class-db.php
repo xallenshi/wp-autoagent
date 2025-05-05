@@ -67,7 +67,6 @@ class DB {
                 name varchar(255) NOT NULL,
                 instructions text NOT NULL,
                 greeting_message text NOT NULL,
-                fallback_message text NOT NULL,
                 model varchar(255) NOT NULL,
                 tools text NOT NULL,
                 article_ids text NOT NULL,

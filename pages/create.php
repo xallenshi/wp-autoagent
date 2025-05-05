@@ -48,9 +48,6 @@ $functions = $db_handler->get_functions();
         <label for="greeting_message">Greeting Message:</label>
         <textarea id="greeting_message" name="greeting_message" required></textarea>
 
-        <label for="fallback_message">Fallback Message:</label>
-        <textarea id="fallback_message" name="fallback_message" required></textarea>
-
         <label for="model">Model:</label>
         <select id="model" name="model">
             <option value="gpt-4o">gpt-4o</option>
