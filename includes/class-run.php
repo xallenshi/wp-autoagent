@@ -37,7 +37,7 @@ class Run {
         $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';
 
         $db_handler = new DBHandler();
-        $agent = $db_handler->get_agent($agent_id);
+        $agent = $db_handler->get_agent_by_id($agent_id);
         $agent_id = $agent->id;
         $model = $agent->model;
         $instructions = $agent->instructions;

@@ -47,7 +47,7 @@ class DBHandler {
         return $this->wpdb->get_results($query);
     }
 
-    public function get_agent($id) {    
+    public function get_agent_by_id($id) {    
         $query = "SELECT * FROM {$this->table_agent} WHERE id = %d";
         return $this->wpdb->get_row($this->wpdb->prepare($query, $id));
     }

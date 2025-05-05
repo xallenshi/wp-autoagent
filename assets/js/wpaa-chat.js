@@ -13,11 +13,32 @@ function scrollToBottom(el) {
 
 // Utility: Render a chat message (user or agent)
 function renderMessage({ type, name, message, isError = false }) {
+    const currentTime = new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const wrapper = createElement('div', `wpaa-chat-${type}`);
-    const nameDiv = createElement('div', `wpaa-chat-${type}-name`, `<b>${name}:</b>`);
+    
+    // Create header row container
+    const headerRow = createElement('div', `wpaa-chat-${type}-header`);
+    
+    // Create profile photo div
+    //const photoDiv = createElement('div', `wpaa-chat-${type}-photo`);
+    //const photoImg = createElement('img');
+    //photoImg.src = type === 'agent' ? '/path/to/agent-avatar.png' : '/path/to/user-avatar.png';
+    //photoDiv.appendChild(photoImg);
+    
+    const nameTimeContainer = createElement('div', `wpaa-chat-${type}-name-time`);
+    const nameDiv = createElement('div', `wpaa-chat-${type}-name`, `<b>${name}</b>`);
+    const timeDiv = createElement('div', `wpaa-chat-${type}-time`, currentTime);
+    
+    nameTimeContainer.appendChild(nameDiv);
+    nameTimeContainer.appendChild(timeDiv);
+    
+    //headerRow.appendChild(photoDiv);
+    headerRow.appendChild(nameTimeContainer);
+    
     const msgDiv = createElement('div', `wpaa-chat-${type}-message${isError ? ' wpaa-error' : ''}`);
     msgDiv.innerHTML = message;
-    wrapper.appendChild(nameDiv);
+    
+    wrapper.appendChild(headerRow);
     wrapper.appendChild(msgDiv);
     return wrapper;
 }

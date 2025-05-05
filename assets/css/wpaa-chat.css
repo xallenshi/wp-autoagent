@@ -61,8 +61,7 @@
     background-color: #005d87;
 }
 
-
-
+/* User Message Styles */
 .wpaa-chat-user {
     display: flex;
     flex-direction: column;
@@ -70,25 +69,50 @@
     margin-bottom: 10px;
 }
 
-.wpaa-chat-user-name {
-    color: #333;
-    font-size: 14px;
-    text-align: left;
-    margin-bottom: 2px;
+.wpaa-chat-user-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     width: 100%;
 }
 
-.wpaa-chat-user-message {
-    color: black;
+.wpaa-chat-user-photo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.wpaa-chat-user-name-time {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.wpaa-chat-user-name {
+    color: #333;
     font-size: 14px;
-    text-align: left;
+    font-weight: 500;
+}
+
+.wpaa-chat-user-time {
+    color: #666;
+    font-size: 12px;
+    margin-left: auto;
+}
+
+.wpaa-chat-user-message {
+    color: #000;
+    font-size: 14px;
     background-color: #f0f0f0;
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
     max-width: 80%;
+    margin-top: 8px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
+/* Agent Message Styles */
 .wpaa-chat-agent {
     display: flex;
     flex-direction: column;
@@ -96,22 +120,47 @@
     margin-bottom: 10px;
 }
 
+.wpaa-chat-agent-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    flex-direction: row-reverse;
+}
+
+.wpaa-chat-agent-photo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.wpaa-chat-agent-name-time {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
 .wpaa-chat-agent-name {
     color: #0056b3;
     font-size: 14px;
-    text-align: right;
-    margin-bottom: 2px;
-    width: 100%;
+    font-weight: 500;
+}
+
+.wpaa-chat-agent-time {
+    color: #666;
+    font-size: 12px;
+    margin-right: auto;
 }
 
 .wpaa-chat-agent-message {
-    background-color: #f6f6f6;
-    color: darkblue;
+    color: #00008b;
     font-size: 14px;
-    padding: 10px;
+    background-color: #f6f6f6;
+    padding: 12px;
     border-radius: 8px;
     max-width: 80%;
-    text-align: left;
+    margin-top: 8px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 

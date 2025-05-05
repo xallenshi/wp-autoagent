@@ -25,7 +25,7 @@ class Publish {
 
         $agent_id = intval($_POST['agent_id']);
         $db_handler = new DBHandler();
-        $agent = $db_handler->get_agent($agent_id);
+        $agent = $db_handler->get_agent_by_id($agent_id);
 
         if (!$agent) {
             wp_send_json_error('Agent not found.');
