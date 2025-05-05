@@ -12,11 +12,11 @@
 }
 
 .wpaa-chat-header {
-    
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px;
+    padding: 10px;
     border-bottom: 1px solid #ccc;
     background-color: #0073aa;
     color: #fff;
@@ -41,6 +41,7 @@
 #wpaa-chat-input {
     width: 100%;
     box-sizing: border-box;
+    font-size: 14px;
     padding: 10px;
     border: none;
     border-top: 1px solid #ccc;
@@ -51,6 +52,7 @@
     padding: 15px;
     background-color: #0073aa;
     color: #fff;
+    font-size: 16px;
     border: none;
     cursor: pointer;
     border-bottom-left-radius: 8px;
@@ -172,8 +174,11 @@
     color: red;
 }
 
+
+
 .wpaa-chat-input-container textarea {
-    min-height: 30px !important;
+    height: 52px;
+    min-height: 52px !important;
     max-height: 150px !important;
     resize: none !important; 
     overflow-y: auto !important;
