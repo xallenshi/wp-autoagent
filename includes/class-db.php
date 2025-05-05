@@ -8,11 +8,15 @@ class DB {
     private $table_function;
 
     public function __construct() {
+        error_log("wp_autoagent_DB class instantiated.");
+    }
+
+    public function set_table_names() {
         $this->table_article = Config::get_table_name('article');
         $this->table_agent = Config::get_table_name('agent');
         $this->table_conversation = Config::get_table_name('conversation');
         $this->table_function = Config::get_table_name('function');
-        error_log("wp_autoagent_DB class instantiated.");
+        error_log("wp_autoagent_DB tables names set.");
     }
 
     public function network_activate($network_wide) {
@@ -20,6 +24,8 @@ class DB {
             $sites = get_sites();
             foreach ($sites as $site) {
                 switch_to_blog($site->blog_id);
+
+                $this->set_table_names();
                 $this->create_tables();
                 restore_current_blog();
             }

@@ -45,6 +45,8 @@ def lambda_handler(event, context):
                     message = c.text
             messages_object.append(item)
 
+    logging.error("message: %s", message)
+
     return {
         'status_code': 200,
         'response_id': response.id,
