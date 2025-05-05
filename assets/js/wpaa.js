@@ -90,7 +90,6 @@ jQuery(document).ready(function($) {
             return;
         }
 
-
         var formData = new FormData(this);
         formData.append('action', 'wpaa_create_agent');
         formData.append('nonce', wpaa_setting_nonce.nonce);
