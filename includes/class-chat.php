@@ -6,11 +6,11 @@ class Chat {
 
     public function __construct() {
         $this->table_agent = Config::get_table_name('agent');
-        add_action('wp_ajax_wpaa_check_agent_scope', array($this, 'check_agent_scope'));
-        add_action('wp_ajax_nopriv_wpaa_check_agent_scope', array($this, 'check_agent_scope'));
+        add_action('wp_ajax_wpaa_check_agent_scope', array($this, 'wpaa_check_agent_scope'));
+        add_action('wp_ajax_nopriv_wpaa_check_agent_scope', array($this, 'wpaa_check_agent_scope'));
     }
 
-    public function check_agent_scope() {
+    public function wpaa_check_agent_scope() {
         if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
@@ -29,6 +29,8 @@ class Chat {
                 if (is_array($scope) && in_array($page_id, $scope)) {
                     wp_send_json_success(array(
                         'agent_id' => $agent->id,
+                        'name' => $agent->name,
+                        'greeting_message' => $agent->greeting_message,
                         'message' => 'Page is in scope'
                     ));
                     return;
@@ -49,6 +51,8 @@ class Chat {
                         if ($scope_page === $current_page) {
                             wp_send_json_success(array(
                                 'agent_id' => $agent->id,
+                                'name' => $agent->name,
+                                'greeting_message' => $agent->greeting_message,
                                 'message' => 'Admin page is in scope'
                             ));
                             return;

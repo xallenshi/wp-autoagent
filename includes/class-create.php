@@ -14,7 +14,9 @@ class Create {
     public function __construct() {
         $this->table_agent = Config::get_table_name('agent');
         add_action('wp_ajax_wpaa_create_agent', array($this, 'wpaa_create_agent'));
+        
         add_action('wp_ajax_wpaa_get_agent', array($this, 'wpaa_get_agent'));
+        add_action('wp_ajax_nopriv_wpaa_get_agent', array($this, 'wpaa_get_agent'));
     }
 
     public function wpaa_create_agent() {

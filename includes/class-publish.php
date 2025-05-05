@@ -6,13 +6,13 @@ class Publish {
 
     public function __construct() {
         $this->table_agent = Config::get_table_name('agent');
-        add_action('wp_ajax_wpaa_get_agent_scope', array($this, 'get_agent_scope'));
+        add_action('wp_ajax_wpaa_get_agent_scope', array($this, 'wpaa_get_agent_scope'));
     }
 
     /**
      * AJAX handler to get agent scope
      */
-    public function get_agent_scope() {
+    public function wpaa_get_agent_scope() {
         if (!check_ajax_referer('wpaa_setting', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;

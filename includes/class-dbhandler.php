@@ -43,7 +43,7 @@ class DBHandler {
     }
 
     public function get_agents() {
-        $query = "SELECT id, name, scope FROM {$this->table_agent} ORDER BY id DESC";
+        $query = "SELECT id, name, scope, greeting_message FROM {$this->table_agent} ORDER BY id DESC";
         return $this->wpdb->get_results($query);
     }
 

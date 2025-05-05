@@ -152,14 +152,6 @@ class Run {
         }
     }
 
-
-    public function wpaa_get_greeting_message() {
-        $agent_id = $_POST['agent_id'];
-        $db_handler = new DBHandler();
-        $greeting_message = $db_handler->get_greeting_message($agent_id);
-        wp_send_json_success($greeting_message);
-    }
-
     public function wpaa_get_chat_history() {
         if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');

@@ -69,8 +69,11 @@ jQuery(document).ready(function($) {
             }
             
             const agentId = response.data.agent_id;
-            console.log('Agent ID: ' + agentId);
+            const agentName = response.data.name;
+            const agentGreetingMessage = response.data.greeting_message;
             
+            console.log('Agent ID: ' + agentId);
+
             // --- UI Elements ---
             const chatIcon = createElement('div', 'wpaa-chat-icon', `
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -141,7 +144,7 @@ jQuery(document).ready(function($) {
                 chatInput.value = '';
                 
                 // Add loading indicator
-                const loadingMsg = renderMessage({ type: 'agent', name: 'Agent', message: 'Analyzing...', isError: false });
+                const loadingMsg = renderMessage({ type: 'agent', name: agentName, message: 'Analyzing...', isError: false });
                 loadingMsg.querySelector('.wpaa-chat-agent-message').classList.add('loading');
                 chatHistory.appendChild(loadingMsg);
                 scrollToBottom(chatHistory);
@@ -170,16 +173,16 @@ jQuery(document).ready(function($) {
                         clearInterval(loadingInterval);
                         chatHistory.removeChild(loadingMsg);
                         if (response.success) {
-                            chatHistory.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: response.data }));
+                            chatHistory.appendChild(renderMessage({ type: 'agent', name: agentName, message: response.data }));
                         } else {
-                            chatHistory.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: `<b>[System]</b> ${response.data}`, isError: true }));
+                            chatHistory.appendChild(renderMessage({ type: 'agent', name: agentName, message: `<b>[System]</b> ${response.data}`, isError: true }));
                         }
                         scrollToBottom(chatHistory);
                     },
                     error: function() {
                         clearInterval(loadingInterval);
                         chatHistory.removeChild(loadingMsg);
-                        chatHistory.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: '<b>[System]</b> An error occurred. Please try again later.', isError: true }));
+                        chatHistory.appendChild(renderMessage({ type: 'agent', name: agentName, message: '<b>[System]</b> An error occurred. Please try again later.', isError: true }));
                         scrollToBottom(chatHistory);
                     }
                 });
@@ -187,7 +190,7 @@ jQuery(document).ready(function($) {
             
             // --- Load chat history from server ---
             const sessionId = wpaa_request_nonce.session_id;
-            loadChatHistoryFromServer(agentId, sessionId, chatHistory, function() {
+            loadChatHistoryFromServer(agentId, agentName, agentGreetingMessage, sessionId, chatHistory, function() {
                 flex(chatIcon);
                 hide(chatPopup);
             });
@@ -199,7 +202,7 @@ jQuery(document).ready(function($) {
     });
 
 
-    function loadChatHistoryFromServer(agentId, sessionId, chatHistoryElement, callback) {
+    function loadChatHistoryFromServer(agentId, agentName, agentGreetingMessage, sessionId, chatHistoryElement, callback) {
         jQuery.ajax({
             url: wpaa_request_nonce.ajaxurl,
             type: 'POST',
@@ -219,40 +222,29 @@ jQuery(document).ready(function($) {
                             chatHistoryElement.appendChild(renderMessage({ type: 'user', name: 'You', message: entry.content }));
                         }
                         if (entry.response) {
-                            chatHistoryElement.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: entry.response }));
+                            chatHistoryElement.appendChild(renderMessage({ type: 'agent', name: agentName, message: entry.response }));
                         }
                     });
                 }
 
                 // If no history, show greeting
                 if (!hasHistory) {
+                    chatHistoryElement.appendChild(renderMessage({ type: 'agent', name: agentName, message: agentGreetingMessage }));
+                    // Save the greeting message to the database for history display across sessions
                     jQuery.ajax({
                         url: wpaa_request_nonce.ajaxurl,
                         type: 'POST',
                         data: {
-                            action: 'wpaa_get_greeting_message',
+                            action: 'wpaa_save_conversation',
                             nonce: wpaa_request_nonce.nonce,
-                            agent_id: agentId
-                        },
-                        success: function(response) {
-                            chatHistoryElement.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: response.data }));
-                            // Save the greeting message to the database for history display across sessions
-                            jQuery.ajax({
-                                url: wpaa_request_nonce.ajaxurl,
-                                type: 'POST',
-                                data: {
-                                    action: 'wpaa_save_conversation',
-                                    nonce: wpaa_request_nonce.nonce,
-                                    agent_id: agentId,
-                                    session_id: sessionId,
-                                    content: null,
-                                    api_msg: response.data
-                                }
-                            });
+                            agent_id: agentId,
+                            session_id: sessionId,
+                            content: null,
+                            api_msg: agentGreetingMessage
                         }
                     });
-
                 }
+
                 scrollToBottom(chatHistoryElement);
                 if (typeof callback === 'function') callback();
             },

@@ -18,7 +18,6 @@ jQuery(document).ready(function($) {
     // Trigger click on the first item to show it by default (Upload Article)
     $('#wpaa_setting_menu li:first').trigger('click');
 
-
     // Load agent scope when agent is selected
     $('select[name="agent_id"]').on('change', function() {
         var agent_id = $(this).val();
