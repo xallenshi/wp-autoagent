@@ -133,7 +133,7 @@ jQuery(document).ready(function($) {
             
             const chatPopup = createElement('div', 'wpaa-chat-popup', `
                 <div id="wpaa-chat-header" class="wpaa-chat-header">
-                    <span>Chat Assistant</span>
+                    <span>WP AutoAgent &copy; Xsolutions</span>
                     <button id="wpaa-chat-close-button" class="wpaa-chat-close-button">&times;</button>
                 </div>
                 <div id="wpaa-chat-history" class="wpaa-chat-history"></div>

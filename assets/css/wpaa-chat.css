@@ -7,6 +7,7 @@
     font-family: inherit;
     color: inherit;
     background: inherit;
+    background: #fff;
     border: 1px solid black;
     box-shadow: 0 0 10px rgb(255, 255, 255);
 }
@@ -45,7 +46,7 @@
     border: none;
     border-top: 1px solid #ccc;
     border: 1px dotted black;
-    background: inherit;
+
     color: inherit;
 }
 
@@ -58,6 +59,9 @@
     color: white;
     background: darkblue;
     border-radius: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #wpaa-chat-send-button:hover {
@@ -202,7 +206,6 @@
     z-index: 9999;
     color: inherit;
     box-shadow: none;
-    border: 1px solid black;
     box-shadow: 0 0 10px rgb(255, 255, 255);
     background: navy;
 }

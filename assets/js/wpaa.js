@@ -285,17 +285,23 @@ jQuery(document).ready(function($) {
     function copyThemeStyles() {
 
         const $siteHeader = $('#site-header, .site-header, header.site-header, .header, #header, header.header');
+        
         const $chatHeader = $('#wpaa-chat-header');
         const $chatSendButton = $('#wpaa-chat-send-button');
         const $chatCloseButton = $('.wpaa-chat-close-button');
         const $chatIcon = $('.wpaa-chat-icon');
-    
+        
         if (!$siteHeader.length) {
             console.log("Could not find site-header css object!");
             return false;
         }
-    
+
         const headerStyles = window.getComputedStyle($siteHeader[0]);
+        if (!headerStyles || headerStyles.background.includes('rgb(255, 255, 255)')) {
+            console.log("Could not find valid site-header css object!");
+            return false;
+        }
+        
         $chatHeader.css({
             'background': headerStyles.background,
             'color': headerStyles.color
@@ -311,7 +317,6 @@ jQuery(document).ready(function($) {
             'background': headerStyles.background,
             'color': headerStyles.color
         });
-    
         return true;
     }
     
