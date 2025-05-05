@@ -284,20 +284,42 @@ jQuery(document).ready(function($) {
     // Copy theme styles to Chat Panel
     function copyThemeStyles() {
 
-        const $siteHeader = $('#site-header, .site-header, header.site-header, .header, #header, header.header');
+        const $colorSource = $(
+            // Priority 1: Header elements (expanded list)
+            '.bs-head-detail, .site-header, #site-header, .header, #header, #masthead, .main-header, .site-heading, ' +
+            
+            // Priority 2: Content containers (more theme-specific classes)
+            '.site-content, #content, #main, .main-content, .content-area, .container, .content-wrapper, ' +
+            '.wp-block-template-part, .wp-block-group.has-background, ' +
+            
+            // Priority 3: Footer elements (sometimes have strong colors)
+            '.site-footer, #colophon, .footer-widgets, ' +
+            
+            // Priority 4: Special sections
+            '.wp-block-cover, .hero-section, .page-header, .banner, ' +
+            
+            // Priority 5: Body and ultimate fallbacks
+            'body, .wp-site-blocks, .is-root-container'
+            
+        ).filter(function() {
+            const bgColor = $(this).css('background-color');
+            return !/rgba\(0,\s*0,\s*0,\s*0\)|transparent|rgb\(255,\s*255,\s*255\)|#fff|#ffffff/i.test(bgColor);
+        }).first();
         
         const $chatHeader = $('#wpaa-chat-header');
         const $chatSendButton = $('#wpaa-chat-send-button');
         const $chatCloseButton = $('.wpaa-chat-close-button');
         const $chatIcon = $('.wpaa-chat-icon');
         
-        if (!$siteHeader.length) {
-            console.log("Could not find site-header css object!");
+        if (!$colorSource.length) {
+            console.log("Could not find color source element!");
             return false;
         }
 
-        const headerStyles = window.getComputedStyle($siteHeader[0]);
-        if (!headerStyles || headerStyles.background.includes('rgb(255, 255, 255)')) {
+        const headerStyles = window.getComputedStyle($colorSource[0]);
+        console.log(headerStyles.background);
+
+        if (!headerStyles || headerStyles.background.includes('rgb(255, 255, 255)') || headerStyles.background.includes('transparent') || headerStyles.background.includes('rgba(0, 0, 0, 0)')) {
             console.log("Could not find valid site-header css object!");
             return false;
         }
@@ -317,6 +339,7 @@ jQuery(document).ready(function($) {
             'background': headerStyles.background,
             'color': headerStyles.color
         });
+        
         return true;
     }
     
