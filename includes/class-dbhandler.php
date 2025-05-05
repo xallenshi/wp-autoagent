@@ -57,12 +57,12 @@ class DBHandler {
         $query = "SELECT response_id, created_time FROM {$this->table_conversation} WHERE agent_id = %d AND session_id = %s ORDER BY created_time DESC LIMIT 1";
         $result = $this->wpdb->get_row($this->wpdb->prepare($query, $agent_id, $session_id));
 
-        #reset conversation state if it's older than 5 minutes
+        #reset conversation state if it's older than 5 minutes (WPAA_CHAT_HISTORY_RANGE)
         if ($result) {
             $conversation_pause = time() - strtotime($result->created_time);
             //error_log('conversation_pause: ' . $conversation_pause);
 
-            if ($conversation_pause >= 300 || $result->response_id == null) {
+            if ($conversation_pause >= WPAA_CHAT_HISTORY_RANGE || $result->response_id == null) {
                 return null;
             } else {
                 return $result->response_id;
@@ -72,9 +72,31 @@ class DBHandler {
         return null;
     }
 
+    #get chat history within 5 minutes interval (WP_AUTOAGENT_RANGE), longer paused message will be excluded
     public function get_chat_history($agent_id, $session_id) {
-        $query = "SELECT content, response, created_time FROM {$this->table_conversation} WHERE agent_id = %d AND session_id = %s ORDER BY created_time ASC";
-        return $this->wpdb->get_results($this->wpdb->prepare($query, $agent_id, $session_id));
+        $query = "SELECT content, response, created_time FROM {$this->table_conversation} WHERE agent_id = %d AND session_id = %s ORDER BY created_time DESC";
+        $results = $this->wpdb->get_results($this->wpdb->prepare($query, $agent_id, $session_id));
+        
+        $filtered = [];
+        $prev_time = strtotime(gmdate('Y-m-d H:i:s'));
+        foreach ($results as $row) {
+            $current_time = strtotime($row->created_time);
+            if ($prev_time !== null) {
+                $interval = abs($prev_time - $current_time);
+                if ($interval >= WPAA_CHAT_HISTORY_RANGE) {
+                    break;
+                }
+            }
+            $filtered[] = $row;
+            $prev_time = $current_time;
+        }
+        // Reverse to ASC order
+        return array_reverse($filtered);
+    }
+
+    public function get_greeting_message($agent_id) {
+        $query = "SELECT greeting_message FROM {$this->table_agent} WHERE id = %d";
+        return $this->wpdb->get_var($this->wpdb->prepare($query, $agent_id));
     }
 
 }

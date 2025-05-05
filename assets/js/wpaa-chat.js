@@ -202,23 +202,35 @@ jQuery(document).ready(function($) {
                         }
                     });
                 }
+
                 // If no history, show greeting
                 if (!hasHistory) {
-                    chatHistoryElement.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: 'Hi! How can I help you today?' }));
                     jQuery.ajax({
                         url: wpaa_request_nonce.ajaxurl,
                         type: 'POST',
                         data: {
-                            action: 'wpaa_save_conversation',
+                            action: 'wpaa_get_greeting_message',
                             nonce: wpaa_request_nonce.nonce,
-                            agent_id: agentId,
-                            session_id: sessionId,
-                            content: null,
-                            api_msg: 'Hi! How can I help you today?'
+                            agent_id: agentId
+                        },
+                        success: function(response) {
+                            chatHistoryElement.appendChild(renderMessage({ type: 'agent', name: 'Agent', message: response.data }));
+                            // Save the greeting message to the database for history display across sessions
+                            jQuery.ajax({
+                                url: wpaa_request_nonce.ajaxurl,
+                                type: 'POST',
+                                data: {
+                                    action: 'wpaa_save_conversation',
+                                    nonce: wpaa_request_nonce.nonce,
+                                    agent_id: agentId,
+                                    session_id: sessionId,
+                                    content: null,
+                                    api_msg: response.data
+                                }
+                            });
                         }
                     });
 
-                    
                 }
                 scrollToBottom(chatHistoryElement);
                 if (typeof callback === 'function') callback();
