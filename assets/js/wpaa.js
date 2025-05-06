@@ -109,7 +109,6 @@ jQuery(document).ready(function($) {
         });
     });
 
-
     // Knowledge Base Link
     $(document).on('click', '.wpaa-kb-link', function(e) {
         e.preventDefault();
@@ -284,63 +283,49 @@ jQuery(document).ready(function($) {
     // Copy theme styles to Chat Panel
     function copyThemeStyles() {
 
-        const $colorSource = $(
-            // Priority 1: Header elements (expanded list)
-            '.bs-head-detail, .site-header, #site-header, .header, #header, #masthead, .main-header, .site-heading, ' +
-            
-            // Priority 2: Content containers (more theme-specific classes)
-            '.site-content, #content, #main, .main-content, .content-area, .container, .content-wrapper, ' +
-            '.wp-block-template-part, .wp-block-group.has-background, ' +
-            
-            // Priority 3: Footer elements (sometimes have strong colors)
-            '.site-footer, #colophon, .footer-widgets, ' +
-            
-            // Priority 4: Special sections
-            '.wp-block-cover, .hero-section, .page-header, .banner, ' +
-            
-            // Priority 5: Body and ultimate fallbacks
-            'body, .wp-site-blocks, .is-root-container'
-            
-        ).filter(function() {
-            const bgColor = $(this).css('background-color');
-            return !/rgba\(0,\s*0,\s*0,\s*0\)|transparent|rgb\(255,\s*255,\s*255\)|#fff|#ffffff/i.test(bgColor);
-        }).first();
-        
-        const $chatHeader = $('#wpaa-chat-header');
-        const $chatSendButton = $('#wpaa-chat-send-button');
-        const $chatCloseButton = $('.wpaa-chat-close-button');
-        const $chatIcon = $('.wpaa-chat-icon');
-        
-        if (!$colorSource.length) {
-            console.log("Could not find color source element!");
-            return false;
-        }
+        $.ajax({
+            url: wpaa_request_nonce.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'wpaa_run_dummy_agent',
+                content: 'What is the dominant color in this image excluding white? Prioritize a brighter shade. Reply with just the HEX code.',
+                nonce: wpaa_request_nonce.nonce
+            },
+            success: function(response) {
+                console.log(response);
 
-        const headerStyles = window.getComputedStyle($colorSource[0]);
-        console.log(headerStyles.background);
+                const $majorColor = response.data;
+                const $chatHeader = $('#wpaa-chat-header');
+                const $chatSendButton = $('#wpaa-chat-send-button');
+                const $chatCloseButton = $('.wpaa-chat-close-button');
+                const $chatIcon = $('.wpaa-chat-icon');
+                
+                console.log($majorColor);
 
-        if (!headerStyles || headerStyles.background.includes('rgb(255, 255, 255)') || headerStyles.background.includes('transparent') || headerStyles.background.includes('rgba(0, 0, 0, 0)')) {
-            console.log("Could not find valid site-header css object!");
-            return false;
-        }
-        
-        $chatHeader.css({
-            'background': headerStyles.background,
-            'color': headerStyles.color
+                $chatHeader.css({
+                    'background': $majorColor, // Yes, $majorColor contains the hex color code from the API response
+                    'color': '#fff'
+                });
+                $chatSendButton.css({
+                    'background': $majorColor,
+                    'color': '#fff'
+                });
+                $chatCloseButton.css({
+                    'color': '#fff'
+                });
+                $chatIcon.css({
+                    'background': $majorColor,
+                    'color': '#fff'
+                });
+                
+                return true;
+                
+            },
+            error: function(response) {
+                console.log(response);
+            }
         });
-        $chatSendButton.css({
-            'background': headerStyles.background,
-            'color': headerStyles.color
-        });
-        $chatCloseButton.css({
-            'color': headerStyles.color
-        });
-        $chatIcon.css({
-            'background': headerStyles.background,
-            'color': headerStyles.color
-        });
-        
-        return true;
+
     }
     
 
