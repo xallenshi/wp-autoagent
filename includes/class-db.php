@@ -148,5 +148,29 @@ class DB {
         }
 
 
+        // Check if the global table exists
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$this->table_global}'") != $this->table_global) {
+            $sql = "CREATE TABLE {$this->table_global} (
+                id int UNSIGNED NOT NULL AUTO_INCREMENT,
+                access_key varchar(255) NOT NULL,
+                theme_name varchar(255) NOT NULL,
+                theme_color varchar(255) NOT NULL,
+                PRIMARY KEY (id)
+            ) $charset_collate;";
+
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+
+            // Log the result for debugging
+            if (empty($wpdb->last_error)) {
+                error_log("Table {$this->table_global} was created successfully.");
+            } else {
+                error_log("Error creating table {$this->table_global}: " . $wpdb->last_error);
+            }
+        } else {
+            error_log("Table {$this->table_global} already exists.");
+        }
+
+
     }
 }

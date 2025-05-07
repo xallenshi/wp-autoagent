@@ -30,6 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
     } else {
         echo '<div class="error"><p>Error updating agent scope.</p></div>';
     }
+
+
 }
 ?>
 

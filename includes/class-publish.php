@@ -41,4 +41,8 @@ class Publish {
 
         wp_send_json_success($scope);
     }
+
+    public function get_theme_color() {
+        
+    }
 }
