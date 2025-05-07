@@ -276,11 +276,9 @@ jQuery(document).ready(function($) {
     });
 
 
-
-
-
-
     // Copy theme styles to Chat Panel
+    copyThemeStyles();
+
     function copyThemeStyles() {
 
         $.ajax({
@@ -321,24 +319,7 @@ jQuery(document).ready(function($) {
 
     }
     
-
-    // If the element is loaded dynamically (e.g., via AJAX), keep checking
-    const maxAttempts = 3;
-    let attempts = 0;
     
-    const checkForChatHeader = setInterval(function() {
-        if ($('.wpaa-chat-header').length) {
-            copyThemeStyles();
-            clearInterval(checkForChatHeader);
-        } else if (attempts >= maxAttempts) {
-            console.log("Giving up after 3 attempts, site-header not found.");
-            clearInterval(checkForChatHeader);
-        }
-        attempts++;
-    }, 500);
-
-
-
 
 });
 

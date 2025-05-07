@@ -193,8 +193,8 @@ jQuery(document).ready(function($) {
                 chatInput.value = '';
                 
                 // Add loading indicator with typing animation delay
+                const loadingMsg = renderMessage({ type: 'agent', name: agentName, message: 'Analyzing...', isError: false });
                 setTimeout(() => {
-                    const loadingMsg = renderMessage({ type: 'agent', name: agentName, message: 'Analyzing...', isError: false });
                     loadingMsg.querySelector('.wpaa-chat-agent-message').classList.add('loading');
                     chatHistory.appendChild(loadingMsg);
                     scrollToBottom(chatHistory);

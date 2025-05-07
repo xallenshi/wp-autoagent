@@ -111,7 +111,7 @@
 
 .wpaa-chat-user-message {
     font-size: 14px;
-    background: #1e90ff;
+    background: rgba(30, 144, 255, 0.8);
     color: #ffffff;
     border-radius: 18px 18px 18px 4px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -165,7 +165,7 @@
 
 .wpaa-chat-agent-message {
     font-size: 14px;
-    background: #3d566f;
+    background: rgba(61, 86, 111, 0.8);
     color: #ffffff;
     border-radius: 18px 18px 4px 18px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
