@@ -20,8 +20,8 @@ class Run {
         add_action('wp_ajax_wpaa_save_conversation', array($this, 'wpaa_save_conversation'));
         add_action('wp_ajax_nopriv_wpaa_save_conversation', array($this, 'wpaa_save_conversation'));
 
-        add_action('wp_ajax_wpaa_run_dummy_agent', array($this, 'wpaa_run_dummy_agent'));
-        add_action('wp_ajax_nopriv_wpaa_run_dummy_agent', array($this, 'wpaa_run_dummy_agent'));
+        add_action('wp_ajax_wpaa_run_the_agent', array($this, 'wpaa_run_the_agent'));
+        add_action('wp_ajax_nopriv_wpaa_run_the_agent', array($this, 'wpaa_run_the_agent'));
     }
 
     public function wpaa_run_agent() {
@@ -73,7 +73,7 @@ class Run {
         }
 
         if (wp_remote_retrieve_response_code($api_response) != 200) {
-            wp_send_json_error('Failed to run the agent.');
+            wp_send_json_error('Failed to run agent.');
             return;
         } else {
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
@@ -92,43 +92,38 @@ class Run {
     }
 
 
-    public function wpaa_run_dummy_agent() {
+    public function wpaa_run_the_agent() {
 
         if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }
 
-        if (!isset($_POST['content'])) {
-            wp_send_json_error('No content provided.');
+        if (!isset($_POST['request_id'])) {
+            wp_send_json_error('No request_id provided.');
             return;
         }
 
-        $model = 'gpt-4o-mini';
-        $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';
-        $instructions = '';
-        $tools = null;
+        $request_id = $_POST['request_id'];
+        $object1 = $_POST['object1'] ?? null;
+        $object2 = $_POST['object2'] ?? null;
 
-        #add system level instructions
-        $input[] = array('role' => 'system', 'content' => $instructions);
-        #add user question
-        //$input[] = array('role' => 'user', 'content' => $content);
-        $input[] = array('role' => 'user', 'content' => array(
-            array('type' => 'input_text', 'text' => $content),
-            array(
-                'type' => 'input_image',
-                'image_url' => 'https://ts.w.org/wp-content/themes/enwoo/screenshot.png?ver=1.4.1?ver=1.4.1'
-            )
-        ));
+        if($request_id == 1) {
+            $current_theme = wp_get_theme();
+            $object1 = $current_theme->get_screenshot();
+            $object1 = 'https://ts.w.org/wp-content/themes/e-storefront/screenshot.png?ver=1.3?ver=1.3';
 
-
+        } else if($request_id == 2) {
+            $object1 = $object1;
+            $object2 = $object2;
+        }
 
 
         // make a rest api call to Lambda function to run the agent
-        $api_url = 'https://jebcqgsrc7k5wffddjuof6feke0edirw.lambda-url.ap-southeast-2.on.aws/';
+        $api_url = 'https://h6ixjqz5kecqsrhm6hrakx3te40zknge.lambda-url.ap-southeast-2.on.aws/';
         $api_response = wp_remote_post($api_url, array(
             'method' => 'POST',
-            'body' => json_encode(array('model' => $model, 'input' => $input, 'tools' => $tools)),
+            'body' => json_encode(array('request_id' => $request_id, 'object1' => $object1, 'object2' => $object2)),
             'headers' => array(
                 'Content-Type' => 'application/json',
             ),
@@ -143,7 +138,7 @@ class Run {
         }
 
         if (wp_remote_retrieve_response_code($api_response) != 200) {
-            wp_send_json_error('Failed to run the dummy agent.');
+            wp_send_json_error('Failed to run the agent.');
             return;
         } else {
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);

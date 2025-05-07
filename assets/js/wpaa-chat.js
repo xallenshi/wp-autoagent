@@ -192,11 +192,13 @@ jQuery(document).ready(function($) {
                 chatHistory.appendChild(renderMessage({ type: 'user', name: 'You', message: userMessage }));
                 chatInput.value = '';
                 
-                // Add loading indicator
-                const loadingMsg = renderMessage({ type: 'agent', name: agentName, message: 'Analyzing...', isError: false });
-                loadingMsg.querySelector('.wpaa-chat-agent-message').classList.add('loading');
-                chatHistory.appendChild(loadingMsg);
-                scrollToBottom(chatHistory);
+                // Add loading indicator with typing animation delay
+                setTimeout(() => {
+                    const loadingMsg = renderMessage({ type: 'agent', name: agentName, message: 'Analyzing...', isError: false });
+                    loadingMsg.querySelector('.wpaa-chat-agent-message').classList.add('loading');
+                    chatHistory.appendChild(loadingMsg);
+                    scrollToBottom(chatHistory);
+                }, 500);
                 
                 // Animate loading
                 let dotCount = 0;

@@ -287,8 +287,8 @@ jQuery(document).ready(function($) {
             url: wpaa_request_nonce.ajaxurl,
             type: 'POST',
             data: {
-                action: 'wpaa_run_dummy_agent',
-                content: 'What is the dominant color in this image excluding white? Prioritize a brighter shade. Reply with just the HEX code.',
+                action: 'wpaa_run_the_agent',
+                request_id: 1,
                 nonce: wpaa_request_nonce.nonce
             },
             success: function(response) {
@@ -297,25 +297,18 @@ jQuery(document).ready(function($) {
                 const $majorColor = response.data;
                 const $chatHeader = $('#wpaa-chat-header');
                 const $chatSendButton = $('#wpaa-chat-send-button');
-                const $chatCloseButton = $('.wpaa-chat-close-button');
                 const $chatIcon = $('.wpaa-chat-icon');
                 
                 console.log($majorColor);
 
                 $chatHeader.css({
-                    'background': $majorColor, // Yes, $majorColor contains the hex color code from the API response
-                    'color': '#fff'
+                    'background': $majorColor,
                 });
                 $chatSendButton.css({
                     'background': $majorColor,
-                    'color': '#fff'
-                });
-                $chatCloseButton.css({
-                    'color': '#fff'
                 });
                 $chatIcon.css({
                     'background': $majorColor,
-                    'color': '#fff'
                 });
                 
                 return true;
