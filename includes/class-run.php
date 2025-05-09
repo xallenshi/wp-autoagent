@@ -11,9 +11,6 @@ class Run {
         add_action('wp_ajax_wpaa_run_agent', array($this, 'wpaa_run_agent'));
         add_action('wp_ajax_nopriv_wpaa_run_agent', array($this, 'wpaa_run_agent'));
 
-        add_action('wp_ajax_wpaa_get_greeting_message', array($this, 'wpaa_get_greeting_message'));
-        add_action('wp_ajax_nopriv_wpaa_get_greeting_message', array($this, 'wpaa_get_greeting_message'));
-
         add_action('wp_ajax_wpaa_get_chat_history', array($this, 'wpaa_get_chat_history'));
         add_action('wp_ajax_nopriv_wpaa_get_chat_history', array($this, 'wpaa_get_chat_history'));
 

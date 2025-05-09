@@ -8,6 +8,7 @@ class DBHandler {
     private $table_agent;
     private $table_function;
     private $table_conversation;
+    private $table_global_settings;
     public function __construct() {
         global $wpdb;
         $this->wpdb = $wpdb;
@@ -15,6 +16,7 @@ class DBHandler {
         $this->table_agent = Config::get_table_name('agent');
         $this->table_function = Config::get_table_name('function');
         $this->table_conversation = Config::get_table_name('conversation');
+        $this->table_global_settings = Config::get_table_name('global_settings');
     }
 
     public function get_articles() {
@@ -94,9 +96,11 @@ class DBHandler {
         return array_reverse($filtered);
     }
 
-    public function get_greeting_message($agent_id) {
-        $query = "SELECT greeting_message FROM {$this->table_agent} WHERE id = %d";
-        return $this->wpdb->get_var($this->wpdb->prepare($query, $agent_id));
+    
+    public function get_global_settings() {
+        $query = "SELECT * FROM {$this->table_global_settings}";
+        return $this->wpdb->get_results($query);
     }
+
 
 }
