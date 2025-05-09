@@ -89,7 +89,55 @@ class Run {
     }
 
 
-    public function wpaa_run_the_agent() {
+
+    public function wpaa_run_the_agent($request_id, $object1, $object2) {
+
+        if (!$request_id) {
+            return false;
+        }
+
+        if($request_id == 1) {
+            #$object1 = $object1;
+            $object1 = 'https://images.pexels.com/photos/355465/pexels-photo-355465.jpeg';
+
+        } else if($request_id == 2) {
+            $object1 = $object1;
+            $object2 = $object2;
+        }
+
+
+        // make a rest api call to Lambda function to run the agent
+        $api_url = 'https://h6ixjqz5kecqsrhm6hrakx3te40zknge.lambda-url.ap-southeast-2.on.aws/';
+        $api_response = wp_remote_post($api_url, array(
+            'method' => 'POST',
+            'body' => json_encode(array('request_id' => $request_id, 'object1' => $object1, 'object2' => $object2)),
+            'headers' => array(
+                'Content-Type' => 'application/json',
+            ),
+            'timeout' => 60,
+        ));
+
+        //error_log('api_response: ' . print_r($api_response, true));
+        if (is_wp_error($api_response)) {
+            $api_error_msg = $api_response->get_error_message(); 
+            error_log('api_error_msg: ' . $api_error_msg);
+            return false;
+        }
+
+        if (wp_remote_retrieve_response_code($api_response) != 200) {
+            error_log('Failed to run the agent.');
+            return false;
+        } else {
+            $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
+            $api_msg = $api_response_body['message'];
+
+            return $api_msg;
+        }
+
+    }
+
+
+    public function wpaa_run_the_agent2() {
 
         if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');

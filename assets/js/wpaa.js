@@ -276,50 +276,6 @@ jQuery(document).ready(function($) {
     });
 
 
-    // Copy theme styles to Chat Panel
-    copyThemeStyles();
-
-    function copyThemeStyles() {
-
-        $.ajax({
-            url: wpaa_request_nonce.ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'wpaa_run_the_agent',
-                request_id: 1,
-                nonce: wpaa_request_nonce.nonce
-            },
-            success: function(response) {
-                console.log(response);
-
-                const $majorColor = response.data;
-                const $chatHeader = $('#wpaa-chat-header');
-                const $chatSendButton = $('#wpaa-chat-send-button');
-                const $chatIcon = $('.wpaa-chat-icon');
-                
-                console.log($majorColor);
-
-                $chatHeader.css({
-                    'background': $majorColor,
-                });
-                $chatSendButton.css({
-                    'background': $majorColor,
-                });
-                $chatIcon.css({
-                    'background': $majorColor,
-                });
-                
-                return true;
-                
-            },
-            error: function(response) {
-                console.log(response);
-            }
-        });
-
-    }
-    
-    
 
 });
 

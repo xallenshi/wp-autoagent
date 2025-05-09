@@ -7,6 +7,9 @@ class Publish {
     public function __construct() {
         $this->table_agent = Config::get_table_name('agent');
         add_action('wp_ajax_wpaa_get_agent_scope', array($this, 'wpaa_get_agent_scope'));
+
+        add_action('wp_ajax_wpaa_get_theme_color', array($this, 'wpaa_get_theme_color'));
+        add_action('wp_ajax_nopriv_wpaa_get_theme_color', array($this, 'wpaa_get_theme_color'));
     }
 
     /**
@@ -42,7 +45,34 @@ class Publish {
         wp_send_json_success($scope);
     }
 
-    public function get_theme_color() {
-        
+    /**
+     * Set the theme color for chat panel background color
+     */
+    public function set_theme_color() {
+        $db_handler = new DBHandler();
+        $global_setting = $db_handler->get_global_setting();
+        $saved_theme_name = $global_setting->theme_name;
+
+        $current_theme = wp_get_theme();
+        $current_theme_name = $current_theme->get('Name');
+
+        //if new theme, run the agent to get the theme color
+        if ($saved_theme_name !== $current_theme_name) {
+            $run = new Run();
+            $api_response = $run->wpaa_run_the_agent(1, $current_theme->get_screenshot(), null);
+            if ($api_response) {
+                $new_theme_color = $api_response;
+                $global_setting->theme_color = $new_theme_color;
+                $global_setting->theme_name = $current_theme_name;
+                $db_handler->update_global_setting($global_setting);
+            }
+        }
+    }
+
+    function wpaa_get_theme_color() {
+        $db_handler = new DBHandler();
+        $global_setting = $db_handler->get_global_setting();
+        $theme_color = $global_setting->theme_color;
+        wp_send_json_success($theme_color);
     }
 }

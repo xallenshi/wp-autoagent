@@ -25,14 +25,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
         ['id' => $agent_id]
     );
 
+
+    $publish = new Publish();
+    $publish->set_theme_color();
+
+
     if ($result !== false) {
         echo '<div class="updated"><p>Agent scope updated successfully!</p></div>';
     } else {
         echo '<div class="error"><p>Error updating agent scope.</p></div>';
     }
 
+    ;
 
 }
+
+
+
+
 ?>
 
 <div class="wpaa-agent-list2">

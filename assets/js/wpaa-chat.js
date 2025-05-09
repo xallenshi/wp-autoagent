@@ -50,35 +50,6 @@ function hide(el) { el.style.display = 'none'; }
 function flex(el) { el.style.display = 'flex'; }
 
 
-function linkify111(text) {
-    // Improved regex to match URLs including:
-    // - http(s):// URLs
-    // - www. URLs
-    // - naked domains (like example.com)
-    // - avoids matching trailing punctuation
-    const urlPattern = /\b(?:https?:\/\/|www\.)[^\s<>\]]+\b(?<!\.|,|;|:)/gi;
-    
-    return text.replace(urlPattern, function(match) {
-        let href = match;
-        let displayUrl = match;
-        
-        // Add protocol if missing
-        if (!/^https?:\/\//i.test(href)) {
-            href = 'https://' + href;
-        }
-        
-        // Remove trailing slashes
-        href = href.replace(/\/+$/, '');
-        displayUrl = displayUrl.replace(/\/+$/, '');
-        
-        // Remove trailing punctuation that might have been captured
-        displayUrl = displayUrl.replace(/[.,;:!?]+$/, '');
-        
-        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${displayUrl}</a>`;
-    });
-}
-
-
 function linkify(text) {
     const urlPattern = /\b(?:https?:\/\/|www\.)[^\s<>\]]+\b(?<!\.|,|;|:)/gi;
     let linked = text.replace(urlPattern, function(match) {
@@ -238,6 +209,9 @@ jQuery(document).ready(function($) {
                     }
                 });
             }
+
+            // Copy theme styles to Chat Panel
+            copyThemeStyles();
             
             // --- Load chat history from server ---
             const sessionId = wpaa_request_nonce.session_id;
@@ -245,6 +219,8 @@ jQuery(document).ready(function($) {
                 flex(chatIcon);
                 hide(chatPopup);
             });
+
+            
 
             
         },
@@ -302,6 +278,42 @@ jQuery(document).ready(function($) {
             },
             error: function() {
                 if (typeof callback === 'function') callback();
+            }
+        });
+    }
+
+
+    function copyThemeStyles() {
+        $.ajax({
+            url: wpaa_request_nonce.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'wpaa_get_theme_color',
+                nonce: wpaa_request_nonce.nonce
+            },
+            success: function(response) {
+                console.log(response);
+
+                const $majorColor = response.data;
+                const $chatHeader = $('#wpaa-chat-header');
+                const $chatSendButton = $('#wpaa-chat-send-button');
+                const $chatIcon = $('.wpaa-chat-icon');
+
+                $chatHeader.css({
+                    'background': $majorColor,
+                });
+                $chatSendButton.css({
+                    'background': $majorColor,
+                });
+                $chatIcon.css({
+                    'background': $majorColor,
+                });
+                
+                return true;
+                
+            },
+            error: function(response) {
+                console.log(response);
             }
         });
     }

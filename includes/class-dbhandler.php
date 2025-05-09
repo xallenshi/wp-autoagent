@@ -97,9 +97,14 @@ class DBHandler {
     }
 
     
-    public function get_global_settings() {
-        $query = "SELECT * FROM {$this->table_global}";
-        return $this->wpdb->get_results($query);
+    public function get_global_setting() {
+        $query = "SELECT * FROM {$this->table_global} LIMIT 1";
+        return $this->wpdb->get_row($query);
+    }
+
+    public function update_global_setting($global_setting) {
+        $global_setting_array = (array) $global_setting;
+        $this->wpdb->update($this->table_global, $global_setting_array, array('id' => $global_setting->id));
     }
 
 
