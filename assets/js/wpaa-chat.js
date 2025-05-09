@@ -161,6 +161,7 @@ jQuery(document).ready(function($) {
                 
                 // Add user message
                 chatHistory.appendChild(renderMessage({ type: 'user', name: 'You', message: userMessage }));
+                scrollToBottom(chatHistory);
                 chatInput.value = '';
                 
                 // Add loading indicator with typing animation delay
@@ -193,7 +194,9 @@ jQuery(document).ready(function($) {
                     },
                     success: function(response) {
                         clearInterval(loadingInterval);
-                        chatHistory.removeChild(loadingMsg);
+                        if (chatHistory.contains(loadingMsg)) {
+                            chatHistory.removeChild(loadingMsg);
+                        }
                         if (response.success) {
                             chatHistory.appendChild(renderMessage({ type: 'agent', name: agentName, message: response.data }));
                         } else {
@@ -203,7 +206,9 @@ jQuery(document).ready(function($) {
                     },
                     error: function() {
                         clearInterval(loadingInterval);
-                        chatHistory.removeChild(loadingMsg);
+                        if (chatHistory.contains(loadingMsg)) {
+                            chatHistory.removeChild(loadingMsg);
+                        }
                         chatHistory.appendChild(renderMessage({ type: 'agent', name: agentName, message: '<b>[System]</b> An error occurred. Please try again later.', isError: true }));
                         scrollToBottom(chatHistory);
                     }
@@ -292,8 +297,7 @@ jQuery(document).ready(function($) {
                 nonce: wpaa_request_nonce.nonce
             },
             success: function(response) {
-                console.log(response);
-
+                //console.log(response);
                 const $majorColor = response.data;
                 const $chatHeader = $('#wpaa-chat-header');
                 const $chatSendButton = $('#wpaa-chat-send-button');

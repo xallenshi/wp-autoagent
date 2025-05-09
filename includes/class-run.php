@@ -33,6 +33,13 @@ class Run {
             return;
         }
 
+        $db_handler = new DBHandler();
+        $access_key = $db_handler->get_access_key();
+        if(!$access_key) {
+            wp_send_json_error('Invalid access key.');
+            return;
+        }
+
         $agent_id = $_POST['agent_id'];
         $content = isset($_POST['content']) ? sanitize_text_field($_POST['content']) : '';
 
@@ -58,6 +65,7 @@ class Run {
             'body' => json_encode(array('model' => $model, 'input' => $input, 'tools' => $tools, 'response_id' => $response_id)),
             'headers' => array(
                 'Content-Type' => 'application/json',
+                'x-access-key' => $access_key,
             ),
             'timeout' => 60,
         ));

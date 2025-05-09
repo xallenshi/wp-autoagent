@@ -107,5 +107,10 @@ class DBHandler {
         $this->wpdb->update($this->table_global, $global_setting_array, array('id' => $global_setting->id));
     }
 
+    public function get_access_key() {
+        $query = "SELECT access_key FROM {$this->table_global} LIMIT 1";
+        return $this->wpdb->get_var($query);
+    }
+
 
 }
