@@ -6,6 +6,7 @@ class DB {
     private $table_agent;
     private $table_conversation;
     private $table_function;
+    private $table_global;
 
     public function __construct() {
         error_log("wp_autoagent_DB class instantiated.");
@@ -16,6 +17,7 @@ class DB {
         $this->table_agent = Config::get_table_name('agent');
         $this->table_conversation = Config::get_table_name('conversation');
         $this->table_function = Config::get_table_name('function');
+        $this->table_global = Config::get_table_name('global');
         error_log("wp_autoagent_DB tables names set.");
     }
 

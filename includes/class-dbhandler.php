@@ -8,7 +8,7 @@ class DBHandler {
     private $table_agent;
     private $table_function;
     private $table_conversation;
-    private $table_global_settings;
+    private $table_global;
     public function __construct() {
         global $wpdb;
         $this->wpdb = $wpdb;
@@ -16,7 +16,7 @@ class DBHandler {
         $this->table_agent = Config::get_table_name('agent');
         $this->table_function = Config::get_table_name('function');
         $this->table_conversation = Config::get_table_name('conversation');
-        $this->table_global_settings = Config::get_table_name('global_settings');
+        $this->table_global = Config::get_table_name('global');
     }
 
     public function get_articles() {
@@ -98,7 +98,7 @@ class DBHandler {
 
     
     public function get_global_settings() {
-        $query = "SELECT * FROM {$this->table_global_settings}";
+        $query = "SELECT * FROM {$this->table_global}";
         return $this->wpdb->get_results($query);
     }
 
