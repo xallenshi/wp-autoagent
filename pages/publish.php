@@ -8,41 +8,6 @@ $agents = $db_handler->get_agents();
 $table_agent = Config::get_table_name('agent');
 $pages = get_pages();
 
-
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset($_POST['selected_pages']) || isset($_POST['selected_admin_pages']))) {
-    $agent_id = intval($_POST['agent_id']);
-    $selected_pages = isset($_POST['selected_pages']) ? $_POST['selected_pages'] : array();
-    $selected_admin_pages = isset($_POST['selected_admin_pages']) ? $_POST['selected_admin_pages'] : array();
-
-    // Convert selected pages to JSON
-    $scope_json = json_encode(array_merge($selected_pages, $selected_admin_pages));
-
-    $result = $wpdb->update(
-        $table_agent,
-        ['scope' => $scope_json],
-        ['id' => $agent_id]
-    );
-
-
-    $publish = new Publish();
-    $publish->set_theme_color();
-
-
-    if ($result !== false) {
-        echo '<div class="updated"><p>Agent scope updated successfully!</p></div>';
-    } else {
-        echo '<div class="error"><p>Error updating agent scope.</p></div>';
-    }
-
-    ;
-
-}
-
-
-
-
 ?>
 
 <div class="wpaa-agent-list2">
@@ -67,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset
 </div>
 
 <div class="wpaa-plugin-container">
-    <form method="post">
+    <form method="post" id="wpaa-publish-agent-form">
     <h1>Publish Agent</h1>
     <h4>Select which pages you want the AI Agent to appear on.</h4>
     

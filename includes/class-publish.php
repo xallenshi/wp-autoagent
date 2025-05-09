@@ -10,6 +10,8 @@ class Publish {
 
         add_action('wp_ajax_wpaa_get_theme_color', array($this, 'wpaa_get_theme_color'));
         add_action('wp_ajax_nopriv_wpaa_get_theme_color', array($this, 'wpaa_get_theme_color'));
+
+        add_action('wp_ajax_wpaa_publish_agent', array($this, 'wpaa_publish_agent'));
     }
 
     /**
@@ -43,6 +45,41 @@ class Publish {
         }
 
         wp_send_json_success($scope);
+    }
+
+
+    /**
+     * AJAX handler to publish the agent
+     */
+    public function wpaa_publish_agent() {
+        
+        // Handle form submission
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset($_POST['selected_pages']) || isset($_POST['selected_admin_pages']))) {
+            $agent_id = intval($_POST['agent_id']);
+            $selected_pages = isset($_POST['selected_pages']) ? $_POST['selected_pages'] : array();
+            $selected_admin_pages = isset($_POST['selected_admin_pages']) ? $_POST['selected_admin_pages'] : array();
+
+            // Convert selected pages to JSON
+            $scope_json = json_encode(array_merge($selected_pages, $selected_admin_pages));
+
+            global $wpdb;
+            $result = $wpdb->update(
+                $this->table_agent,
+                ['scope' => $scope_json],
+                ['id' => $agent_id]
+            );
+
+            // Set the theme color when publishing the agent
+            $this->set_theme_color();
+
+            if ($result !== false) {
+                wp_send_json_success('Agent has been published.');
+            } else {
+                wp_send_json_error('Error publishing agent.');
+            }
+
+        }
+
     }
 
     /**

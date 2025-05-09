@@ -276,6 +276,33 @@ jQuery(document).ready(function($) {
     });
 
 
+    // Publish Agent
+    $('#wpaa-publish-agent-form').on('submit', function(e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+        formData.append('action', 'wpaa_publish_agent');
+        formData.append('nonce', wpaa_setting_nonce.nonce);
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    alert(response.data);
+                } else {
+                    alert('Error: ' + response.data);
+                }
+            },
+            error: function(xhr) {
+                alert('Error publishing agent. Please try again.');
+            }
+        });
+    });
+    
 
 });
 
