@@ -23,6 +23,13 @@ class Upload {
             return;
         }
 
+        $db_handler = new DBHandler();
+        $access_key = $db_handler->get_access_key();
+        if(!$access_key) {
+            wp_send_json_error('Invalid access key.');
+            return;
+        }
+
         $file = $_FILES['article_file'];
         $file_name = $file['name'];
 
@@ -43,8 +50,9 @@ class Upload {
             'body' => json_encode(array('file_content' => $file_content_base64, 'file_name' => $file_name)),
             'headers' => array(
                 'Content-Type' => 'application/json',
+                'x-access-key' => $access_key,
             ),
-            'timeout' => 20,
+            'timeout' => 60,
         ));
 
         //error_log('api_response: ' . print_r($api_response, true));

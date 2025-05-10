@@ -91,8 +91,6 @@ jQuery(document).ready(function($) {
             const agentId = response.data.agent_id;
             const agentName = response.data.name;
             const agentGreetingMessage = response.data.greeting_message;
-            
-            console.log('Agent ID: ' + agentId);
 
             // --- UI Elements ---
             const chatIcon = createElement('div', 'wpaa-chat-icon', `
