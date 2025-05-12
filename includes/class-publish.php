@@ -71,6 +71,8 @@ class Publish {
 
             // Set the theme color when publishing the agent
             $this->set_theme_color();
+            // Create a Qdrant collection
+            $this->create_qdrant_collection();
 
             if ($result !== false) {
                 wp_send_json_success('Agent has been published.');
@@ -111,5 +113,47 @@ class Publish {
         $global_setting = $db_handler->get_global_setting();
         $theme_color = $global_setting->theme_color;
         wp_send_json_success($theme_color);
+    }
+
+
+    /**
+     * Create a Qdrant collection
+     */
+    function create_qdrant_collection() {
+
+        $db_handler = new DBHandler();
+        $global_setting = $db_handler->get_global_setting();
+        $access_key = $global_setting->access_key;
+
+
+        // make a rest api call to Lambda function to run the agent
+        $api_url = 'https://zx2jc24fdhdyl47mv3u7z53msq0orywi.lambda-url.ap-southeast-2.on.aws/';
+        $api_response = wp_remote_post($api_url, array(
+            'method' => 'POST',
+            'body' => json_encode(array('access_key' => $access_key)),
+            'headers' => array(
+                'Content-Type' => 'application/json',
+            ),
+            'timeout' => 60,
+        ));
+
+        //error_log('api_response: ' . print_r($api_response, true));
+        if (is_wp_error($api_response)) {
+            $api_error_msg = $api_response->get_error_message(); 
+            error_log('api_error_msg: ' . $api_error_msg);
+            return false;
+        }
+        if (wp_remote_retrieve_response_code($api_response) != 200) {
+            error_log('Failed to create Qdrant collection.');
+            return false;
+        } else {
+            $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
+            $api_msg = $api_response_body['message'];
+            error_log('api_msg: ' . $api_msg);
+
+            return true;
+        }
+
+
     }
 }

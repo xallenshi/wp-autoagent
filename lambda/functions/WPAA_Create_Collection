@@ -1,0 +1,39 @@
+import json
+import logging
+from qdrant_client import QdrantClient
+from qdrant_client.http import models
+
+logging.basicConfig(level=logging.ERROR)
+
+def lambda_handler(event, context):
+    
+    if 'body' in event:
+        body = json.loads(event['body'])
+        logging.error("body: %s", body)
+
+        access_key = body.get('access_key')
+
+        if not access_key:
+            return {'status_code': 400, 'message': 'No access_key found in the request'}
+    else:
+        return {'status_code': 400, 'message': 'No body found in the request'}
+
+
+    QDRANT_URL = "https://a3d5cbaa-5bf4-4dce-92c7-09f2926d5258.us-east-1-0.aws.cloud.qdrant.io"
+    QDRANT_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.ara4DFq0smB3EIE__AuGM9mFQ8YG9pp-C37ss8TAVGc"
+
+    client = QdrantClient(
+        url=QDRANT_URL,
+        api_key=QDRANT_API_KEY,
+    )
+
+    collection_name = access_key
+    client.create_collection(
+        collection_name=collection_name,
+        vectors_config=models.VectorParams(
+            size=384,
+            distance=models.Distance.COSINE,
+        ),
+    )
+
+    return {'status_code': 200, 'message': 'The collection created.'}
