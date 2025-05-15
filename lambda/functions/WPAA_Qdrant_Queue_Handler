@@ -1,0 +1,50 @@
+import json
+import time
+from qdrant_client import QdrantClient
+from qdrant_client.http import models
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+def lambda_handler(event, context):
+    logging.info(f"Received event: {event}")
+
+    for record in event['Records']:
+        try:
+            message = json.loads(record['body'])
+            
+            # Initialize Qdrant client (without context manager)
+            qdrant_client = QdrantClient(
+                url=message['qdrant_url'],
+                api_key=message['qdrant_api_key']
+            )
+            
+            try:
+                qdrant_client.upsert(
+                    collection_name=message['collection_name'],
+                    points=[
+                        models.PointStruct(
+                            id=int(time.time() * 1000),
+                            vector=message['embedding'],
+                            payload={
+                                "question": message['content'],
+                                "answer": message['message'],
+                                "timestamp": message['timestamp']
+                            }
+                        )
+                    ]
+                )
+                logger.info("Successfully stored in Qdrant")
+            except Exception as e:
+                logger.error(f"Qdrant upsert failed: {str(e)}")
+                raise
+            finally:
+                # Manually close the client
+                qdrant_client.close()
+                
+        except Exception as e:
+            logger.error(f"Failed to process message: {str(e)}")
+            raise
+    
+    return {'status': 'processed', 'count': len(event['Records'])}

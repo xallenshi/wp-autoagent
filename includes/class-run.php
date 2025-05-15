@@ -54,15 +54,16 @@ class Run {
         $session_id = $this->wpaa_get_session_id();
         $response_id = $db_handler->get_latest_response_id($agent_id, $session_id);
         #add system level instructions
-        $input[] = array('role' => 'system', 'content' => $instructions);
+        #$input[] = array('role' => 'system', 'content' => $instructions);
         #add user question
-        $input[] = array('role' => 'user', 'content' => $content);
+        #$input[] = array('role' => 'user', 'content' => $content);
 
         // make a rest api call to Lambda function to run the agent
         $api_url = 'https://jebcqgsrc7k5wffddjuof6feke0edirw.lambda-url.ap-southeast-2.on.aws/';
         $api_response = wp_remote_post($api_url, array(
             'method' => 'POST',
-            'body' => json_encode(array('model' => $model, 'input' => $input, 'tools' => $tools, 'response_id' => $response_id)),
+            #'body' => json_encode(array('model' => $model, 'input' => $input, 'tools' => $tools, 'response_id' => $response_id)),
+            'body' => json_encode(array('model' => $model, 'instructions' => $instructions, 'content' => $content, 'tools' => $tools, 'response_id' => $response_id)),
             'headers' => array(
                 'Content-Type' => 'application/json',
                 'x-access-key' => $access_key,
@@ -84,13 +85,15 @@ class Run {
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
             $response_id = $api_response_body['response_id'];
             $api_msg = $api_response_body['message'];
+            $source = $api_response_body['source'];
+            $score = $api_response_body['score'];
 
             //error_log('api_response_body: ' . print_r($api_response_body, true));
 
             // Save file info including file_id and vector_id to table_article
             $conversation_id = $this->save_conversation($agent_id, $response_id, $content, $api_msg);
 
-            wp_send_json_success($api_msg);
+            wp_send_json_success($api_msg . ' --- ' . $source . '[' . $score . ']');
             return;
         }
 
