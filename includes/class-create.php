@@ -31,13 +31,13 @@ class Create {
             return;
         }
 
-        $agent_id = isset($_POST['agent_id']) ? $_POST['agent_id'] : null;
-        $name = $_POST['name'];
-        $instructions = $_POST['instructions'];
-        $greeting_message = $_POST['greeting_message'];
-        $model = $_POST['model'];
-        $selected_articles = $_POST['articles'] ?? [];
-        $selected_functions = $_POST['functions'] ?? [];
+        $agent_id = isset($_POST['agent_id']) ? sanitize_text_field($_POST['agent_id']) : null;
+        $name = sanitize_text_field($_POST['name']);
+        $instructions = wp_kses_post($_POST['instructions']);
+        $greeting_message = wp_kses_post($_POST['greeting_message']);
+        $model = sanitize_text_field($_POST['model']);
+        $selected_articles = isset($_POST['articles']) ? array_map('sanitize_text_field', $_POST['articles']) : [];
+        $selected_functions = isset($_POST['functions']) ? array_map('sanitize_text_field', $_POST['functions']) : [];
         
         $tools_object = $this->get_tools_object($selected_articles, $selected_functions);
         $tools = $tools_object['tools'];
@@ -142,6 +142,9 @@ class Create {
         $db_handler = new DBHandler();
         $agent_id = $_POST['agent_id'];
         $agent = $db_handler->get_agent_by_id($agent_id);
+        
+        $agent->instructions = stripslashes($agent->instructions);
+        $agent->greeting_message = stripslashes($agent->greeting_message);
         wp_send_json_success($agent);
     }
 

@@ -78,7 +78,9 @@ class DBHandler {
     public function get_chat_history($agent_id, $session_id) {
         $query = "SELECT content, response, created_time FROM {$this->table_conversation} WHERE agent_id = %d AND session_id = %s ORDER BY created_time DESC";
         $results = $this->wpdb->get_results($this->wpdb->prepare($query, $agent_id, $session_id));
+        return array_reverse($results);
         
+        //reserved for future use
         $filtered = [];
         $prev_time = strtotime(gmdate('Y-m-d H:i:s'));
         foreach ($results as $row) {
@@ -92,8 +94,9 @@ class DBHandler {
             $filtered[] = $row;
             $prev_time = $current_time;
         }
-        // Reverse to ASC order
+        // in ASC order
         return array_reverse($filtered);
+         //reserved for future use
     }
 
     
