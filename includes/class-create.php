@@ -17,6 +17,8 @@ class Create {
         
         add_action('wp_ajax_wpaa_get_agent', array($this, 'wpaa_get_agent'));
         add_action('wp_ajax_nopriv_wpaa_get_agent', array($this, 'wpaa_get_agent'));
+
+        add_action('wp_ajax_wpaa_delete_agent', array($this, 'wpaa_delete_agent'));
     }
 
     public function wpaa_create_agent() {
@@ -26,7 +28,7 @@ class Create {
             return;
         }
 
-        if (!isset($_POST['name1'])) {
+        if (!isset($_POST['name'])) {
             wp_send_json_error('No agent name provided.');
             return;
         }
@@ -146,6 +148,21 @@ class Create {
         $agent->instructions = stripslashes($agent->instructions);
         $agent->greeting_message = stripslashes($agent->greeting_message);
         wp_send_json_success($agent);
+    }
+
+    public function wpaa_delete_agent() {
+        global $wpdb;
+        $agent_id = $_POST['agent_id'];
+        if (!check_ajax_referer('wpaa_setting', 'nonce', false)) {
+            wp_send_json_error('Invalid nonce.');
+            return;
+        }
+        if (!isset($agent_id)) {
+            wp_send_json_error('No agent ID provided.');
+            return;
+        }
+        $wpdb->delete($this->table_agent, array('id' => $agent_id));
+        wp_send_json_success('The agent has been deleted.');
     }
 
 }

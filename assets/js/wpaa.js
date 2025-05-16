@@ -78,6 +78,14 @@ jQuery(document).ready(function($) {
     $('#wpaa_create_agent_form').submit(function(event) {
         event.preventDefault();
 
+        $('#wpaa_create_agent_button').prop('disabled', true);
+        button_text = $('#wpaa_create_agent_button').text();
+        if (button_text === 'Create AI Agent') {
+            $('#wpaa_create_agent_button').text('Creating...');
+        } else {
+            $('#wpaa_create_agent_button').text('Updating...');
+        }
+
         const checkboxes = document.querySelectorAll('input[name="articles[]"]');
         let checkedOne = false;
         checkboxes.forEach(function(checkbox) {
@@ -87,6 +95,10 @@ jQuery(document).ready(function($) {
         });
         if (!checkedOne) {
             showNotification('Please select at least one knowledge article.', 'error');
+            setTimeout(function() {
+                $('#wpaa_create_agent_button').prop('disabled', false);
+                $('#wpaa_create_agent_button').text(button_text);
+            }, 1000);
             return;
         }
 
@@ -103,6 +115,7 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     showNotification(response.data, 'success');
+                    location.reload();
                 } else {
                     showNotification(response.data, 'error');
                 }
@@ -111,6 +124,12 @@ jQuery(document).ready(function($) {
                 showNotification(response.data, 'error');
             }
         });
+
+        setTimeout(function() {
+            $('#wpaa_create_agent_button').prop('disabled', false);
+            $('#wpaa_create_agent_button').text(button_text);
+        }, 1000);
+
     });
 
     // Knowledge Base Link
@@ -156,13 +175,6 @@ jQuery(document).ready(function($) {
                 $('#wpaa_article_list').html('<div>Error loading articles.</div>');
             }
         });
-    });
-
-    // Close modal on click
-    $(document).on('click', '.wpaa-modal-close, .wpaa-modal-overlay', function(e) {
-        if ($(e.target).hasClass('wpaa-modal-close') || $(e.target).hasClass('wpaa-modal-overlay')) {
-            $('.wpaa-modal-overlay').remove();
-        }
     });
 
     // Handle upload in modal
@@ -223,7 +235,8 @@ jQuery(document).ready(function($) {
             $('input[name="articles[]"]').prop('checked', false);
             // Set page title for new agent
             $('.wpaa-plugin-container h1').text('Create Your AI Agent');
-            $('#wpaa_create_agent_button').text('Create AI Assistant');
+            $('#wpaa_create_agent_button').text('Create AI Agent');
+            $('#delete_agent_link').hide();
             return;
         }
 
@@ -243,13 +256,15 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     // Fill form with agent data
                     $('.wpaa-plugin-container h1').text('Update Your AI Agent');
-                    $('#wpaa_create_agent_button').text('Update AI Assistant');
+                    $('#wpaa_create_agent_button').text('Update AI Agent');
 
                     $('#agent_id').val(response.data.id);
                     $('#name').val(response.data.name);
                     $('#instructions').val(response.data.instructions);
                     $('#greeting_message').val(response.data.greeting_message);
                     $('#model').val(response.data.model);
+                    $('#delete_agent_link').show();
+                    $('#delete_agent_link').data('agent_id', response.data.id);
                     
                     // Check selected articles
                     $('input[name="articles[]"]').prop('checked', false);
@@ -328,8 +343,71 @@ jQuery(document).ready(function($) {
         $('#wpaa-notification-container').append(notification);
         setTimeout(() => {
             notification.fadeOut(400, function() { $(this).remove(); });
-        }, 35000);
+        }, 3500);
     }
+
+    // Delete Agent Confirmation Popup
+    $(document).on('click', '.wpaa-delete-agent-link', function(e) {
+        e.preventDefault();
+        var agent_id = $(this).data('agent_id');
+        
+        // Remove any existing modal
+        $('.wpaa-modal-overlay').remove();
+        
+        // Modal HTML
+        var modalHtml = `
+            <div class="wpaa-modal-overlay">
+                <div class="wpaa-modal">
+                    <button class="wpaa-modal-close" title="Close">&times;</button>
+                    <h2>Confirm Delete</h2>
+                    <p>Are you sure you want to delete this agent? This action cannot be undone.</p>
+                    <div style="display:flex;gap:16px;justify-content:center;margin-top:24px;">
+                        <button id="wpaa-confirm-delete" data-agent_id="${agent_id}" style="background:#dc3545;">Delete</button>
+                        <button id="wpaa-confirm-cancel" style="background:#aaa;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        $('body').append(modalHtml);
+    });
+
+    // Handle confirm delete
+    $(document).on('click', '#wpaa-confirm-delete', function(e) {
+        e.preventDefault();
+        var agent_id = $(this).data('agent_id');
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'wpaa_delete_agent',
+                nonce: wpaa_setting_nonce.nonce,
+                agent_id: agent_id
+            },
+            success: function(response) {
+                if (response.success) {
+                    showNotification(response.data, 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showNotification(response.data, 'error');
+                }
+            },
+            error: function() {
+                showNotification('Error deleting agent. Please try again.', 'error');
+            }
+        });
+        $('.wpaa-modal-overlay').remove();
+    });
+
+
+    // Close modal on click
+    $(document).on('click', '.wpaa-modal-close, .wpaa-modal-overlay, #wpaa-confirm-cancel', function(e) {
+        if ($(e.target).hasClass('wpaa-modal-close') || $(e.target).hasClass('wpaa-modal-overlay') || $(e.target).is('#wpaa-confirm-cancel')) {
+            $('.wpaa-modal-overlay').remove();
+        }
+    });
 
 });
 

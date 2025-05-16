@@ -104,6 +104,7 @@ $functions = $db_handler->get_functions();
         }
         ?>
 
-        <button type="submit" id="wpaa_create_agent_button">Create AI Assistant</button>
+        <button type="submit" id="wpaa_create_agent_button">Create AI Agent</button>
+        <a href="#" class="wpaa-delete-agent-link" id="delete_agent_link" style="display:none;">Delete This Agent</a>
     </form>
 </div>
