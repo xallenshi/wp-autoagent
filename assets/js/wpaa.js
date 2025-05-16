@@ -98,7 +98,7 @@ jQuery(document).ready(function($) {
             setTimeout(function() {
                 $('#wpaa_create_agent_button').prop('disabled', false);
                 $('#wpaa_create_agent_button').text(button_text);
-            }, 1000);
+            }, 2000);
             return;
         }
 
@@ -115,7 +115,9 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     showNotification(response.data, 'success');
-                    location.reload();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
                 } else {
                     showNotification(response.data, 'error');
                 }
@@ -128,7 +130,7 @@ jQuery(document).ready(function($) {
         setTimeout(function() {
             $('#wpaa_create_agent_button').prop('disabled', false);
             $('#wpaa_create_agent_button').text(button_text);
-        }, 1000);
+        }, 2000);
 
     });
 
@@ -303,6 +305,13 @@ jQuery(document).ready(function($) {
     $('#wpaa-publish-agent-form').on('submit', function(e) {
         e.preventDefault();
 
+        $('#wpaa_publish_agent_button').prop('disabled', true);
+        $('#wpaa_publish_agent_button').text('Publishing...');
+        $('#wpaa_publish_agent_button').css({
+            'background-color': '#aaa',
+            'cursor': 'not-allowed'
+        });
+
         var formData = new FormData(this);
         formData.append('action', 'wpaa_publish_agent');
         formData.append('nonce', wpaa_setting_nonce.nonce);
@@ -319,11 +328,24 @@ jQuery(document).ready(function($) {
                 } else {
                     showNotification('Error: ' + response.data, 'error');
                 }
+                $('#wpaa_publish_agent_button').prop('disabled', false);
+                $('#wpaa_publish_agent_button').text('Publish Agent');
+                $('#wpaa_publish_agent_button').css({
+                    'background-color': '#007bff',
+                    'cursor': 'pointer'
+                });
             },
             error: function(xhr) {
                 showNotification('Error publishing agent. Please try again.', 'error');
+                $('#wpaa_publish_agent_button').prop('disabled', false);
+                $('#wpaa_publish_agent_button').text('Publish Agent');
+                $('#wpaa_publish_agent_button').css({
+                    'background-color': '#007bff',
+                    'cursor': 'pointer'
+                });
             }
         });
+
     });
     
 
@@ -343,7 +365,7 @@ jQuery(document).ready(function($) {
         $('#wpaa-notification-container').append(notification);
         setTimeout(() => {
             notification.fadeOut(400, function() { $(this).remove(); });
-        }, 3500);
+        }, 2000);
     }
 
     // Delete Agent Confirmation Popup
