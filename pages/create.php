@@ -39,16 +39,16 @@ $functions = $db_handler->get_functions();
         <!-- Basic Info -->
         <h2>Basic Info</h2>
         <input type="hidden" id="agent_id" name="agent_id" value="">
-        <label for="name">AI Agent Name:</label>
+        <label for="name">AI Agent Name</label>
         <input type="text" id="name" name="name" required>
 
-        <label for="instructions">Agent Instructions:</label>
-        <textarea id="instructions" name="instructions" required></textarea>
+        <label for="instructions">Agent Instructions</label>
+        <textarea id="instructions" name="instructions" class="wpaa-textarea" required></textarea>
 
-        <label for="greeting_message">Greeting Message:</label>
-        <textarea id="greeting_message" name="greeting_message" required></textarea>
+        <label for="greeting_message">Greeting Message</label>
+        <textarea id="greeting_message" name="greeting_message" class="wpaa-textarea" required></textarea>
 
-        <label for="model">Model:</label>
+        <label for="model">Model</label>
         <select id="model" name="model">
             <option value="gpt-4o">gpt-4o</option>
             <option value="gpt-4o-mini">gpt-4o-mini</option>
@@ -58,7 +58,7 @@ $functions = $db_handler->get_functions();
         <!-- Knowledge Base -->
         <h2>Knowledge Base</h2>
         <h2>Only 1 vector store allowed for now</h2>
-        <label>Select Files:</label>
+        <label>Select Files</label>
         <a href="#" class="wpaa-kb-link" data-page="upload">Upload Your New Knowledge Article</a>
         <?php
         
@@ -82,7 +82,7 @@ $functions = $db_handler->get_functions();
         <!-- Function Enablement -->
         <h2>Function Enablement</h2>
         <h2>Disabled for now</h2>
-        <label>Select Functions:</label>
+        <label>Select Functions</label>
         
         <?php
     

@@ -26,7 +26,7 @@ class Create {
             return;
         }
 
-        if (!isset($_POST['name'])) {
+        if (!isset($_POST['name1'])) {
             wp_send_json_error('No agent name provided.');
             return;
         }
@@ -44,10 +44,10 @@ class Create {
 
         if ($agent_id) {
             $this->update_agent($name, $instructions, $greeting_message, $model, $selected_articles, $selected_functions, $tools, $agent_id);
-            wp_send_json_success('The agent has been updated');
+            wp_send_json_success('The agent has been updated.');
         } else {
             $agent_id = $this->save_agent($name, $instructions, $greeting_message, $model, $selected_articles, $selected_functions, $tools);
-            wp_send_json_success('The agent has been created');
+            wp_send_json_success('The agent has been created.');
         }
 
     }

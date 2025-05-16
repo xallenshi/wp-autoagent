@@ -86,7 +86,7 @@ jQuery(document).ready(function($) {
             }
         });
         if (!checkedOne) {
-            alert('Please select at least one knowledge article.');
+            showNotification('Please select at least one knowledge article.', 'error');
             return;
         }
 
@@ -101,10 +101,14 @@ jQuery(document).ready(function($) {
             processData: false,
             contentType: false,
             success: function(response) {
-                alert(response.data);
+                if (response.success) {
+                    showNotification(response.data, 'success');
+                } else {
+                    showNotification(response.data, 'error');
+                }
             },
             error: function(response) {
-                alert(response.data);
+                showNotification(response.data, 'error');
             }
         });
     });
@@ -174,7 +178,11 @@ jQuery(document).ready(function($) {
             processData: false,
             contentType: false,
             success: function(response) {
-                alert(response.data);
+                if (response.success) {
+                    showNotification(response.data, 'success');
+                } else {
+                    showNotification(response.data, 'error');
+                }
                 // Reload article list after upload
                 $.ajax({
                     url: ajaxurl,
@@ -191,7 +199,7 @@ jQuery(document).ready(function($) {
                 });
             },
             error: function(response) {
-                alert(response.data);
+                showNotification(response.data, 'error');
             }
         });
     });
@@ -252,11 +260,11 @@ jQuery(document).ready(function($) {
                         });
                     }
                 } else {
-                    alert('Error loading agent data');
+                    showNotification('Error loading agent data', 'error');
                 }
             },
             error: function() {
-                alert('Error loading agent data');
+                showNotification('Error loading agent data', 'error');
             }
         });
     });
@@ -292,17 +300,36 @@ jQuery(document).ready(function($) {
             contentType: false,
             success: function(response) {
                 if (response.success) {
-                    alert(response.data);
+                    showNotification(response.data, 'success');
                 } else {
-                    alert('Error: ' + response.data);
+                    showNotification('Error: ' + response.data, 'error');
                 }
             },
             error: function(xhr) {
-                alert('Error publishing agent. Please try again.');
+                showNotification('Error publishing agent. Please try again.', 'error');
             }
         });
     });
     
+
+    
+    // Add notification container if not present
+    if ($('#wpaa-notification-container').length === 0) {
+        $('body').append('<div id="wpaa-notification-container"></div>');
+    }
+
+    // Modern notification function
+    function showNotification(message, type = 'info') {
+        const notification = $(`
+            <div class="wpaa-notification wpaa-notification-${type}">
+                ${message}
+            </div>
+        `);
+        $('#wpaa-notification-container').append(notification);
+        setTimeout(() => {
+            notification.fadeOut(400, function() { $(this).remove(); });
+        }, 35000);
+    }
 
 });
 
