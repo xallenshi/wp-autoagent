@@ -108,6 +108,8 @@ class DB {
                 response_id varchar(255) NULL,
                 content text NOT NULL,
                 response text NOT NULL,
+                source varchar(255) NOT NULL,
+                score float NOT NULL,
                 created_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 PRIMARY KEY (id)
             ) $charset_collate;";

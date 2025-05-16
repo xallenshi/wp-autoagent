@@ -86,14 +86,14 @@ class Run {
             $response_id = $api_response_body['response_id'];
             $api_msg = $api_response_body['message'];
             $source = $api_response_body['source'];
-            $score = $api_response_body['score'];
+            $score = $api_response_body['score'] ?? 0;
 
             //error_log('api_response_body: ' . print_r($api_response_body, true));
 
             // Save file info including file_id and vector_id to table_article
-            $conversation_id = $this->save_conversation($agent_id, $response_id, $content, $api_msg);
+            $conversation_id = $this->save_conversation($agent_id, $response_id, $content, $api_msg, $source, $score);
 
-            wp_send_json_success($api_msg . ' --- ' . $source . '[' . $score . ']');
+            wp_send_json_success($api_msg . ' --- ' . $source . ' [' . $score . ']');
             return;
         }
 
@@ -207,7 +207,7 @@ class Run {
     }
 
 
-    private function save_conversation($agent_id, $response_id, $content, $api_msg) {
+    private function save_conversation($agent_id, $response_id, $content, $api_msg, $source, $score) {
         global $wpdb;
         
         #get non-logged-in/logged-in user session id
@@ -221,7 +221,9 @@ class Run {
                 'response_id' => $response_id,
                 'content' => $content,
                 'response' => $api_msg,
-                'created_time' => gmdate('Y-m-d H:i:s'),
+                'source' => $source,
+                'score' => $score,
+                'created_time' => gmdate('Y-m-d H:i:s')
             ));
     
             if ($result === false) {
@@ -256,6 +258,8 @@ class Run {
                 'response_id' => $response_id,
                 'content' => $content,
                 'response' => $api_msg,
+                'source' => 'system',
+                'score' => 0,
                 'created_time' => gmdate('Y-m-d H:i:s'),
             ));
     

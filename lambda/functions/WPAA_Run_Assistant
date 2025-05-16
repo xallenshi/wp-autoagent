@@ -78,17 +78,18 @@ def lambda_handler(event, context):
             
             embedding = client.embeddings.create(
                 input=content,
-                model="text-embedding-3-small"
+                model="text-embedding-3-small",
+                dimensions=384
             ).data[0].embedding
             
             search_result = qdrant_client.search(
                 collection_name=user_access_key,
                 query_vector=embedding,
                 limit=1,
-                score_threshold=0.9
+                score_threshold=0.7
             )
             
-            if search_result and search_result[0].score >= 0.9:
+            if search_result:
                 payload = search_result[0].payload
                 qdrant_client.close()  # Manually close
                 return {
@@ -130,8 +131,6 @@ def lambda_handler(event, context):
             sqs.send_message(
                 QueueUrl=SQS_QUEUE_URL,
                 MessageBody=json.dumps({
-                    'qdrant_url': qdrant_url,
-                    'qdrant_api_key': qdrant_api_key,
                     'collection_name': user_access_key,
                     'embedding': embedding,
                     'content': content,
@@ -139,6 +138,7 @@ def lambda_handler(event, context):
                     'timestamp': time.time()
                 })
             )
+            logging.error("Sending to SQS for async processing")
 
         return {
             'status_code': 200,

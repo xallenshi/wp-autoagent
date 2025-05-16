@@ -1,39 +1,67 @@
 import json
 import logging
+import boto3
+from botocore.exceptions import ClientError
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
+# Initialize clients
+ssm = boto3.client('ssm')
 logging.basicConfig(level=logging.ERROR)
 
+def get_qdrant_credentials():
+    """Fetch Qdrant credentials from AWS SSM"""
+    try:
+        response = ssm.get_parameters(
+            Names=['qdrant_url', 'qdrant_api_key'],
+            WithDecryption=True
+        )
+        params = {p['Name']: p['Value'] for p in response['Parameters']}
+        return params.get('qdrant_url'), params.get('qdrant_api_key')
+    except Exception as e:
+        logging.error(f"Error getting Qdrant credentials: {str(e)}")
+        return None, None
+
 def lambda_handler(event, context):
-    
-    if 'body' in event:
+    try:
+        # Parse input
+        if 'body' not in event:
+            return {'status_code': 400, 'message': 'No body found in the request'}
+        
         body = json.loads(event['body'])
-        logging.error("body: %s", body)
-
         access_key = body.get('access_key')
-
+        
         if not access_key:
-            return {'status_code': 400, 'message': 'No access_key found in the request'}
-    else:
-        return {'status_code': 400, 'message': 'No body found in the request'}
+            return {'status_code': 400, 'message': 'No access_key provided'}
 
+        # Get Qdrant credentials
+        qdrant_url, qdrant_api_key = get_qdrant_credentials()
+        if not qdrant_url or not qdrant_api_key:
+            return {'status_code': 500, 'message': 'Failed to get Qdrant credentials'}
 
-    QDRANT_URL = "https://a3d5cbaa-5bf4-4dce-92c7-09f2926d5258.us-east-1-0.aws.cloud.qdrant.io"
-    QDRANT_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.ara4DFq0smB3EIE__AuGM9mFQ8YG9pp-C37ss8TAVGc"
+        # Initialize Qdrant client
+        client = QdrantClient(
+            url=qdrant_url,
+            api_key=qdrant_api_key,
+        )
 
-    client = QdrantClient(
-        url=QDRANT_URL,
-        api_key=QDRANT_API_KEY,
-    )
+        # Create collection
+        client.create_collection(
+            collection_name=access_key,
+            vectors_config=models.VectorParams(
+                size=384,  # Matching text-embedding-3-small
+                distance=models.Distance.COSINE,
+            ),
+        )
 
-    collection_name = access_key
-    client.create_collection(
-        collection_name=collection_name,
-        vectors_config=models.VectorParams(
-            size=384,
-            distance=models.Distance.COSINE,
-        ),
-    )
+        return {
+            'status_code': 200,
+            'message': f'Collection {access_key} created successfully'
+        }
 
-    return {'status_code': 200, 'message': 'The collection created.'}
+    except Exception as e:
+        logging.error(f"Collection creation failed: {str(e)}")
+        return {
+            'status_code': 500,
+            'message': f'Collection creation failed: {str(e)}',
+        }
