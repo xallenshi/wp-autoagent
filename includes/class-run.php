@@ -46,7 +46,13 @@ class Run {
         $agent_id = $agent->id;
         $model = $agent->model;
         $instructions = $agent->instructions;
+        error_log('agent->tools: ' . $agent->tools);
+
         $tools = json_decode($agent->tools, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log('JSON DECODE ERROR: ' . json_last_error_msg());
+        }
+        error_log('tools: ' . print_r($tools, true));
 
         #keep conversation state
         $session_id = $this->wpaa_get_session_id();
@@ -81,7 +87,7 @@ class Run {
             return;
         } else {
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
-            $response_id = $api_response_body['response_id'];
+            $response_id = $api_response_body['response_id'] ?? null;
             $api_msg = $api_response_body['message'];
             $source = $api_response_body['source'];
             $score = $api_response_body['score'] ?? 0;
@@ -113,7 +119,6 @@ class Run {
             $object1 = $object1;
             $object2 = $object2;
         }
-
 
         // make a rest api call to Lambda function to run the agent
         $api_url = 'https://h6ixjqz5kecqsrhm6hrakx3te40zknge.lambda-url.ap-southeast-2.on.aws/';
