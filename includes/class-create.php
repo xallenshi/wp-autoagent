@@ -1,8 +1,6 @@
 <?php
 namespace WPAutoAgent\Core;
 
-use WPAutoAgent\Core\API;
-
 global $wpdb;
 $db_handler = new DBHandler();
 $articles = $db_handler->get_articles();

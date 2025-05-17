@@ -114,7 +114,9 @@ jQuery(document).ready(function($) {
             contentType: false,
             success: function(response) {
                 if (response.success) {
-                    showNotification(response.data, 'success');
+                    setTimeout(function() {
+                        showNotification(response.data, 'success');
+                    }, 1000);
                     setTimeout(function() {
                         location.reload();
                     }, 2000);
@@ -130,7 +132,7 @@ jQuery(document).ready(function($) {
         setTimeout(function() {
             $('#wpaa_create_agent_button').prop('disabled', false);
             $('#wpaa_create_agent_button').text(button_text);
-        }, 2000);
+        }, 1000);
 
     });
 
@@ -142,14 +144,32 @@ jQuery(document).ready(function($) {
             <div class="wpaa-modal-overlay">
                 <div class="wpaa-modal">
                     <button class="wpaa-modal-close" title="Close">&times;</button>
-                    <h1>Upload Your Article</h1>
-                    <h4>Upload your article to the knowledge base to enhance the AI Agent's ability to provide context-aware answers based on your specific knowledge.</h4>
-                    <h4>For example, your product catalog, product manual, user guide, etc.</h4>
-                    <form id="wpaa_upload_article_form" method="post" enctype="multipart/form-data">
-                        <input type="file" name="article_file" accept=".txt,.doc,.docx,.xls,.xlsx,.pdf" required>
-                        <button type="submit">Upload</button>
-                    </form>
-                    <div id="wpaa_article_list" class="wrap"></div>
+                    <div class="wpaa-modal-header">
+                        <h2>Knowledge Base Upload</h2>
+                        <p class="wpaa-modal-subtitle">Enhance your AI Agent with custom knowledge</p>
+                    </div>
+                    <hr>
+                    <div class="wpaa-modal-content">
+                        <div class="wpaa-modal-description">
+                            <p>Upload articles to the knowledge base to improve your AI Agent's contextual understanding.</p>
+                            <p>Supported content: Product catalogs, manuals, guides, documentation</p>
+                        </div>
+                        <form id="wpaa_upload_article_form" method="post" enctype="multipart/form-data">
+                            <div class="wpaa-file-upload">
+                                <input type="file" name="article_file" id="article_file" accept=".txt,.doc,.docx,.xls,.xlsx,.pdf" required>
+                                <label for="article_file" class="wpaa-file-label">
+                                    <span class="wpaa-file-icon">📄</span>
+                                    <span>Choose a file</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="wpaa-upload-btn">Upload Article</button>
+                        </form>
+                        <div id="wpaa_article_list" class="wpaa-article-list"></div>
+                        <hr>
+                        <div class="wpaa-modal-footer">
+                            <p>Supported content: Product catalogs, manuals, guides, documentation</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -307,10 +327,6 @@ jQuery(document).ready(function($) {
 
         $('#wpaa_publish_agent_button').prop('disabled', true);
         $('#wpaa_publish_agent_button').text('Publishing...');
-        $('#wpaa_publish_agent_button').css({
-            'background-color': '#aaa',
-            'cursor': 'not-allowed'
-        });
 
         var formData = new FormData(this);
         formData.append('action', 'wpaa_publish_agent');
@@ -330,19 +346,11 @@ jQuery(document).ready(function($) {
                 }
                 $('#wpaa_publish_agent_button').prop('disabled', false);
                 $('#wpaa_publish_agent_button').text('Publish Agent');
-                $('#wpaa_publish_agent_button').css({
-                    'background-color': '#007bff',
-                    'cursor': 'pointer'
-                });
             },
             error: function(xhr) {
                 showNotification('Error publishing agent. Please try again.', 'error');
                 $('#wpaa_publish_agent_button').prop('disabled', false);
                 $('#wpaa_publish_agent_button').text('Publish Agent');
-                $('#wpaa_publish_agent_button').css({
-                    'background-color': '#007bff',
-                    'cursor': 'pointer'
-                });
             }
         });
 
@@ -381,11 +389,20 @@ jQuery(document).ready(function($) {
             <div class="wpaa-modal-overlay">
                 <div class="wpaa-modal">
                     <button class="wpaa-modal-close" title="Close">&times;</button>
-                    <h2>Confirm Delete</h2>
-                    <p>Are you sure you want to delete this agent? This action cannot be undone.</p>
-                    <div style="display:flex;gap:16px;justify-content:center;margin-top:24px;">
-                        <button id="wpaa-confirm-delete" data-agent_id="${agent_id}" style="background:#dc3545;">Delete</button>
-                        <button id="wpaa-confirm-cancel" style="background:#aaa;">Cancel</button>
+                    <div class="wpaa-modal-header">
+                        <h2>Confirm Delete</h2>
+                    </div>
+                    <hr>
+                    <div class="wpaa-modal-content">
+                        <p>Are you sure you want to delete this agent?</p>
+                        <div class="wpaa-modal-button">
+                            <button id="wpaa-confirm-delete" data-agent_id="${agent_id}" style="background:#dc3545;">Delete</button>
+                            <button id="wpaa-confirm-cancel" style="background:#aaa;">Cancel</button>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="wpaa-modal-footer">
+                        <p>This action cannot be undone.</p>
                     </div>
                 </div>
             </div>
@@ -430,6 +447,47 @@ jQuery(document).ready(function($) {
             $('.wpaa-modal-overlay').remove();
         }
     });
+
+
+    // Save Access Key
+    $('#wpaa_save_key_button').on('click', function(e) {
+        e.preventDefault();
+        $('#wpaa_save_key_button').prop('disabled', true);
+        $('#wpaa_save_key_button').text('Saving...');
+
+        var access_key = $('#access_key').val();
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'wpaa_save_key',
+                nonce: wpaa_setting_nonce.nonce,
+                access_key: access_key
+            },
+            success: function(response) {
+                if (response.success) {
+                    showNotification(response.data, 'success');
+                    $('#wpaa_save_key_button').prop('disabled', false);
+                    $('#wpaa_save_key_button').text('Save Access Key');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showNotification(response.data, 'error');
+                }
+            },
+            error: function(xhr) {
+                showNotification('Error saving access key. Please try again.', 'error');
+            }
+        });
+
+        setTimeout(() => {
+            $('#wpaa_save_key_button').prop('disabled', false);
+            $('#wpaa_save_key_button').text('Save Access Key');
+        }, 2000);
+    });
+
+    
 
 });
 

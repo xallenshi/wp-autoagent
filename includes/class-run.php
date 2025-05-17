@@ -1,8 +1,6 @@
 <?php
 namespace WPAutoAgent\Core;
 
-use WPAutoAgent\Core\API;
-
 class Run {
     private $table_conversation;
 

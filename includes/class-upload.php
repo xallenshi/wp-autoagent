@@ -1,8 +1,6 @@
 <?php
 namespace WPAutoAgent\Core;
 
-use WPAutoAgent\Core\API;
-
 class Upload {
     private $table_article;
 

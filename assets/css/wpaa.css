@@ -259,16 +259,30 @@
     justify-content: center;
 }
 
+.wpaa-modal-header {
+    text-align: center;
+    background-color: #007bff;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px 5px 0 0;
+}
+
 .wpaa-modal {
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 32px rgba(0,0,0,0.2);
     max-width: 500px;
     width: 90vw;
-    padding: 30px 24px 24px 24px;
+    padding: 20px;
     position: relative;
     z-index: 10001;
     animation: wpaaModalIn 0.2s;
+}
+
+.wpaa-modal-content {
+    line-height: 2;
 }
 
 @keyframes wpaaModalIn {
@@ -290,6 +304,13 @@
 }
 .wpaa-modal-close:hover {
     color: #d00;
+}
+
+.wpaa-modal-button {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin: 30px;
 }
 
 .wpaa-textarea {
@@ -335,3 +356,19 @@
     background: #222;
 }
 
+
+
+/* Button Styles */
+#wpaa_publish_agent_button[disabled],
+#wpaa_create_agent_button[disabled],
+#wpaa_save_key_button[disabled] {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+#wpaa_publish_agent_button:not([disabled]),
+#wpaa_create_agent_button:not([disabled]), 
+#wpaa_save_key_button:not([disabled]) {
+    background-color: #007bff;
+    cursor: pointer;
+}

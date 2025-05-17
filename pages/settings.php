@@ -4,7 +4,7 @@
         <ul>
             <li data-page="create">Manage Agent</li>
             <li data-page="publish">Publish Agent</li>
-            <li data-page="access">Access Key</li>
+            <li data-page="key">Access Key</li>
         </ul>
     </div>
 
@@ -19,8 +19,8 @@
             <?php include(WP_AUTOAGENT_PLUGIN_DIR . 'pages/publish.php'); ?>
         </div>
 
-        <div class="wpaa-page" id="wpaa_access" style="display: none;">
-            <?php include(WP_AUTOAGENT_PLUGIN_DIR . 'pages/access.php'); ?>
+        <div class="wpaa-page" id="wpaa_key" style="display: none;">
+            <?php include(WP_AUTOAGENT_PLUGIN_DIR . 'pages/key.php'); ?>
         </div>
     </div>
 </div>
