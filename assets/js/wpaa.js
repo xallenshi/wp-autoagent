@@ -466,12 +466,9 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    showNotification(response.data, 'success');
-                    $('#wpaa_save_key_button').prop('disabled', false);
-                    $('#wpaa_save_key_button').text('Save Access Key');
                     setTimeout(() => {
-                        location.reload();
-                    }, 2000);
+                        showNotification(response.data, 'success');
+                    }, 1000);
                 } else {
                     showNotification(response.data, 'error');
                 }
@@ -487,7 +484,7 @@ jQuery(document).ready(function($) {
         }, 2000);
     });
 
-    
+
 
 });
 

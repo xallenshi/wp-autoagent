@@ -24,7 +24,9 @@ class Key {
         $access_key = sanitize_text_field($_POST['access_key']);    
 
         $db_handler = new DBHandler();
-        $db_handler->update_global_setting(array('access_key' => $access_key));
+        $global_setting = $db_handler->get_global_setting();
+        $global_setting->access_key = $access_key;
+        $db_handler->update_global_setting($global_setting);
         wp_send_json_success('The access key has been saved.');
     }
 }
