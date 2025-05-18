@@ -3,6 +3,11 @@ namespace WPAutoAgent\Core;
 
 class Run {
     private $table_conversation;
+    // Map function call names to handler methods
+    private $function_map = [
+        'wpaa_track_order' => 'wpaa_track_order',
+        // Add more mappings here as you add new functions
+    ];
 
     public function __construct() {
         $this->table_conversation = Config::get_table_name('conversation');
@@ -87,20 +92,52 @@ class Run {
             return;
         } else {
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
+            
+            $type = $api_response_body['type'] ?? null;
             $response_id = $api_response_body['response_id'] ?? null;
             $api_msg = $api_response_body['message'];
             $source = $api_response_body['source'];
             $score = $api_response_body['score'] ?? 0;
+
+            $function_call_name = null;
+            $function_call_args = null;
+            $function_call_result = null;
+
+            if ($type == 'function_call') {
+                $call_id = $api_response_body['call_id'] ?? null;
+                $function_call_name = $api_response_body['function_call']['name'] ?? null;
+                $function_call_args = $api_response_body['function_call']['arguments'] ?? null;
+
+                // Decode arguments as associative array
+                $args = json_decode($function_call_args, true) ?: [];
+
+                // Dynamic function dispatch
+                if (isset($this->function_map[$function_call_name]) && method_exists($this, $this->function_map[$function_call_name])) {
+                    $function_call_result = call_user_func([$this, $this->function_map[$function_call_name]], $args);
+                } else {
+                    $function_call_result = 'Unknown function: ' . $function_call_name;
+                }
+            }
+
 
             //error_log('api_response_body: ' . print_r($api_response_body, true));
 
             // Save file info including file_id and vector_id to table_article
             $conversation_id = $this->save_conversation($agent_id, $response_id, $content, $api_msg, $source, $score);
 
-            wp_send_json_success($api_msg . ' --- ' . $source . ' [' . $score . ']');
+            wp_send_json_success($api_msg . ' --- ' . $source . ' [' . $score . ']' . ' --- ' . $function_call_name . ' --- ' . $function_call_args);
             return;
         }
 
+    }
+
+    // Accepts an associative array of arguments
+    public function wpaa_track_order($args) {
+        $order_id = $args['order_id'] ?? null;
+        if (!$order_id) {
+            return 'Missing order_id';
+        }
+        return 'Order status: Shipping';
     }
 
 
