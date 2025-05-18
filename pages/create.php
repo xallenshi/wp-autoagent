@@ -6,6 +6,8 @@ $db_handler = new DBHandler();
 $articles = $db_handler->get_articles();
 $functions = $db_handler->get_functions();
 
+error_log('functions: ' . print_r($functions, true));
+
 ?>
 
 
@@ -90,7 +92,7 @@ $functions = $db_handler->get_functions();
             foreach ($functions as $function) {
                 ?>
                 <div>
-                    <input disabled type="checkbox" id="<?php echo esc_attr($function->id); ?>" name="functions[]" value="<?php echo esc_attr($function->id); ?>">
+                    <input type="checkbox" id="<?php echo esc_attr($function->id); ?>" name="functions[]" value="<?php echo esc_attr($function->id); ?>">
                     <label for="function_<?php echo esc_attr($function->id); ?>">
                         <?php echo esc_html($function->name); ?> - <?php echo esc_html($function->description); ?>
                     </label>

@@ -46,13 +46,13 @@ class Run {
         $agent_id = $agent->id;
         $model = $agent->model;
         $instructions = $agent->instructions;
-        error_log('agent->tools: ' . $agent->tools);
 
         $tools = json_decode($agent->tools, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
             error_log('JSON DECODE ERROR: ' . json_last_error_msg());
+            wp_send_json_error('Failed to decode tools definition.');
+            return;
         }
-        error_log('tools: ' . print_r($tools, true));
 
         #keep conversation state
         $session_id = $this->wpaa_get_session_id();
