@@ -10,12 +10,12 @@ from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
 logging.basicConfig(level=logging.ERROR)
+logger = logging.getLogger()
 
+# Initialize AWS clients
 ssm = boto3.client('ssm')
 sqs = boto3.client('sqs')
 SQS_QUEUE_URL = os.environ['WPAA_Qdrant_Queue_URL']
-
-logging.error('started!')
 
 def get_openai_key(user_access_key):
     try:
@@ -26,10 +26,10 @@ def get_openai_key(user_access_key):
         return response['Parameter']['Value']
     except ClientError as e:
         if e.response['Error']['Code'] == 'ParameterNotFound':
-            logging.error(f"ssm.Parameter not found: {str(e)}")
+            logger.error(f"ssm.Parameter not found: {str(e)}")
             return None
     except Exception as e:
-        logging.error(f"Unexpected ssm.get_parameter error: {str(e)}")
+        logger.error(f"Unexpected ssm.get_parameter error: {str(e)}")
         return None
 
 def get_qdrant_credentials():
@@ -41,10 +41,11 @@ def get_qdrant_credentials():
         params = {p['Name']: p['Value'] for p in response['Parameters']}
         return params.get('qdrant_url'), params.get('qdrant_api_key')
     except Exception as e:
-        logging.error(f"Error getting Qdrant credentials: {str(e)}")
+        logger.error(f"Error getting Qdrant credentials: {str(e)}")
         return None, None
 
 def lambda_handler(event, context):
+    # Initial setup
     user_access_key = event.get('headers', {}).get('x-access-key')
     if not user_access_key:
         return {'status_code': 401, 'message': '[System] No Access Key!'}
@@ -53,31 +54,32 @@ def lambda_handler(event, context):
     if not api_key:
         return {'status_code': 403, 'message': '[System] Unauthorized!'}
 
-    client = OpenAI(api_key=api_key)
-
     if 'body' not in event:
         return {'status_code': 400, 'message': 'No body found in the request'}
-
+    
     body = json.loads(event['body'])
-    model = body.get('model', 'gpt-4o-mini')
+    model = body.get('model', 'gpt-4o')
     instructions = body.get('instructions')
     content = body.get('content')
+    tools = body.get('tools', [])
+
+    logger.error(f"Received body: {body}")
     
     if not content:
         return {'status_code': 400, 'message': 'No content found in the request'}
 
-    logging.error('ready!')
-    # Initialize Qdrant client and embedding variables
+    client = OpenAI(api_key=api_key)
     qdrant_url, qdrant_api_key = get_qdrant_credentials()
-    logging.error('got credentials!')
     embedding = None
-    
+
+    # Step 1: Qdrant similarity search
     if qdrant_url and qdrant_api_key:
         try:
-            # Initialize client directly (no context manager)
+            # Initialize client without context manager
             qdrant_client = QdrantClient(
                 url=qdrant_url,
-                api_key=qdrant_api_key
+                api_key=qdrant_api_key,
+                timeout=10
             )
             
             embedding = client.embeddings.create(
@@ -85,78 +87,104 @@ def lambda_handler(event, context):
                 model="text-embedding-3-small",
                 dimensions=384
             ).data[0].embedding
-            logging.error('embedded!')
-            
+
             search_result = qdrant_client.search(
                 collection_name=user_access_key,
                 query_vector=embedding,
                 limit=1,
                 score_threshold=0.7
             )
-            logging.error('searched!')
-            
+
             if search_result:
-                payload = search_result[0].payload
-                qdrant_client.close()  # Manually close
                 return {
                     'status_code': 200,
-                    'message': payload.get('answer'),
+                    'message': search_result[0].payload.get('answer'),
                     'source': 'qdrant',
                     'score': search_result[0].score
                 }
-                logging.error('returned from qdrant!')
-                
-            qdrant_client.close()  # Close if no match found
-            
         except Exception as e:
-            logging.error(f"Qdrant operation error: {str(e)}")
-            if 'qdrant_client' in locals():
-                qdrant_client.close()
+            logger.error(f"Qdrant operation error: {str(e)}")
 
+    # Step 2: OpenAI response with function calling
+    logger.error(f"OpenAI tools: {tools}")
+    print("Type of tools:", type(tools))
 
-    logging.error('calling openai!')
-    # Prepare and make OpenAI call
+    tools1 = [{
+        "type": "function",
+        "name": "wpaa_track_order",
+        "description": "Track order status",
+        "parameters": {
+                "type": "object",
+                "properties": {
+                "order_id": {
+                    "type": "string",
+                    "description": "Order # (e.g. #12345)"
+                    }
+                },
+                "required": ["order_id"],
+                "additionalProperties": False
+                }
+    }]
+
     try:
+        instructions += "If your response is a follow-up message intended to request missing information needed to call a function, set the value of the 'type' field in your response to 'follow-up'."
         response = client.responses.create(
             model=model,
-            input=[{'role': 'system', 'content': instructions},
-                   {'role': 'user', 'content': content}],
-            tools=body.get('tools'),
+            input=[
+                {"role": "system", "content": instructions},
+                {"role": "user", "content": content}
+            ],
+            tools=tools,
             previous_response_id=body.get('response_id')
         )
+        
+        logger.error(f"OpenAI response: {response}")
 
-        # Extract message from response
-        message = next(
-            (c.text for item in response.output 
-             if item.type == 'message' and item.role == 'assistant'
-             for c in (item.content if hasattr(item, 'content') else [])
-             if c.type == 'output_text'),
-            None
-        )
+        # Process tool calls
+        previous_response_id = response.previous_response_id
+        logger.error(f"Previous response ID: {previous_response_id}")
 
-        logging.error('response from openai!')
-        # Send to SQS for async processing if we have all required data
-        if qdrant_url and qdrant_api_key and embedding and message:
-            sqs.send_message(
-                QueueUrl=SQS_QUEUE_URL,
-                MessageBody=json.dumps({
-                    'collection_name': user_access_key,
-                    'embedding': embedding,
-                    'content': content,
+        for item in response.output:
+            if item.type == "function_call":
+                return {
+                    'status_code': 200,
+                    'type': 'function_call',
+                    'message': item.name,
+                    'source': 'openai',
+                    'function_call': {
+                        'name': item.name,
+                        'arguments': item.arguments
+                    }
+                }
+            
+            if item.type == "message" and item.role == "assistant":
+                message = next(
+                    (c.text for c in item.content if c.type == "output_text"),
+                    None
+                )
+                
+                if not previous_response_id and message and embedding and qdrant_url and qdrant_api_key:
+                    sqs.send_message(
+                        QueueUrl=SQS_QUEUE_URL,
+                        MessageBody=json.dumps({
+                            'collection_name': user_access_key,
+                            'embedding': embedding,
+                            'content': content,
+                            'message': message,
+                            'timestamp': time.time()
+                        })
+                    )
+                
+                return {
+                    'status_code': 200,
+                    'type': 'message',
+                    'response_id': response.id,
                     'message': message,
-                    'timestamp': time.time()
-                })
-            )
-            logging.error("Sending to SQS for async processing")
+                    'source': 'openai'
+                }
 
-        logging.error('returned from openai!')
-        return {
-            'status_code': 200,
-            'response_id': response.id,
-            'message': message,
-            'source': 'openai'
-        }
+        return {'status_code': 500, 'message': 'No valid response generated'}
 
     except Exception as e:
-        logging.error(f"OpenAI call failed: {str(e)}")
-        return {'status_code': 500, 'message': f'Error processing request: {str(e)}'}
+        logger.error(f"OpenAI call failed: {str(e)}")
+        return {'status': 503, 'status_code': 500, 'message': f'Error processing request: {str(e)}', 'source': 'openai'}

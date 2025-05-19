@@ -19,6 +19,41 @@ class Run {
         add_action('wp_ajax_nopriv_wpaa_run_the_agent', array($this, 'wpaa_run_the_agent'));
     }
 
+    private function call_lambda_api($body) {
+        $api_url = 'https://jebcqgsrc7k5wffddjuof6feke0edirw.lambda-url.ap-southeast-2.on.aws/';
+
+        $db_handler = new DBHandler();
+        $access_key = $db_handler->get_access_key();
+        if(!$access_key) {
+            wp_send_json_error('Invalid access key.');
+            return;
+        }
+
+        $headers = array(
+            'Content-Type' => 'application/json',
+            'x-access-key' => $access_key
+        );
+
+        $response = wp_remote_post($api_url, array(
+            'method' => 'POST',
+            'body' => json_encode($body),
+            'headers' => $headers,
+            'timeout' => 60,
+        ));
+
+        if (is_wp_error($response)) {
+            $api_error_msg = $response->get_error_message(); 
+            return false;
+        }
+
+        if (wp_remote_retrieve_response_code($response) != 200) {
+            return false;
+        }
+
+        return $response;
+    }
+
+
     public function wpaa_run_agent() {
 
         if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
@@ -28,13 +63,6 @@ class Run {
 
         if (!isset($_POST['agent_id'])) {
             wp_send_json_error('No agent id provided.');
-            return;
-        }
-
-        $db_handler = new DBHandler();
-        $access_key = $db_handler->get_access_key();
-        if(!$access_key) {
-            wp_send_json_error('Invalid access key.');
             return;
         }
 
@@ -58,80 +86,90 @@ class Run {
         $session_id = $this->wpaa_get_session_id();
         $response_id = $db_handler->get_latest_response_id($agent_id, $session_id);
         #add system level instructions
-        #$input[] = array('role' => 'system', 'content' => $instructions);
+        $input[] = array('role' => 'system', 'content' => $instructions);
         #add user question
-        #$input[] = array('role' => 'user', 'content' => $content);
+        $input[] = array('role' => 'user', 'content' => $content);
 
         // make a rest api call to Lambda function to run the agent
-        $api_url = 'https://jebcqgsrc7k5wffddjuof6feke0edirw.lambda-url.ap-southeast-2.on.aws/';
-        $api_response = wp_remote_post($api_url, array(
-            'method' => 'POST',
-            #'body' => json_encode(array('model' => $model, 'input' => $input, 'tools' => $tools, 'response_id' => $response_id)),
-            'body' => json_encode(array('model' => $model, 'instructions' => $instructions, 'content' => $content, 'tools' => $tools, 'response_id' => $response_id)),
-            'headers' => array(
-                'Content-Type' => 'application/json',
-                'x-access-key' => $access_key,
-            ),
-            'timeout' => 60,
-        ));
-
-        //error_log('api_response: ' . print_r($api_response, true));
-        if (is_wp_error($api_response)) {
-            $api_error_msg = $api_response->get_error_message(); 
-            wp_send_json_error('Failed to complete the api call with error: ' . $api_error_msg);
+        $api_body = array(
+            'model' => $model,
+            'question' => $content,
+            'input' => $input,
+            'tools' => $tools,
+            'response_id' => $response_id
+        );
+        
+        $api_response = $this->call_lambda_api($api_body);
+        if(!$api_response) {
+            wp_send_json_error('Failed to run agent.');
             return;
         }
 
-        if (wp_remote_retrieve_response_code($api_response) != 200) {
-            wp_send_json_error('Failed to run agent.');
+        $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
+        $type = $api_response_body['type'] ?? null;
+        $response_id = $api_response_body['response_id'] ?? null;
+        $api_msg = $api_response_body['message'];
+        $source = $api_response_body['source'] ?? null;
+        $score = $api_response_body['score'] ?? 0;
+
+        if (!$type) {
+            wp_send_json_error($api_msg);
             return;
-        } else {
+        }
+
+        if ($type == 'message') {
+            $conversation_id = $this->save_conversation($agent_id, $response_id, $content, $api_msg, $source, $score);
+            wp_send_json_success($api_msg . ' --- ' . $source . ' [' . $score . ']');
+            return;
+        } 
+
+        if ($type == 'function_call') {
+
+            $call_id = $api_response_body['call_id'] ?? null;
+            $function_call_name = $api_response_body['function_call']['name'] ?? null;
+            $function_call_args = $api_response_body['function_call']['arguments'] ?? null;
+
+            // Decode arguments as associative array
+            $args = json_decode($function_call_args, true) ?: [];
+
+            // Dynamic function dispatch
+            if (isset(\WPAutoAgent\Core\FunctionHandler::$function_map[$function_call_name])) {
+                $callable = \WPAutoAgent\Core\FunctionHandler::$function_map[$function_call_name][1];           
+                if (method_exists('\WPAutoAgent\Core\FunctionHandler', $callable)) {
+                    $function_call_result = \WPAutoAgent\Core\FunctionHandler::$callable($args);
+                } else {
+                    error_log('Function not callable: ' . $function_call_name);
+                }
+            } else {
+                error_log('Unknown function: ' . $function_call_name);
+            }
+
+            $input[] = array(
+                "type" => "function_call_output",
+                "call_id" => $call_id,
+                "output" => $function_call_result
+            );
+
+            // make a rest api call to Lambda function to run the agent (after function_call)
+            $api_body = array(
+                'model' => $model,
+                'input' => $input,
+                'tools' => $tools,
+                'response_id' => $response_id
+            );
+            $api_response = $this->call_lambda_api($api_body);
             $api_response_body = json_decode(wp_remote_retrieve_body($api_response), true);
-            
+                
             $type = $api_response_body['type'] ?? null;
             $response_id = $api_response_body['response_id'] ?? null;
             $api_msg = $api_response_body['message'];
             $source = $api_response_body['source'];
             $score = $api_response_body['score'] ?? 0;
+            wp_send_json_success($api_msg . ' --- ' . $source . ' [' . $function_call_name . ']');
 
-            $function_call_name = null;
-            $function_call_args = null;
-            $function_call_result = null;
-
-            if ($type == 'function_call') {
-                $call_id = $api_response_body['call_id'] ?? null;
-                $function_call_name = $api_response_body['function_call']['name'] ?? null;
-                $function_call_args = $api_response_body['function_call']['arguments'] ?? null;
-
-                // Decode arguments as associative array
-                $args = json_decode($function_call_args, true) ?: [];
-
-                // Dynamic function dispatch
-                if (isset(\WPAutoAgent\Core\FunctionHandler::$function_map[$function_call_name])) {
-                    $callable = \WPAutoAgent\Core\FunctionHandler::$function_map[$function_call_name][1];           
-                    if (method_exists('\WPAutoAgent\Core\FunctionHandler', $callable)) {
-                        $function_call_result = \WPAutoAgent\Core\FunctionHandler::$callable($args);
-                    } else {
-                        $function_call_result = 'Function not callable: ' . $function_call_name;
-                    }
-                } else {
-                    $function_call_result = 'Unknown function: ' . $function_call_name;
-                }
-
-                error_log('function_call_result: ' . $function_call_result);
-            }
-
-
-            //error_log('api_response_body: ' . print_r($api_response_body, true));
-
-            // Save file info including file_id and vector_id to table_article
-            $conversation_id = $this->save_conversation($agent_id, $response_id, $content, $api_msg, $source, $score);
-
-            wp_send_json_success($api_msg . ' --- ' . $source . ' [' . $score . ']' . ' --- ' . $function_call_name . ' --- ' . $function_call_args);
-            return;
         }
-
     }
+
 
     public function wpaa_run_the_agent($request_id, $object1, $object2) {
 
@@ -375,6 +413,6 @@ class Run {
         return $session_id;
     }
 
-
+    
 
 }

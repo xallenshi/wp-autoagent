@@ -15,7 +15,7 @@ class FunctionHandler {
         if (!$order_id) {
             return 'Missing order_id';
         }
-        return 'Order status: Shipping';
+        return 'Order status: Cancelled';
     }
 
     public static function internal_function_sumbit_form($args) {
