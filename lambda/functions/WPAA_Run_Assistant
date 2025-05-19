@@ -48,34 +48,51 @@ def lambda_handler(event, context):
     # Initial setup
     user_access_key = event.get('headers', {}).get('x-access-key')
     if not user_access_key:
-        return {'status_code': 401, 'message': '[System] No Access Key!'}
+        return {
+            'statusCode': 401,
+            'body': json.dumps({'status_code': 401, 'message': '[System] No Access Key!', 'type': 'error'})
+        }
 
     api_key = get_openai_key(user_access_key)
     if not api_key:
-        return {'status_code': 403, 'message': '[System] Unauthorized!'}
+        return {
+            'statusCode': 403,
+            'body': json.dumps({'status_code': 403, 'message': '[System] Unauthorized!', 'type': 'error'})
+        }
 
     if 'body' not in event:
-        return {'status_code': 400, 'message': 'No body found in the request'}
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'status_code': 400, 'message': 'No body found in the request', 'type': 'error'})
+        }
     
-    body = json.loads(event['body'])
-    model = body.get('model', 'gpt-4o')
-    instructions = body.get('instructions')
-    content = body.get('content')
+    try:
+        body = json.loads(event['body'])
+    except json.JSONDecodeError:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'status_code': 400, 'message': 'Invalid JSON body', 'type': 'error'})
+        }
+        
+    model = body.get('model', 'gpt-4')
+    question = body.get('question') or body.get('content')  # Handle both field names
+    input_messages = body.get('input', [])
     tools = body.get('tools', [])
+    previous_response_id = body.get('response_id')
 
-    logger.error(f"Received body: {body}")
-    
-    if not content:
-        return {'status_code': 400, 'message': 'No content found in the request'}
+    if not question and not input_messages:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'status_code': 400, 'message': 'No content found in the request', 'type': 'error'})
+        }
 
     client = OpenAI(api_key=api_key)
     qdrant_url, qdrant_api_key = get_qdrant_credentials()
     embedding = None
 
-    # Step 1: Qdrant similarity search
-    if qdrant_url and qdrant_api_key:
+    # Step 1: Qdrant similarity search (only for new questions, not function call follow-ups)
+    if question and qdrant_url and qdrant_api_key:
         try:
-            # Initialize client without context manager
             qdrant_client = QdrantClient(
                 url=qdrant_url,
                 api_key=qdrant_api_key,
@@ -83,7 +100,7 @@ def lambda_handler(event, context):
             )
             
             embedding = client.embeddings.create(
-                input=content,
+                input=question,
                 model="text-embedding-3-small",
                 dimensions=384
             ).data[0].embedding
@@ -97,94 +114,100 @@ def lambda_handler(event, context):
 
             if search_result:
                 return {
-                    'status_code': 200,
-                    'message': search_result[0].payload.get('answer'),
-                    'source': 'qdrant',
-                    'score': search_result[0].score
+                    'statusCode': 200,
+                    'body': json.dumps({
+                        'status_code': 200,
+                        'type': 'message',
+                        'message': search_result[0].payload.get('answer'),
+                        'source': 'qdrant',
+                        'score': search_result[0].score,
+                        'response_id': previous_response_id  # Maintain the same response_id
+                    })
                 }
         except Exception as e:
             logger.error(f"Qdrant operation error: {str(e)}")
 
-    # Step 2: OpenAI response with function calling
-    logger.error(f"OpenAI tools: {tools}")
-    print("Type of tools:", type(tools))
-
-    tools1 = [{
-        "type": "function",
-        "name": "wpaa_track_order",
-        "description": "Track order status",
-        "parameters": {
-                "type": "object",
-                "properties": {
-                "order_id": {
-                    "type": "string",
-                    "description": "Order # (e.g. #12345)"
-                    }
-                },
-                "required": ["order_id"],
-                "additionalProperties": False
-                }
-    }]
-
+    # Step 2: OpenAI responses API call
     try:
-        instructions += "If your response is a follow-up message intended to request missing information needed to call a function, set the value of the 'type' field in your response to 'follow-up'."
+        # Prepare the input for the responses API
         response = client.responses.create(
             model=model,
-            input=[
-                {"role": "system", "content": instructions},
-                {"role": "user", "content": content}
-            ],
+            input=input_messages,
             tools=tools,
-            previous_response_id=body.get('response_id')
+            previous_response_id=previous_response_id
         )
         
         logger.error(f"OpenAI response: {response}")
 
-        # Process tool calls
-        previous_response_id = response.previous_response_id
-        logger.error(f"Previous response ID: {previous_response_id}")
-
+        # Process the response
         for item in response.output:
             if item.type == "function_call":
                 return {
-                    'status_code': 200,
-                    'type': 'function_call',
-                    'message': item.name,
-                    'source': 'openai',
-                    'function_call': {
-                        'name': item.name,
-                        'arguments': item.arguments
-                    }
+                    'statusCode': 200,
+                    'body': json.dumps({
+                        'status_code': 200,
+                        'type': 'function_call',
+                        'message': 'function called',
+                        'call_id': item.call_id,
+                        'function_call': {
+                            'name': item.name,
+                            'arguments': item.arguments
+                        },
+                        'response_id': response.id
+                    })
                 }
             
             if item.type == "message" and item.role == "assistant":
-                message = next(
+                # Find the text content in the message
+                message_content = next(
                     (c.text for c in item.content if c.type == "output_text"),
                     None
                 )
                 
-                if not previous_response_id and message and embedding and qdrant_url and qdrant_api_key:
+                # Only store new questions, not follow-up messages
+                if message_content and embedding and qdrant_url and qdrant_api_key and question:
                     sqs.send_message(
                         QueueUrl=SQS_QUEUE_URL,
                         MessageBody=json.dumps({
                             'collection_name': user_access_key,
                             'embedding': embedding,
-                            'content': content,
-                            'message': message,
+                            'content': question,
+                            'message': message_content,
                             'timestamp': time.time()
                         })
                     )
                 
                 return {
-                    'status_code': 200,
-                    'type': 'message',
-                    'response_id': response.id,
-                    'message': message,
-                    'source': 'openai'
+                    'statusCode': 200,
+                    'body': json.dumps({
+                        'status_code': 200,
+                        'type': 'message',
+                        'response_id': response.id,
+                        'message': message_content,
+                        'source': 'openai',
+                        'score': 1.0  # Default score for direct OpenAI responses
+                    })
                 }
 
-        return {'status_code': 500, 'message': 'No valid response generated'}
+        # If we get here, no valid response was found
+        return {
+            'statusCode': 500,
+            'body': json.dumps({
+                'status_code': 500,
+                'message': 'No valid response generated',
+                'type': 'error',
+                'source': 'openai'
+            })
+        }
 
     except Exception as e:
         logger.error(f"OpenAI call failed: {str(e)}")
-        return {'status': 503, 'status_code': 500, 'message': f'Error processing request: {str(e)}', 'source': 'openai'}
+        return {
+            'statusCode': 500,
+            'body': json.dumps({
+                'status_code': 500,
+                'message': f'Error processing request: {str(e)}',
+                'type': 'error',
+                'source': 'openai'
+            })
+        }
