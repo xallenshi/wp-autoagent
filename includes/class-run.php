@@ -3,11 +3,6 @@ namespace WPAutoAgent\Core;
 
 class Run {
     private $table_conversation;
-    // Map function call names to handler methods
-    private $function_map = [
-        'wpaa_track_order' => 'wpaa_track_order',
-        // Add more mappings here as you add new functions
-    ];
 
     public function __construct() {
         $this->table_conversation = Config::get_table_name('conversation');
@@ -112,11 +107,18 @@ class Run {
                 $args = json_decode($function_call_args, true) ?: [];
 
                 // Dynamic function dispatch
-                if (isset($this->function_map[$function_call_name]) && method_exists($this, $this->function_map[$function_call_name])) {
-                    $function_call_result = call_user_func([$this, $this->function_map[$function_call_name]], $args);
+                if (isset(\WPAutoAgent\Core\FunctionHandler::$function_map[$function_call_name])) {
+                    $callable = \WPAutoAgent\Core\FunctionHandler::$function_map[$function_call_name][1];           
+                    if (method_exists('\WPAutoAgent\Core\FunctionHandler', $callable)) {
+                        $function_call_result = \WPAutoAgent\Core\FunctionHandler::$callable($args);
+                    } else {
+                        $function_call_result = 'Function not callable: ' . $function_call_name;
+                    }
                 } else {
                     $function_call_result = 'Unknown function: ' . $function_call_name;
                 }
+
+                error_log('function_call_result: ' . $function_call_result);
             }
 
 
@@ -130,17 +132,6 @@ class Run {
         }
 
     }
-
-    // Accepts an associative array of arguments
-    public function wpaa_track_order($args) {
-        $order_id = $args['order_id'] ?? null;
-        if (!$order_id) {
-            return 'Missing order_id';
-        }
-        return 'Order status: Shipping';
-    }
-
-
 
     public function wpaa_run_the_agent($request_id, $object1, $object2) {
 
