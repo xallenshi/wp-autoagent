@@ -123,12 +123,8 @@ class Create {
         // Add function tools
         foreach ($function_ids as $function_id) {
             $function_data = $db_handler->get_function_by_id($function_id);
-
             if ($function_data) {
-                $tools[] = array(
-                    'type' => 'function',
-                    'function' => json_decode($function_data->definition, true)
-                );
+                $tools[] = json_decode($function_data->definition, true);
             }
         }
 
