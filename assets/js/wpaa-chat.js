@@ -63,6 +63,8 @@ function linkify(text) {
         displayUrl = displayUrl.replace(/[.,;:!?]+$/, '');
         return `<a href="${href}" target="_blank" rel="noopener noreferrer">${displayUrl}</a>`;
     });
+    // Unescape single-escaped \'
+    linked = linked.replace(/\\'/g, "'");
     // Replace newlines with <br>
     return linked.replace(/\n/g, '<br>');
 }

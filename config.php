@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 
 
 if (!defined('WPAA_CHAT_HISTORY_RANGE')) {
-    define('WPAA_CHAT_HISTORY_RANGE', 300);
+    define('WPAA_CHAT_HISTORY_RANGE', 60);
 }
 
 // You can add more configuration constants here as needed

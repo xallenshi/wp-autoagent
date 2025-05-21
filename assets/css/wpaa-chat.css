@@ -184,8 +184,7 @@
 }
 
 .wpaa-chat-input-container textarea {
-    height: 52px;
-    min-height: 52px !important;
+    height: 70px;
     max-height: 150px !important;
     resize: none !important; 
     overflow-y: auto !important;
