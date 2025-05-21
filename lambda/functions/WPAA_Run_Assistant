@@ -141,6 +141,45 @@ def lambda_handler(event, context):
 
         # Process the response
         for item in response.output:
+
+            if item.type == "message" and item.role == "assistant":
+                # Find the text content in the message
+                answer = None
+                file_citation = False
+
+                for c in item.content:
+                    if c.type == "output_text":
+                        answer = c.text
+                    if getattr(c, "annotations", None):
+                        file_citation = True
+                    if answer is not None:
+                        break  
+                
+                # Only store new questions from file_citation, not follow-up messages
+                if question and answer and embedding and file_citation and qdrant_url and qdrant_api_key:
+                    sqs.send_message(
+                        QueueUrl=SQS_QUEUE_URL,
+                        MessageBody=json.dumps({
+                            'collection_name': user_access_key,
+                            'embedding': embedding,
+                            'content': question,
+                            'message': answer,
+                            'timestamp': time.time()
+                        })
+                    )
+                
+                return {
+                    'statusCode': 200,
+                    'body': json.dumps({
+                        'status_code': 200,
+                        'type': 'message',
+                        'response_id': response.id,
+                        'message': answer,
+                        'source': 'openai',
+                        'score': 1.0  # Default score for direct OpenAI responses
+                    })
+                }
+            
             if item.type == "function_call":
                 return {
                     'statusCode': 200,
@@ -154,38 +193,6 @@ def lambda_handler(event, context):
                             'arguments': item.arguments
                         },
                         'response_id': response.id
-                    })
-                }
-            
-            if item.type == "message" and item.role == "assistant":
-                # Find the text content in the message
-                message_content = next(
-                    (c.text for c in item.content if c.type == "output_text"),
-                    None
-                )
-                
-                # Only store new questions, not follow-up messages
-                if message_content and embedding and qdrant_url and qdrant_api_key and question:
-                    sqs.send_message(
-                        QueueUrl=SQS_QUEUE_URL,
-                        MessageBody=json.dumps({
-                            'collection_name': user_access_key,
-                            'embedding': embedding,
-                            'content': question,
-                            'message': message_content,
-                            'timestamp': time.time()
-                        })
-                    )
-                
-                return {
-                    'statusCode': 200,
-                    'body': json.dumps({
-                        'status_code': 200,
-                        'type': 'message',
-                        'response_id': response.id,
-                        'message': message_content,
-                        'source': 'openai',
-                        'score': 1.0  # Default score for direct OpenAI responses
                     })
                 }
 
