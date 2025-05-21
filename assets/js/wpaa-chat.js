@@ -133,6 +133,7 @@ jQuery(document).ready(function($) {
                 show(chatPopup);
                 scrollToBottom(chatHistory);
                 hide(chatIcon);
+                chatInput.focus();
             });
             closeButton.addEventListener('click', function() {
                 hide(chatPopup);
@@ -225,9 +226,7 @@ jQuery(document).ready(function($) {
                 hide(chatPopup);
             });
 
-            
 
-            
         },
         error: function(xhr, status, error) {
             console.error('Error checking page scope:', error);

@@ -44,11 +44,11 @@ error_log('functions: ' . print_r($functions, true));
         <label for="name">AI Agent Name</label>
         <input type="text" id="name" name="name" required>
 
-        <label for="instructions">Agent Instructions</label>
-        <textarea id="instructions" name="instructions" class="wpaa-textarea" required></textarea>
-
         <label for="greeting_message">Greeting Message</label>
         <textarea id="greeting_message" name="greeting_message" class="wpaa-textarea" required></textarea>
+
+        <label for="instructions">Agent Instructions</label>
+        <textarea id="instructions" name="instructions" class="wpaa-textarea" required></textarea>
 
         <label for="model">Model</label>
         <select id="model" name="model">
