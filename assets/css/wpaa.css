@@ -108,6 +108,10 @@
     margin-bottom: 10px;
 }
 
+.wpaa-plugin-container select {
+    max-width: 100%;
+}
+
 
 
 /* Multiselect Styles */
@@ -124,7 +128,7 @@
 
 .wpaa-publish-scope-container select[multiple] {
     padding: 5px;
-    width: 200px;
+    width: 100%;
     height: 200px;
 }
 
@@ -428,5 +432,5 @@
 }
 .wpaa-row input[type="radio"], .wpaa-row input[type="checkbox"] {
     /* Fine-tune vertical alignment */
-    transform: translateY(4px);
+    transform: translateY(3px);
 }
