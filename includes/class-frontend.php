@@ -14,6 +14,7 @@ class Frontend {
         wp_enqueue_script('wpaa-js', WP_AUTOAGENT_PLUGIN_URL . 'assets/js/wpaa.js', array('jquery'), WP_AUTOAGENT_VERSION, true);
         wp_enqueue_script('wpaa-chat-js', WP_AUTOAGENT_PLUGIN_URL . 'assets/js/wpaa-chat.js', array('jquery'), WP_AUTOAGENT_VERSION, true);
         wp_enqueue_script('wpaa-function-js', WP_AUTOAGENT_PLUGIN_URL . 'assets/js/wpaa-function.js', array('jquery'), WP_AUTOAGENT_VERSION, true);
+        wp_enqueue_script('wpaa-example-js', WP_AUTOAGENT_PLUGIN_URL . 'assets/js/wpaa-example.js', array('jquery'), WP_AUTOAGENT_VERSION, true);
         
         wp_localize_script('wpaa-js', 'wpaa_setting_nonce', array(
             'nonce' => wp_create_nonce('wpaa_setting')

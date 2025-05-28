@@ -6,15 +6,13 @@ $db_handler = new DBHandler();
 $articles = $db_handler->get_articles();
 $functions = $db_handler->get_functions();
 
-error_log('functions: ' . print_r($functions, true));
-
 ?>
 
 
 <div class="wpaa-agent-list1">
-    <h2>Your AI Agents</h2>
+    <div class="wpaa-panel-header">Agent List</div>
     <ul>
-        <li><a href="#" class="agent-item" data-agent_id="new">+ New Agent</a></li>
+        <li><a href="#" data-agent_id="new">+ New Agent</a></li>
         <?php
         // Get agents from database
         $agents = $db_handler->get_agents();
@@ -22,7 +20,7 @@ error_log('functions: ' . print_r($functions, true));
             foreach ($agents as $agent) {
                 ?>
                 <li>
-                    <a href="#" class="agent-item" data-agent_id="<?php echo esc_attr($agent->id); ?>">
+                    <a href="#" data-agent_id="<?php echo esc_attr($agent->id); ?>">
                         <?php echo esc_html($agent->name); ?>
                     </a>
                 </li>
@@ -35,22 +33,39 @@ error_log('functions: ' . print_r($functions, true));
 
 <div class="wpaa-plugin-container">
     <form id="wpaa_create_agent_form" method="post" enctype="multipart/form-data">
-    <h1>Create Your AI Agent</h1>
-    <h4>The AI Agent is a large language model driven assistant assist your customers with a collection of tools and instructions in answering questions and automating tasks.</h4>
+    <h1>Create Your Agent</h1>
+    <h4>The WordPress Auto Agent is an AI-powered assistant that supports your customers by answering questions based on your knowledge articles and automating tasks through integration with popular WordPress plugins.</h4>
     
         <!-- Basic Info -->
-        <h2>Basic Info</h2>
+        <h2>Agent Settings</h2>
         <input type="hidden" id="agent_id" name="agent_id" value="">
-        <label for="name">AI Agent Name</label>
+        <label for="name">Agent Name
+          <span class="wpaa-tooltip">?
+            <span class="wpaa-tooltip-text">It will appear to your customers in the chat panel.</span>
+          </span>
+        </label>
         <input type="text" id="name" name="name" required>
 
-        <label for="greeting_message">Greeting Message</label>
+        <label for="greeting_message">Greeting Message
+            <span class="wpaa-tooltip">?
+                <span class="wpaa-tooltip-text">It will be sent to your customers in the chat panel when they start a new chat.</span>
+            </span>
+        </label>
         <textarea id="greeting_message" name="greeting_message" class="wpaa-textarea" required></textarea>
 
-        <label for="instructions">Agent Instructions</label>
+        <label for="instructions">Agent Instructions
+            <span class="wpaa-tooltip">?
+                <span class="wpaa-tooltip-text">It is guidelines provided to the AI agent to control how it behaves, responds to your customers' requests.</span>
+            </span>
+        </label>
+        <div class="wpaa-example-container">
+            <a href="#" class="wpaa-example-link" id="instructions_example1">Example 1</a>
+            <a href="#" class="wpaa-example-link" id="instructions_example2">Example 2</a>
+            <a href="#" class="wpaa-example-link" id="instructions_example3">Example 3</a>
+        </div>
         <textarea id="instructions" name="instructions" class="wpaa-textarea" required></textarea>
 
-        <label for="model">Model</label>
+        <label for="model">AI Model</label>
         <select id="model" name="model">
             <option value="gpt-4o">gpt-4o</option>
             <option value="gpt-4o-mini">gpt-4o-mini</option>
@@ -59,18 +74,23 @@ error_log('functions: ' . print_r($functions, true));
 
         <!-- Knowledge Base -->
         <h2>Knowledge Base</h2>
-        <h2>Only 1 vector store allowed for now</h2>
-        <label>Select Files</label>
+        <label>Select File
+            <span class="wpaa-tooltip">?
+                <span class="wpaa-tooltip-text">Each agent can only have one file for now. If you have multiple knowledge articles for one agent, please merge them online before uploading.</span>
+            </span>
+        </label>
         <a href="#" class="wpaa-kb-link" data-page="upload">Upload Your New Knowledge Article</a>
+
+
         <?php
-        
         if ($articles) {
             foreach ($articles as $article) {
                 ?>
-                <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <!-- <input type="radio" id="article_<?php echo esc_attr($article->id); ?>" name="articles" value="<?php echo esc_attr($article->id); ?>"> -->
-                    <input type="checkbox" id="article_<?php echo esc_attr($article->id); ?>" name="articles[]" value="<?php echo esc_attr($article->id); ?>">
-                    <label for="article_<?php echo esc_attr($article->id); ?>" ><?php echo esc_html($article->file_name); ?></label>
+                <div class="wpaa-row">
+                    <input type="radio" id="article_<?php echo esc_attr($article->id); ?>" name="articles[]" value="<?php echo esc_attr($article->id); ?>">
+                    <label for="article_<?php echo esc_attr($article->id); ?>">
+                        <?php echo strtoupper(esc_html($article->file_name)); ?>
+                    </label>
                 </div>
                 <?php
             }
@@ -80,10 +100,9 @@ error_log('functions: ' . print_r($functions, true));
             <?php
         }
         ?>
-
+        
         <!-- Function Enablement -->
         <h2>Function Enablement</h2>
-        <h2>Disabled for now</h2>
         <label>Select Functions</label>
         
         <?php
@@ -91,10 +110,10 @@ error_log('functions: ' . print_r($functions, true));
         if ($functions) {
             foreach ($functions as $function) {
                 ?>
-                <div>
-                    <input type="checkbox" id="<?php echo esc_attr($function->id); ?>" name="functions[]" value="<?php echo esc_attr($function->id); ?>">
+                <div class="wpaa-row">
+                    <input type="checkbox" id="function_<?php echo esc_attr($function->id); ?>" name="functions[]" value="<?php echo esc_attr($function->id); ?>">
                     <label for="function_<?php echo esc_attr($function->id); ?>">
-                        <?php echo esc_html($function->name); ?> - <?php echo esc_html($function->description); ?>
+                        <?php echo strtoupper(esc_html($function->name)); ?> : <?php echo esc_html($function->description); ?>
                     </label>
                 </div>
                 <?php
@@ -106,7 +125,7 @@ error_log('functions: ' . print_r($functions, true));
         }
         ?>
 
-        <button type="submit" id="wpaa_create_agent_button">Create AI Agent</button>
+        <button type="submit" id="wpaa_create_agent_button">Create Agent</button>
         <a href="#" class="wpaa-delete-agent-link" id="delete_agent_link" style="display:none;">Delete This Agent</a>
     </form>
 </div>

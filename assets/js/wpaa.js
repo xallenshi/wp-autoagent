@@ -15,6 +15,14 @@ jQuery(document).ready(function($) {
         $(this).addClass('active');
     });
 
+    // Listen for clicks on the agent list
+    $('.wpaa-agent-list1 li, .wpaa-agent-list2 li').on('click', function() {
+        // Remove 'active' class from all agents and add to the clicked one
+        $('.wpaa-agent-list1 li, .wpaa-agent-list2 li').removeClass('active');
+        $(this).addClass('active');
+    });
+
+
     // Trigger click on the first item to show it by default (Upload Article)
     $('#wpaa_setting_menu li:first').trigger('click');
 
@@ -240,9 +248,12 @@ jQuery(document).ready(function($) {
 
 
     // Agent List on Create Page
-    $(document).on('click', '.wpaa-agent-list1 .agent-item', function(e) {
-        e.preventDefault();
-        var agent_id = $(this).data('agent_id');
+    $(document).on('click', '.wpaa-agent-list1 li', function(e) {
+        // If the click was on a child <a>, prevent default
+        if ($(e.target).is('a')) {
+            e.preventDefault();
+        }
+        var agent_id = $(this).find('a').data('agent_id');
         
         // If clicking "New Agent", just open create page with blank form
         if (agent_id === 'new') {
@@ -253,8 +264,9 @@ jQuery(document).ready(function($) {
             $('#instructions').val('');
             $('#greeting_message').val('');
             $('#model').val('gpt-4o'); // Set default model
-            // Uncheck all articles
+            // Uncheck all articles and functions
             $('input[name="articles[]"]').prop('checked', false);
+            $('input[name="functions[]"]').prop('checked', false);
             // Set page title for new agent
             $('.wpaa-plugin-container h1').text('Create Your AI Agent');
             $('#wpaa_create_agent_button').text('Create AI Agent');
@@ -262,9 +274,8 @@ jQuery(document).ready(function($) {
             return;
         }
 
-        // Otherwise load existing agent
-        $('#wpaa_setting_menu li[data-page="create"]').trigger('click');
-
+        //disable the agent from first
+        $('#wpaa_create_agent_form').find('input, textarea, select').prop('disabled', true);
         // Load agent info from database
         $.ajax({
             url: ajaxurl,
@@ -296,24 +307,40 @@ jQuery(document).ready(function($) {
                             $('#article_' + article_id).prop('checked', true);
                         });
                     }
+
+                    // Check selected functions
+                    $('input[name="functions[]"]').prop('checked', false);
+                    if (response.data.function_ids) {
+                        var functionIds = JSON.parse(response.data.function_ids);
+                        functionIds.forEach(function(function_id) {
+                            $('#function_' + function_id).prop('checked', true);
+                        });
+                    }
+
                 } else {
                     showNotification('Error loading agent data', 'error');
                 }
             },
             error: function() {
                 showNotification('Error loading agent data', 'error');
+            },
+            complete: function() {
+                $('#wpaa_create_agent_form').find('input, textarea, select').prop('disabled', false);
             }
         });
     });
 
 
     // Agent List on Publish Page
-    $(document).on('click', '.wpaa-agent-list2 .agent-item', function(e) {
-        e.preventDefault();
-        var agent_id = $(this).data('agent_id');
+    $(document).on('click', '.wpaa-agent-list2 li', function(e) {
+        // If the click was on a child <a>, prevent default
+        if ($(e.target).is('a')) {
+            e.preventDefault();
+        }
+        var agent_id = $(this).find('a').data('agent_id');
         
         // Update selected state in the list
-        $('.wpaa-agent-list2 .agent-item').removeClass('active');
+        $('.wpaa-agent-list2 li').removeClass('active');
         $(this).addClass('active');
         
         // Update the select and trigger change
@@ -486,8 +513,11 @@ jQuery(document).ready(function($) {
 
 
 
+
+
+
+    
+
 });
-
-
 
 

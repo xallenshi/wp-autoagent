@@ -11,7 +11,7 @@ $pages = get_pages();
 ?>
 
 <div class="wpaa-agent-list2">
-    <h2>Your AI Agents</h2>
+    <div class="wpaa-panel-header">Agent List</div>
     <ul>
         <?php
         // Get agents from database
@@ -20,7 +20,7 @@ $pages = get_pages();
             foreach ($agents as $agent) {
                 ?>
                 <li>
-                    <a href="#" class="agent-item" data-agent_id="<?php echo esc_attr($agent->id); ?>">
+                    <a href="#" data-agent_id="<?php echo esc_attr($agent->id); ?>">
                         <?php echo esc_html($agent->name); ?>
                     </a>
                 </li>
