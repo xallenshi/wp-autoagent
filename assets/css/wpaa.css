@@ -434,3 +434,16 @@
     /* Fine-tune vertical alignment */
     transform: translateY(3px);
 }
+
+.wpaa-row-middle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.wpaa-row-middle-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

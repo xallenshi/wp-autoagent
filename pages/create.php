@@ -125,7 +125,12 @@ $functions = $db_handler->get_functions();
         }
         ?>
 
-        <button type="submit" id="wpaa_create_agent_button">Create Agent</button>
-        <a href="#" class="wpaa-delete-agent-link" id="delete_agent_link" style="display:none;">Delete This Agent</a>
+        <hr>
+        <div class="wpaa-row-middle">
+            <button type="submit" id="wpaa_create_agent_button">Create Agent</button>
+        </div>
+        <div class="wpaa-row-middle-bottom">
+            <a href="#" class="wpaa-delete-agent-link" id="delete_agent_link" style="display:none;">Delete This Agent</a>
+        </div>
     </form>
 </div>
