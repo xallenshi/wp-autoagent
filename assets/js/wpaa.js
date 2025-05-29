@@ -268,8 +268,8 @@ jQuery(document).ready(function($) {
             $('input[name="articles[]"]').prop('checked', false);
             $('input[name="functions[]"]').prop('checked', false);
             // Set page title for new agent
-            $('.wpaa-plugin-container h1').text('Create Your AI Agent');
-            $('#wpaa_create_agent_button').text('Create AI Agent');
+            $('.wpaa-plugin-container h1').text('Create Your Agent');
+            $('#wpaa_create_agent_button').text('Create Agent');
             $('#delete_agent_link').hide();
             return;
         }
@@ -288,8 +288,8 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     // Fill form with agent data
-                    $('.wpaa-plugin-container h1').text('Update Your AI Agent');
-                    $('#wpaa_create_agent_button').text('Update AI Agent');
+                    $('.wpaa-plugin-container h1').text('Update Your Agent');
+                    $('#wpaa_create_agent_button').text('Update Agent');
 
                     $('#agent_id').val(response.data.id);
                     $('#name').val(response.data.name);

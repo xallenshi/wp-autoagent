@@ -129,7 +129,6 @@
 .wpaa-publish-scope-container select[multiple] {
     padding: 5px;
     width: 100%;
-    height: 200px;
 }
 
 .wpaa-publish-scope-container select[multiple] option {
@@ -157,25 +156,6 @@
 
 .wpaa-kb-link:hover {
     color: #00a0d2;
-}
-
-
-/* Disabled Select with Normal Appearance */
-#agent-select {
-    appearance: auto; /* Keeps the dropdown arrow */
-    cursor: default; /* Shows default cursor instead of text cursor */
-    color: #333; /* Normal text color instead of gray */
-    border-color: #ddd; /* Normal border color */
-}
-
-#agent-select:focus {
-    border-color: #0073aa; /* Maintain focus styles */
-    box-shadow: 0 0 2px rgba(0, 115, 170, 0.8);
-}
-
-/* Prevent dropdown from showing on click in various browsers */
-#agent-select::-ms-expand {
-    display: none;
 }
 
 
