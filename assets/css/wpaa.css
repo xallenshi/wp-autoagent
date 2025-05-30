@@ -127,7 +127,7 @@
 
 .wpaa-publish-scope-container select[multiple] {
     padding: 5px;
-    width: 100%;
+    width: 288px;
 }
 
 .wpaa-publish-scope-container select[multiple] option {
@@ -424,4 +424,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+
+
+.wpaa-hr {
+    border: none;
+    width: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 1px;
+    position: relative;
+    margin: 20px 0;
+    background: linear-gradient(90deg, transparent, #007bff 50%, transparent);
+    border-radius: 2px;
 }

@@ -65,6 +65,7 @@ foreach ($menu as $item) {
 <div class="wpaa-plugin-container">
     <form method="post" id="wpaa-publish-agent-form">
     <h1>Publish Agent</h1>
+    <hr class="wpaa-hr">
     <h4>Publish your agents to the selected website admin pages and frontend pages.</h4>
 
     <label for="name">Selected Agent</label>
@@ -76,21 +77,19 @@ foreach ($menu as $item) {
     </select>
 
     <!-- Page Selection -->
-    <h2>Agent Scope</h2>
+    <h2>Agent Deployment Scope</h2>
     <div class="wpaa-publish-scope-container">
         <div>
-            <h3>Frontend Pages</h3>
-            <p><small>Simply click an option to select it. Click again to unselect.</small></p>
-            <select name="selected_pages[]" multiple size="10">
+            <label for="name">Selected Frontend Pages</label>
+            <select name="selected_pages[]" multiple size="10" disabled>
                 <?php foreach ($pages as $page): ?>
                     <option value="<?php echo esc_attr($page->ID); ?>"><?php echo esc_html($page->post_title); ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
         <div>
-            <h3>Admin Pages</h3>
-            <p><small>Simply click an option to select it. Click again to unselect.</small></p>
-            <select name="selected_admin_pages[]" multiple size="10">
+            <label for="name">Selected Admin Pages</label>
+            <select name="selected_admin_pages[]" multiple size="10" disabled>
                 <?php foreach ($admin_pages as $page): ?>
                     <option value="<?php echo esc_attr($page['slug']); ?>">
                         <?php echo esc_html($page['title']); ?>

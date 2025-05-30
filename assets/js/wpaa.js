@@ -35,6 +35,9 @@ jQuery(document).ready(function($) {
         $('select[name="selected_admin_pages[]"] option').prop('selected', false);
         
         if (agent_id) {
+
+            $('select[name="selected_pages[]"], select[name="selected_admin_pages[]"]').prop('disabled', false);
+            
             // Request agent scope via AJAX
             $.ajax({
                 url: ajaxurl,
@@ -55,7 +58,7 @@ jQuery(document).ready(function($) {
                             if (isNaN(value)) {
                                 $('select[name="selected_admin_pages[]"] option[value="' + value + '"]').prop('selected', true);
                             } else {
-                                // It's a page ID
+                                // It's a page ID, frontend page
                                 $('select[name="selected_pages[]"] option[value="' + value + '"]').prop('selected', true);
                             }
                         });
@@ -70,14 +73,23 @@ jQuery(document).ready(function($) {
 
 
     // Custom multi-select functionality for the publish page
-    $(document).on('mousedown', '.wpaa-publish-scope-container select[multiple] option', function(e) {
-        let isSelected = $(this).prop('selected');
-        
-        $(document).one('mouseup', () => {
-            $(this).prop('selected', !isSelected);
-            $(this).parent().focus();
-        });
-        
+    $(document).on('mousedown', 'select[name="selected_pages[]"] option, select[name="selected_admin_pages[]"] option', function(e) {
+        e.preventDefault();
+
+        var $option = $(this);
+        var $select = $option.parent();
+        var scroll = $select.scrollTop();
+
+        // Toggle selection
+        $option.prop('selected', !$option.prop('selected'));
+
+        // Blur and refocus to prevent jump
+        $select.blur();
+        setTimeout(function() {
+            $select.focus();
+            $select.scrollTop(scroll);
+        }, 1);
+
         return false;
     });
 
