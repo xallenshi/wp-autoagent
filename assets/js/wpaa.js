@@ -52,7 +52,7 @@ jQuery(document).ready(function($) {
                         // Loop through scope array and select matching options
                         $.each(scope, function(index, value) {
                             // Check if it's an admin page (containing .php)
-                            if (String(value).indexOf('.php') !== -1) {
+                            if (isNaN(value)) {
                                 $('select[name="selected_admin_pages[]"] option[value="' + value + '"]').prop('selected', true);
                             } else {
                                 // It's a page ID

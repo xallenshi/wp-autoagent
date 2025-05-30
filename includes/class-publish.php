@@ -72,7 +72,7 @@ class Publish {
             // Set the theme color when publishing the agent
             $this->set_theme_color();
             // Create a Qdrant collection
-            $this->create_qdrant_collection();
+            //$this->create_qdrant_collection();
 
             if ($result !== false) {
                 wp_send_json_success('Agent has been published.');

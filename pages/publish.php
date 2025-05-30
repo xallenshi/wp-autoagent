@@ -8,6 +8,37 @@ $agents = $db_handler->get_agents();
 $table_agent = Config::get_table_name('agent');
 $pages = get_pages();
 
+// Get admin pages
+global $menu, $submenu;
+if (empty($menu)) {
+    do_action('admin_menu');
+}
+
+$admin_pages = [];
+foreach ($menu as $item) {
+    $slug = isset($item[2]) ? $item[2] : '';
+    $title = isset($item[0]) ? wp_strip_all_tags($item[0]) : '';
+    if ($slug && $title) {
+        $admin_pages[] = [
+            'slug' => $slug,
+            'title' => $title,
+        ];
+        // Add submenus
+        if (isset($submenu[$slug])) {
+            foreach ($submenu[$slug] as $subitem) {
+                $sub_slug = isset($subitem[2]) ? $subitem[2] : '';
+                $sub_title = isset($subitem[0]) ? wp_strip_all_tags($subitem[0]) : '';
+                if ($sub_slug && $sub_title) {
+                    $admin_pages[] = [
+                        'slug' => $sub_slug,
+                        'title' => $title . ' → ' . $sub_title,
+                    ];
+                }
+            }
+        }
+    }
+}
+
 ?>
 
 <div class="wpaa-agent-list2">
@@ -60,16 +91,11 @@ $pages = get_pages();
             <h3>Admin Pages</h3>
             <p><small>Simply click an option to select it. Click again to unselect.</small></p>
             <select name="selected_admin_pages[]" multiple size="10">
-                <option value="index.php">Dashboard</option>
-                <option value="edit.php">Posts</option>
-                <option value="upload.php">Media Library</option>
-                <option value="edit.php?post_type=page">Pages</option>
-                <option value="edit-comments.php">Comments</option>
-                <option value="themes.php">Themes</option>
-                <option value="plugins.php">Plugins</option>
-                <option value="users.php">Users</option>
-                <option value="tools.php">Tools</option>
-                <option value="options-general.php">Settings</option>
+                <?php foreach ($admin_pages as $page): ?>
+                    <option value="<?php echo esc_attr($page['slug']); ?>">
+                        <?php echo esc_html($page['title']); ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
         </div>
     </div>

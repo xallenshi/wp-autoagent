@@ -39,7 +39,10 @@ class Chat {
                 // Check if current admin page slug matches any admin page in scope
                 if (is_admin() && is_array($scope)) {
                     $current_page = isset($_POST['page_slug']) ? $_POST['page_slug'] : basename($_SERVER['PHP_SELF']);
-                    // Normalize the current page slug by removing the /wp-admin/ prefix
+
+                    // Normalize the current page slug for custom plugin pages
+                    $current_page = str_replace('/wp-admin/admin.php?page=', '', $current_page);
+                    // Normalize the current page slug for standard pages
                     $current_page = str_replace('/wp-admin/', '', $current_page);
     
                     if (isset($_GET['post_type'])) {
