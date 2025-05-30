@@ -73,8 +73,8 @@ $pages = get_pages();
             </select>
         </div>
     </div>
-
-    <button type="submit" id="wpaa_publish_agent_button">Publish Agent</button>
-    <label for="wpaa-agent-instructions">Same selected pages take the newest agent.</label>
+    <div class="wpaa-row-middle">
+        <button type="submit" id="wpaa_publish_agent_button">Publish Agent</button>
+    </div>
     </form>
 </div>

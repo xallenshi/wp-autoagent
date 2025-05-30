@@ -39,7 +39,6 @@
     margin-right: 20px;
     padding: 15px;
     background: #f4f4f9;
-    min-height: 500px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -75,7 +74,7 @@
 .wpaa-plugin-container select {
     width: 100%;
     padding: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
@@ -140,7 +139,6 @@
 
 .wpaa-publish-scope-container select[multiple] option:checked {
     background: #4CAF50 linear-gradient(0deg, #4CAF50 0%, #4CAF50 100%) !important;
-    color: #ffffff;
     font-weight: bold;
 }
 

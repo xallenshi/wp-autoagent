@@ -33,7 +33,7 @@ $functions = $db_handler->get_functions();
 
 <div class="wpaa-plugin-container">
     <form id="wpaa_create_agent_form" method="post" enctype="multipart/form-data">
-    <h1>Create Your Agent</h1>
+    <h1 id="wpaa_create_agent_title">Create Your Agent</h1>
     <h4>The WordPress Auto Agent is an AI-powered assistant that supports your customers by answering questions based on your knowledge articles and automating tasks through integration with popular WordPress plugins.</h4>
     
         <!-- Basic Info -->

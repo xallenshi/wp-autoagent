@@ -268,7 +268,7 @@ jQuery(document).ready(function($) {
             $('input[name="articles[]"]').prop('checked', false);
             $('input[name="functions[]"]').prop('checked', false);
             // Set page title for new agent
-            $('.wpaa-plugin-container h1').text('Create Your Agent');
+            $('#wpaa_create_agent_title').text('Create Your Agent');
             $('#wpaa_create_agent_button').text('Create Agent');
             $('#delete_agent_link').hide();
             return;
@@ -288,7 +288,7 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     // Fill form with agent data
-                    $('.wpaa-plugin-container h1').text('Update Your Agent');
+                    $('#wpaa_create_agent_title').text('Update Your Agent');
                     $('#wpaa_create_agent_button').text('Update Agent');
 
                     $('#agent_id').val(response.data.id);
@@ -507,7 +507,7 @@ jQuery(document).ready(function($) {
 
         setTimeout(() => {
             $('#wpaa_save_key_button').prop('disabled', false);
-            $('#wpaa_save_key_button').text('Save Access Key');
+            $('#wpaa_save_key_button').text('Save Key');
         }, 2000);
     });
 
