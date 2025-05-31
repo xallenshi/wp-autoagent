@@ -34,7 +34,7 @@ class Create {
         $agent_id = isset($_POST['agent_id']) ? sanitize_text_field($_POST['agent_id']) : null;
         $name = sanitize_text_field($_POST['name']);
         $instructions = wp_kses_post($_POST['instructions']);
-        $greeting_message = wp_kses_post($_POST['greeting_message']);
+        $greeting_message = wp_kses_post(wp_unslash($_POST['greeting_message']));
         $model = sanitize_text_field($_POST['model']);
         $selected_articles = isset($_POST['articles']) ? array_map('sanitize_text_field', $_POST['articles']) : [];
         $selected_functions = isset($_POST['functions']) ? array_map('sanitize_text_field', $_POST['functions']) : [];

@@ -314,7 +314,7 @@ class Run {
         $agent_id = $_POST['agent_id'];
         $response_id = $_POST['response_id'] ?? null;
         $content = $_POST['content'] ?? null;
-        $api_msg = $_POST['api_msg'] ?? null;
+        $api_msg = wp_kses_post(wp_unslash($_POST['api_msg']));
         
         #get non-logged-in/logged-in user session id
         $session_id = $this->wpaa_get_session_id();

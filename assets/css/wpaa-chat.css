@@ -175,6 +175,10 @@
     line-height: 1.5;
 }
 
+.wpaa-chat-agent-message a {
+    color: #ffffff;
+}
+
 .wpaa-chat-agent-message.loading {
     width: 110px;
 }

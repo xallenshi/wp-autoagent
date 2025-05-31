@@ -176,20 +176,25 @@ jQuery(document).ready(function($) {
                 
                 // Add loading indicator with typing animation delay
                 const loadingMsg = renderMessage({ type: 'agent', name: agentName, message: 'Analyzing...', isError: false });
+                let loadingDiv = null;
+                let loadingInterval = null;
+
                 setTimeout(() => {
-                    loadingMsg.querySelector('.wpaa-chat-agent-message').classList.add('loading');
                     chatHistory.appendChild(loadingMsg);
+                    loadingDiv = loadingMsg.querySelector('.wpaa-chat-agent-message');
+                    if (loadingDiv) loadingDiv.classList.add('loading');
                     scrollToBottom(chatHistory);
-                }, 500);
-                
-                // Animate loading
-                let dotCount = 0;
-                const maxDots = 3;
-                const baseText = 'Analyzing';
-                const loadingDiv = loadingMsg.querySelector('.wpaa-chat-agent-message');
-                const loadingInterval = setInterval(() => {
-                    loadingDiv.innerHTML = baseText + '.'.repeat(dotCount);
-                    dotCount = dotCount < maxDots ? dotCount + 1 : 1;
+
+                    // Animate loading (start interval only after loadingDiv is available)
+                    let dotCount = 0;
+                    const maxDots = 3;
+                    const baseText = 'Analyzing';
+                    loadingInterval = setInterval(() => {
+                        if (loadingDiv) {
+                            loadingDiv.innerHTML = baseText + '.'.repeat(dotCount);
+                            dotCount = dotCount < maxDots ? dotCount + 1 : 1;
+                        }
+                    }, 500);
                 }, 500);
                 
                 // AJAX: run agent
