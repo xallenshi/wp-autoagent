@@ -66,8 +66,6 @@ add_action('plugins_loaded', __NAMESPACE__ . '\\wp_autoagent_init');
 
 
 
-
-
 // Function to create privacy policy page
 function wp_autoagent_create_privacy_policy_page() {
     $page_title = 'WP Agent Privacy Policy';
@@ -107,5 +105,5 @@ function wp_autoagent_privacy_policy_shortcode() {
 }
 
 // Register activation hook and shortcode
-register_activation_hook(WP_AUTOAGENT_PLUGIN_FILE, 'wp_autoagent_create_privacy_policy_page');
-add_shortcode('wpaa_privacy_policy', 'wp_autoagent_privacy_policy_shortcode');
+register_activation_hook(__FILE__, __NAMESPACE__ . '\\wp_autoagent_create_privacy_policy_page');
+add_shortcode('wpaa_privacy_policy', __NAMESPACE__ . '\\wp_autoagent_privacy_policy_shortcode');
