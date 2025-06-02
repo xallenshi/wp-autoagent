@@ -15,7 +15,7 @@ logger = logging.getLogger()
 # Initialize AWS clients
 ssm = boto3.client('ssm')
 sqs = boto3.client('sqs')
-SQS_QUEUE_URL = os.environ['WPAA_Qdrant_Queue_URL']
+SQS_QUEUE_URL = os.environ['WPA_Qdrant_Queue_URL']
 
 def get_openai_key(user_access_key):
     try:
@@ -111,7 +111,7 @@ def lambda_handler(event, context):
 
     tools1 = [{
         "type": "function",
-        "name": "wpaa_track_order",
+        "name": "wpa_track_order",
         "description": "Track order status",
         "parameters": {
                 "type": "object",

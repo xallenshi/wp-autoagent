@@ -1,5 +1,5 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
 class DB {
     private $table_article;
@@ -9,7 +9,7 @@ class DB {
     private $table_global;
 
     public function __construct() {
-        error_log("wp_autoagent_DB class instantiated.");
+        error_log("wp_agent_DB class instantiated.");
     }
 
     public function set_table_names() {
@@ -18,7 +18,7 @@ class DB {
         $this->table_conversation = Config::get_table_name('conversation');
         $this->table_function = Config::get_table_name('function');
         $this->table_global = Config::get_table_name('global');
-        error_log("wp_autoagent_DB tables names set.");
+        error_log("wp_agent_DB tables names set.");
     }
 
     public function network_activate($network_wide) {

@@ -1,24 +1,24 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
 class Publish {
     private $table_agent;
 
     public function __construct() {
         $this->table_agent = Config::get_table_name('agent');
-        add_action('wp_ajax_wpaa_get_agent_scope', array($this, 'wpaa_get_agent_scope'));
+        add_action('wp_ajax_wpa_get_agent_scope', array($this, 'wpa_get_agent_scope'));
 
-        add_action('wp_ajax_wpaa_get_theme_color', array($this, 'wpaa_get_theme_color'));
-        add_action('wp_ajax_nopriv_wpaa_get_theme_color', array($this, 'wpaa_get_theme_color'));
+        add_action('wp_ajax_wpa_get_theme_color', array($this, 'wpa_get_theme_color'));
+        add_action('wp_ajax_nopriv_wpa_get_theme_color', array($this, 'wpa_get_theme_color'));
 
-        add_action('wp_ajax_wpaa_publish_agent', array($this, 'wpaa_publish_agent'));
+        add_action('wp_ajax_wpa_publish_agent', array($this, 'wpa_publish_agent'));
     }
 
     /**
      * AJAX handler to get agent scope
      */
-    public function wpaa_get_agent_scope() {
-        if (!check_ajax_referer('wpaa_setting', 'nonce', false)) {
+    public function wpa_get_agent_scope() {
+        if (!check_ajax_referer('wpa_setting', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }
@@ -51,7 +51,7 @@ class Publish {
     /**
      * AJAX handler to publish the agent
      */
-    public function wpaa_publish_agent() {
+    public function wpa_publish_agent() {
         
         // Handle form submission
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agent_id']) && (isset($_POST['selected_pages']) || isset($_POST['selected_admin_pages']))) {
@@ -90,7 +90,7 @@ class Publish {
     public function set_theme_color() {
         $db_handler = new DBHandler();
         $global_setting = $db_handler->get_global_setting();
-        $saved_theme_name = $global_setting->theme_name;
+        $saved_theme_name = isset($global_setting->theme_name) ? $global_setting->theme_name : '';
 
         $current_theme = wp_get_theme();
         $current_theme_name = $current_theme->get('Name');
@@ -98,7 +98,7 @@ class Publish {
         //if new theme, run the agent to get the theme color
         if ($saved_theme_name !== $current_theme_name) {
             $run = new Run();
-            $api_response = $run->wpaa_run_the_agent(1, $current_theme->get_screenshot(), null);
+            $api_response = $run->wpa_run_the_agent(1, $current_theme->get_screenshot(), null);
             if ($api_response) {
                 $new_theme_color = $api_response;
                 $global_setting->theme_color = $new_theme_color;
@@ -108,7 +108,7 @@ class Publish {
         }
     }
 
-    function wpaa_get_theme_color() {
+    function wpa_get_theme_color() {
         $db_handler = new DBHandler();
         $global_setting = $db_handler->get_global_setting();
         $theme_color = $global_setting->theme_color;

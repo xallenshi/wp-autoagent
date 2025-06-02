@@ -1,5 +1,5 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
 class Frontend {
     public function __construct() {
@@ -8,19 +8,19 @@ class Frontend {
     }
 
     public function enqueue_scripts() {
-        wp_enqueue_style('wpaa-css', WP_AUTOAGENT_PLUGIN_URL . 'assets/css/wpaa.css', array(), WP_AUTOAGENT_VERSION);
-        wp_enqueue_style('wpaa-chat-css', WP_AUTOAGENT_PLUGIN_URL . 'assets/css/wpaa-chat.css', array(), WP_AUTOAGENT_VERSION);
+        wp_enqueue_style('wpa-css', WP_AGENT_PLUGIN_URL . 'assets/css/wpa.css', array(), WP_AGENT_VERSION);
+        wp_enqueue_style('wpa-chat-css', WP_AGENT_PLUGIN_URL . 'assets/css/wpa-chat.css', array(), WP_AGENT_VERSION);
         
-        wp_enqueue_script('wpaa-js', WP_AUTOAGENT_PLUGIN_URL . 'assets/js/wpaa.js', array('jquery'), WP_AUTOAGENT_VERSION, true);
-        wp_enqueue_script('wpaa-chat-js', WP_AUTOAGENT_PLUGIN_URL . 'assets/js/wpaa-chat.js', array('jquery'), WP_AUTOAGENT_VERSION, true);
-        wp_enqueue_script('wpaa-function-js', WP_AUTOAGENT_PLUGIN_URL . 'assets/js/wpaa-function.js', array('jquery'), WP_AUTOAGENT_VERSION, true);
-        wp_enqueue_script('wpaa-example-js', WP_AUTOAGENT_PLUGIN_URL . 'assets/js/wpaa-example.js', array('jquery'), WP_AUTOAGENT_VERSION, true);
+        wp_enqueue_script('wpa-js', WP_AGENT_PLUGIN_URL . 'assets/js/wpa.js', array('jquery'), WP_AGENT_VERSION, true);
+        wp_enqueue_script('wpa-chat-js', WP_AGENT_PLUGIN_URL . 'assets/js/wpa-chat.js', array('jquery'), WP_AGENT_VERSION, true);
+        wp_enqueue_script('wpa-function-js', WP_AGENT_PLUGIN_URL . 'assets/js/wpa-function.js', array('jquery'), WP_AGENT_VERSION, true);
+        wp_enqueue_script('wpa-example-js', WP_AGENT_PLUGIN_URL . 'assets/js/wpa-example.js', array('jquery'), WP_AGENT_VERSION, true);
         
-        wp_localize_script('wpaa-js', 'wpaa_setting_nonce', array(
-            'nonce' => wp_create_nonce('wpaa_setting')
+        wp_localize_script('wpa-js', 'wpa_setting_nonce', array(
+            'nonce' => wp_create_nonce('wpa_setting')
         ));
-        wp_localize_script('wpaa-chat-js', 'wpaa_request_nonce', array(
-            'nonce' => wp_create_nonce('wpaa_request'),
+        wp_localize_script('wpa-chat-js', 'wpa_request_nonce', array(
+            'nonce' => wp_create_nonce('wpa_request'),
             'ajaxurl' => admin_url('admin-ajax.php'),
             'session_id' => wp_get_session_token()
         ));

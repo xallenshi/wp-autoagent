@@ -1,5 +1,5 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
 global $wpdb;
 $db_handler = new DBHandler();
@@ -9,8 +9,8 @@ $functions = $db_handler->get_functions();
 ?>
 
 
-<div class="wpaa-agent-list1">
-    <div class="wpaa-panel-header">Agent List</div>
+<div class="wpa-agent-list1">
+    <div class="wpa-panel-header">Agent List</div>
     <ul>
         <li><a href="#" data-agent_id="new">+ New Agent</a></li>
         <?php
@@ -31,40 +31,40 @@ $functions = $db_handler->get_functions();
     </ul>
 </div>
 
-<div class="wpaa-plugin-container">
-    <form id="wpaa_create_agent_form" method="post" enctype="multipart/form-data">
-    <h2 id="wpaa_create_agent_title">Create Your Agent</h2>
-    <hr class="wpaa-hr">
+<div class="wpa-plugin-container">
+    <form id="wpa_create_agent_form" method="post" enctype="multipart/form-data">
+    <h2 id="wpa_create_agent_title">Create Your Agent</h2>
+    <hr class="wpa-hr">
     <h4>The WordPress Auto Agent is an AI-powered assistant that supports your customers by answering questions based on your knowledge articles and automating tasks through integration with popular WordPress plugins.</h4>
     
         <!-- Basic Info -->
         <h3>Agent Settings</h3>
         <input type="hidden" id="agent_id" name="agent_id" value="">
         <label for="name">Agent Name
-          <span class="wpaa-tooltip">?
-            <span class="wpaa-tooltip-text">It will appear to your customers in the chat panel.</span>
+          <span class="wpa-tooltip">?
+            <span class="wpa-tooltip-text">It will appear to your customers in the chat panel.</span>
           </span>
         </label>
         <input type="text" id="name" name="name" required>
 
         <label for="greeting_message">Greeting Message
-            <span class="wpaa-tooltip">?
-                <span class="wpaa-tooltip-text">It will be sent to your customers in the chat panel when they start a new chat.</span>
+            <span class="wpa-tooltip">?
+                <span class="wpa-tooltip-text">It will be sent to your customers in the chat panel when they start a new chat.</span>
             </span>
         </label>
-        <textarea id="greeting_message" name="greeting_message" class="wpaa-textarea" required></textarea>
+        <textarea id="greeting_message" name="greeting_message" class="wpa-textarea" required></textarea>
 
         <label for="instructions">Agent Instructions
-            <span class="wpaa-tooltip">?
-                <span class="wpaa-tooltip-text">It is guidelines provided to the AI agent to control how it behaves, responds to your customers' requests.</span>
+            <span class="wpa-tooltip">?
+                <span class="wpa-tooltip-text">It is guidelines provided to the AI agent to control how it behaves, responds to your customers' requests.</span>
             </span>
         </label>
-        <div class="wpaa-example-container">
-            <a href="#" class="wpaa-example-link" id="instructions_example1">Example 1</a>
-            <a href="#" class="wpaa-example-link" id="instructions_example2">Example 2</a>
-            <a href="#" class="wpaa-example-link" id="instructions_example3">Example 3</a>
+        <div class="wpa-example-container">
+            <a href="#" class="wpa-example-link" id="instructions_example1">Example 1</a>
+            <a href="#" class="wpa-example-link" id="instructions_example2">Example 2</a>
+            <a href="#" class="wpa-example-link" id="instructions_example3">Example 3</a>
         </div>
-        <textarea id="instructions" name="instructions" class="wpaa-textarea" required></textarea>
+        <textarea id="instructions" name="instructions" class="wpa-textarea" required></textarea>
 
         <label for="model">AI Model</label>
         <select id="model" name="model">
@@ -76,18 +76,18 @@ $functions = $db_handler->get_functions();
         <!-- Knowledge Base -->
         <h3>Knowledge Base</h3>
         <label>Select File
-            <span class="wpaa-tooltip">?
-                <span class="wpaa-tooltip-text">Each agent currently supports only one file. If you have multiple knowledge files for an agent, it is recommended to merge them into a single document before uploading.</span>
+            <span class="wpa-tooltip">?
+                <span class="wpa-tooltip-text">Each agent currently supports only one file. If you have multiple knowledge files for an agent, it is recommended to merge them into a single document before uploading.</span>
             </span>
         </label>
-        <a href="#" class="wpaa-kb-link" data-page="upload">Upload Your New Knowledge Article</a>
+        <a href="#" class="wpa-kb-link" data-page="upload">Upload Your New Knowledge Article</a>
 
 
         <?php
         if ($articles) {
             foreach ($articles as $article) {
                 ?>
-                <div class="wpaa-row">
+                <div class="wpa-row">
                     <input type="radio" id="article_<?php echo esc_attr($article->id); ?>" name="articles[]" value="<?php echo esc_attr($article->id); ?>">
                     <label for="article_<?php echo esc_attr($article->id); ?>">
                         <?php echo strtoupper(esc_html($article->file_name)); ?>
@@ -111,7 +111,7 @@ $functions = $db_handler->get_functions();
         if ($functions) {
             foreach ($functions as $function) {
                 ?>
-                <div class="wpaa-row">
+                <div class="wpa-row">
                     <input type="checkbox" id="function_<?php echo esc_attr($function->id); ?>" name="functions[]" value="<?php echo esc_attr($function->id); ?>">
                     <label for="function_<?php echo esc_attr($function->id); ?>">
                         <?php echo strtoupper(esc_html($function->name)); ?> : <?php echo esc_html($function->description); ?>
@@ -126,11 +126,11 @@ $functions = $db_handler->get_functions();
         }
         ?>
 
-        <div class="wpaa-row-middle">
-            <button type="submit" id="wpaa_create_agent_button">Create Agent</button>
+        <div class="wpa-row-middle">
+            <button type="submit" id="wpa_create_agent_button">Create Agent</button>
         </div>
-        <div class="wpaa-row-middle-bottom">
-            <a href="#" class="wpaa-delete-agent-link" id="delete_agent_link" style="display:none;">Delete This Agent</a>
+        <div class="wpa-row-middle-bottom">
+            <a href="#" class="wpa-delete-agent-link" id="delete_agent_link" style="display:none;">Delete This Agent</a>
         </div>
     </form>
 </div>

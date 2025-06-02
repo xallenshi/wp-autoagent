@@ -1,17 +1,17 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
 class Upload {
     private $table_article;
 
     public function __construct() {
         $this->table_article = Config::get_table_name('article');
-        add_action('wp_ajax_wpaa_article_upload', array($this, 'wpaa_article_upload'));
-        add_action('wp_ajax_wpaa_get_article_list', array($this, 'wpaa_get_article_list'));
+        add_action('wp_ajax_wpa_article_upload', array($this, 'wpa_article_upload'));
+        add_action('wp_ajax_wpa_get_article_list', array($this, 'wpa_get_article_list'));
     }
 
-    public function wpaa_article_upload() {
-        if (!check_ajax_referer('wpaa_setting', 'nonce', false)) {
+    public function wpa_article_upload() {
+        if (!check_ajax_referer('wpa_setting', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }
@@ -79,8 +79,8 @@ class Upload {
 
     }
     
-    public function wpaa_get_article_list() {
-        if (!check_ajax_referer('wpaa_setting', 'nonce', false)) {
+    public function wpa_get_article_list() {
+        if (!check_ajax_referer('wpa_setting', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }
@@ -90,7 +90,7 @@ class Upload {
         ob_start();
         if ($articles && count($articles) > 0) {
             foreach ($articles as $article) {
-                echo "<div class='wpaa_article_item'>{$article->file_name} at {$article->created_time}</div>";
+                echo "<div class='wpa_article_item'>{$article->file_name} at {$article->created_time}</div>";
             }
         } else {
             echo "<div>No articles found.</div>";

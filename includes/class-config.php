@@ -1,8 +1,8 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
 class Config {
-    private static $table_suffix = 'wpautoagent_';
+    private static $table_suffix = 'wpagent_';
 
     public static function get_table_name($table_alias) {
         global $wpdb;

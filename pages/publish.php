@@ -1,5 +1,5 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
 global $wpdb;
 $db_handler = new DBHandler();
@@ -41,8 +41,8 @@ foreach ($menu as $item) {
 
 ?>
 
-<div class="wpaa-agent-list2">
-    <div class="wpaa-panel-header">Agent List</div>
+<div class="wpa-agent-list2">
+    <div class="wpa-panel-header">Agent List</div>
     <ul>
         <?php
         // Get agents from database
@@ -66,10 +66,10 @@ foreach ($menu as $item) {
     </ul>
 </div>
 
-<div class="wpaa-plugin-container">
-    <form method="post" id="wpaa-publish-agent-form">
+<div class="wpa-plugin-container">
+    <form method="post" id="wpa-publish-agent-form">
     <h2>Publish Agent</h2>
-    <hr class="wpaa-hr">
+    <hr class="wpa-hr">
     <h4>Publish your agents to the selected website admin pages and frontend pages.</h4>
 
     <label for="name">Selected Agent</label>
@@ -82,7 +82,7 @@ foreach ($menu as $item) {
 
     <!-- Page Selection -->
     <h3>Agent Deployment Scope</h3>
-    <div class="wpaa-publish-scope-container">
+    <div class="wpa-publish-scope-container">
         <div>
             <label for="name">Selected Frontend Pages</label>
             <select name="selected_pages[]" multiple size="10" disabled>
@@ -102,8 +102,8 @@ foreach ($menu as $item) {
             </select>
         </div>
     </div>
-    <div class="wpaa-row-middle">
-        <button type="submit" id="wpaa_publish_agent_button">Publish Agent</button>
+    <div class="wpa-row-middle">
+        <button type="submit" id="wpa_publish_agent_button">Publish Agent</button>
     </div>
     </form>
 </div>

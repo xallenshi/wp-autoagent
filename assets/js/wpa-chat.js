@@ -14,20 +14,20 @@ function scrollToBottom(el) {
 // Utility: Render a chat message (user or agent)
 function renderMessage({ type, name, message, isError = false }) {
     const currentTime = new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    const wrapper = createElement('div', `wpaa-chat-${type}`);
+    const wrapper = createElement('div', `wpa-chat-${type}`);
     
     // Create header row container
-    const headerRow = createElement('div', `wpaa-chat-${type}-header`);
+    const headerRow = createElement('div', `wpa-chat-${type}-header`);
     
     // Create profile photo div
-    //const photoDiv = createElement('div', `wpaa-chat-${type}-photo`);
+    //const photoDiv = createElement('div', `wpa-chat-${type}-photo`);
     //const photoImg = createElement('img');
     //photoImg.src = type === 'agent' ? '/path/to/agent-avatar.png' : '/path/to/user-avatar.png';
     //photoDiv.appendChild(photoImg);
     
-    const nameTimeContainer = createElement('div', `wpaa-chat-${type}-name-time`);
-    const nameDiv = createElement('div', `wpaa-chat-${type}-name`, `<b>${name}</b>`);
-    const timeDiv = createElement('div', `wpaa-chat-${type}-time`, currentTime);
+    const nameTimeContainer = createElement('div', `wpa-chat-${type}-name-time`);
+    const nameDiv = createElement('div', `wpa-chat-${type}-name`, `<b>${name}</b>`);
+    const timeDiv = createElement('div', `wpa-chat-${type}-time`, currentTime);
     
     nameTimeContainer.appendChild(nameDiv);
     nameTimeContainer.appendChild(timeDiv);
@@ -35,7 +35,7 @@ function renderMessage({ type, name, message, isError = false }) {
     //headerRow.appendChild(photoDiv);
     headerRow.appendChild(nameTimeContainer);
     
-    const msgDiv = createElement('div', `wpaa-chat-${type}-message${isError ? ' wpaa-error' : ''}`);
+    const msgDiv = createElement('div', `wpa-chat-${type}-message${isError ? ' wpa-error' : ''}`);
     const safeMessage = linkify(message);
     msgDiv.innerHTML = safeMessage;
     
@@ -76,11 +76,11 @@ jQuery(document).ready(function($) {
 
     // Check if current page is in scope via AJAX
     $.ajax({
-        url: wpaa_request_nonce.ajaxurl,
+        url: wpa_request_nonce.ajaxurl,
         type: 'POST',
         data: {
-            action: 'wpaa_check_agent_scope',
-            nonce: wpaa_request_nonce.nonce,
+            action: 'wpa_check_agent_scope',
+            nonce: wpa_request_nonce.nonce,
             current_url: window.location.href,
             page_slug: currentPageSlug
         },
@@ -99,25 +99,25 @@ jQuery(document).ready(function($) {
             window.agentGreetingMessage = agentGreetingMessage;
 
             // --- UI Elements ---
-            const chatIcon = createElement('div', 'wpaa-chat-icon', `
+            const chatIcon = createElement('div', 'wpa-chat-icon', `
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="currentColor"/>
                 </svg>
             `);
-            chatIcon.id = 'wpaa-chat-icon';
+            chatIcon.id = 'wpa-chat-icon';
             
-            const chatPopup = createElement('div', 'wpaa-chat-popup', `
-                <div id="wpaa-chat-header" class="wpaa-chat-header">
-                    <span>WP AutoAgent &copy; Xsolutions</span>
-                    <button id="wpaa-chat-close-button" class="wpaa-chat-close-button">&times;</button>
+            const chatPopup = createElement('div', 'wpa-chat-popup', `
+                <div id="wpa-chat-header" class="wpa-chat-header">
+                    <span>WP Agent &copy; Xsolutions</span>
+                    <button id="wpa-chat-close-button" class="wpa-chat-close-button">&times;</button>
                 </div>
-                <div id="wpaa-chat-history" class="wpaa-chat-history"></div>
-                <div class="wpaa-chat-input-container">
-                    <textarea id="wpaa-chat-input" placeholder="Type your message..."></textarea>
-                    <button id="wpaa-chat-send-button">Send</button>
+                <div id="wpa-chat-history" class="wpa-chat-history"></div>
+                <div class="wpa-chat-input-container">
+                    <textarea id="wpa-chat-input" placeholder="Type your message..."></textarea>
+                    <button id="wpa-chat-send-button">Send</button>
                 </div>
             `);
-            chatPopup.id = 'wpaa-chat-popup';
+            chatPopup.id = 'wpa-chat-popup';
 
             // --- Append elements to body ---
             document.body.appendChild(chatIcon);
@@ -127,10 +127,10 @@ jQuery(document).ready(function($) {
             hide(chatIcon);
             
             // --- DOM References ---
-            const sendButton = document.getElementById('wpaa-chat-send-button');
-            const chatInput = document.getElementById('wpaa-chat-input');
-            const chatHistory = document.getElementById('wpaa-chat-history');
-            const closeButton = document.getElementById('wpaa-chat-close-button');
+            const sendButton = document.getElementById('wpa-chat-send-button');
+            const chatInput = document.getElementById('wpa-chat-input');
+            const chatHistory = document.getElementById('wpa-chat-history');
+            const closeButton = document.getElementById('wpa-chat-close-button');
 
             window.sendButton = sendButton;
             window.chatInput = chatInput;
@@ -181,7 +181,7 @@ jQuery(document).ready(function($) {
 
                 setTimeout(() => {
                     chatHistory.appendChild(loadingMsg);
-                    loadingDiv = loadingMsg.querySelector('.wpaa-chat-agent-message');
+                    loadingDiv = loadingMsg.querySelector('.wpa-chat-agent-message');
                     if (loadingDiv) loadingDiv.classList.add('loading');
                     scrollToBottom(chatHistory);
 
@@ -199,11 +199,11 @@ jQuery(document).ready(function($) {
                 
                 // AJAX: run agent
                 $.ajax({
-                    url: wpaa_request_nonce.ajaxurl,
+                    url: wpa_request_nonce.ajaxurl,
                     type: 'POST',
                     data: {
-                        action: 'wpaa_run_agent',
-                        nonce: wpaa_request_nonce.nonce,
+                        action: 'wpa_run_agent',
+                        nonce: wpa_request_nonce.nonce,
                         agent_id: agentId,
                         content: userMessage
                     },
@@ -234,7 +234,7 @@ jQuery(document).ready(function($) {
             copyThemeStyles();
             
             // --- Load chat history from server ---
-            const sessionId = wpaa_request_nonce.session_id;
+            const sessionId = wpa_request_nonce.session_id;
             loadChatHistoryFromServer(agentId, agentName, agentGreetingMessage, sessionId, chatHistory, function() {
                 flex(chatIcon);
                 hide(chatPopup);
@@ -248,11 +248,11 @@ jQuery(document).ready(function($) {
 
     function loadChatHistoryFromServer(agentId, agentName, agentGreetingMessage, sessionId, chatHistoryElement, callback) {
         jQuery.ajax({
-            url: wpaa_request_nonce.ajaxurl,
+            url: wpa_request_nonce.ajaxurl,
             type: 'POST',
             data: {
-                action: 'wpaa_get_chat_history',
-                nonce: wpaa_request_nonce.nonce,
+                action: 'wpa_get_chat_history',
+                nonce: wpa_request_nonce.nonce,
                 agent_id: agentId,
                 session_id: sessionId
             },
@@ -276,11 +276,11 @@ jQuery(document).ready(function($) {
                     chatHistoryElement.appendChild(renderMessage({ type: 'agent', name: agentName, message: agentGreetingMessage }));
                     // Save the greeting message to the database for history display across sessions
                     jQuery.ajax({
-                        url: wpaa_request_nonce.ajaxurl,
+                        url: wpa_request_nonce.ajaxurl,
                         type: 'POST',
                         data: {
-                            action: 'wpaa_save_conversation',
-                            nonce: wpaa_request_nonce.nonce,
+                            action: 'wpa_save_conversation',
+                            nonce: wpa_request_nonce.nonce,
                             agent_id: agentId,
                             session_id: sessionId,
                             content: null,
@@ -301,18 +301,18 @@ jQuery(document).ready(function($) {
 
     function copyThemeStyles() {
         $.ajax({
-            url: wpaa_request_nonce.ajaxurl,
+            url: wpa_request_nonce.ajaxurl,
             type: 'POST',
             data: {
-                action: 'wpaa_get_theme_color',
-                nonce: wpaa_request_nonce.nonce
+                action: 'wpa_get_theme_color',
+                nonce: wpa_request_nonce.nonce
             },
             success: function(response) {
                 //console.log(response);
                 const $majorColor = response.data;
-                const $chatHeader = $('#wpaa-chat-header');
-                const $chatSendButton = $('#wpaa-chat-send-button');
-                const $chatIcon = $('.wpaa-chat-icon');
+                const $chatHeader = $('#wpa-chat-header');
+                const $chatSendButton = $('#wpa-chat-send-button');
+                const $chatIcon = $('.wpa-chat-icon');
 
                 $chatHeader.css({
                     'background': $majorColor,

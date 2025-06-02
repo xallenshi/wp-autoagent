@@ -1,7 +1,7 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
-class WPAutoAgent {
+class WPAgent {
     private $menu;
     private $settings;
     private $upload;
@@ -22,14 +22,14 @@ class WPAutoAgent {
 
     private function init_components() {
         // Check if required classes exist before instantiating
-        if (!class_exists('WPAutoAgent\Core\Menu') ||
-            !class_exists('WPAutoAgent\Core\Frontend') ||
-            !class_exists('WPAutoAgent\Core\Upload') ||
-            !class_exists('WPAutoAgent\Core\Create') ||
-            !class_exists('WPAutoAgent\Core\Run') ||
-            !class_exists('WPAutoAgent\Core\Chat') ||
-            !class_exists('WPAutoAgent\Core\Publish') ||
-            !class_exists('WPAutoAgent\Core\Key')) {
+        if (!class_exists('WPAgent\Core\Menu') ||
+            !class_exists('WPAgent\Core\Frontend') ||
+            !class_exists('WPAgent\Core\Upload') ||
+            !class_exists('WPAgent\Core\Create') ||
+            !class_exists('WPAgent\Core\Run') ||
+            !class_exists('WPAgent\Core\Chat') ||
+            !class_exists('WPAgent\Core\Publish') ||
+            !class_exists('WPAgent\Core\Key')) {
             throw new \Exception('Required classes not found');
         }
 

@@ -1,5 +1,5 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
 global $wpdb;
 $db_handler = new DBHandler();
@@ -13,17 +13,17 @@ class Create {
         $this->table_agent = Config::get_table_name('agent');
         $this->table_conversation = Config::get_table_name('conversation');
 
-        add_action('wp_ajax_wpaa_create_agent', array($this, 'wpaa_create_agent'));
+        add_action('wp_ajax_wpa_create_agent', array($this, 'wpa_create_agent'));
         
-        add_action('wp_ajax_wpaa_get_agent', array($this, 'wpaa_get_agent'));
-        add_action('wp_ajax_nopriv_wpaa_get_agent', array($this, 'wpaa_get_agent'));
+        add_action('wp_ajax_wpa_get_agent', array($this, 'wpa_get_agent'));
+        add_action('wp_ajax_nopriv_wpa_get_agent', array($this, 'wpa_get_agent'));
 
-        add_action('wp_ajax_wpaa_delete_agent', array($this, 'wpaa_delete_agent'));
+        add_action('wp_ajax_wpa_delete_agent', array($this, 'wpa_delete_agent'));
     }
 
-    public function wpaa_create_agent() {
+    public function wpa_create_agent() {
 
-        if (!check_ajax_referer('wpaa_setting', 'nonce', false)) {
+        if (!check_ajax_referer('wpa_setting', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }
@@ -135,7 +135,7 @@ class Create {
         ];
     }
 
-    public function wpaa_get_agent() {
+    public function wpa_get_agent() {
         global $wpdb;
         $db_handler = new DBHandler();
         $agent_id = $_POST['agent_id'];
@@ -146,10 +146,10 @@ class Create {
         wp_send_json_success($agent);
     }
 
-    public function wpaa_delete_agent() {
+    public function wpa_delete_agent() {
         global $wpdb;
         $agent_id = $_POST['agent_id'];
-        if (!check_ajax_referer('wpaa_setting', 'nonce', false)) {
+        if (!check_ajax_referer('wpa_setting', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }

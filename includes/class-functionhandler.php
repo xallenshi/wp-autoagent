@@ -1,11 +1,11 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
 class FunctionHandler {
     // Map function call names to handler methods
     public static $function_map = [
-        'wpaa_track_order' => ['wpaa_track_order', 'internal_function_track_order'],
-        'wpaa_sumbit_form' => ['wpaa_sumbit_form', 'internal_function_sumbit_form'],
+        'wpa_track_order' => ['wpa_track_order', 'internal_function_track_order'],
+        'wpa_sumbit_form' => ['wpa_sumbit_form', 'internal_function_sumbit_form'],
         // Add more mappings here as you add new functions
     ];
 

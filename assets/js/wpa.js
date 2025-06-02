@@ -1,30 +1,30 @@
 jQuery(document).ready(function($) {
     
     // Listen for clicks on the menu items
-    $('#wpaa_setting_menu li').on('click', function() {
+    $('#wpa_setting_menu li').on('click', function() {
         var page = $(this).data('page');
 
         // Hide all pages first
-        $('#wpaa_settings_content .wpaa-page').hide();
+        $('#wpa_settings_content .wpa-page').hide();
 
         // Show the selected page
-        $('#wpaa_' + page).show();
+        $('#wpa_' + page).show();
 
         // Remove 'active' class from all menu items and add to the clicked one
-        $('#wpaa_setting_menu li').removeClass('active');
+        $('#wpa_setting_menu li').removeClass('active');
         $(this).addClass('active');
     });
 
     // Listen for clicks on the agent list
-    $('.wpaa-agent-list1 li, .wpaa-agent-list2 li').on('click', function() {
+    $('.wpa-agent-list1 li, .wpa-agent-list2 li').on('click', function() {
         // Remove 'active' class from all agents and add to the clicked one
-        $('.wpaa-agent-list1 li, .wpaa-agent-list2 li').removeClass('active');
+        $('.wpa-agent-list1 li, .wpa-agent-list2 li').removeClass('active');
         $(this).addClass('active');
     });
 
 
     // Trigger click on the first item to show it by default (Upload Article)
-    $('#wpaa_setting_menu li:first').trigger('click');
+    $('#wpa_setting_menu li:first').trigger('click');
 
     // Load agent scope when agent is selected
     $('select[name="agent_id"]').on('change', function() {
@@ -43,8 +43,8 @@ jQuery(document).ready(function($) {
                 url: ajaxurl,
                 type: 'POST',
                 data: {
-                    action: 'wpaa_get_agent_scope',
-                    nonce: wpaa_setting_nonce.nonce,
+                    action: 'wpa_get_agent_scope',
+                    nonce: wpa_setting_nonce.nonce,
                     agent_id: agent_id
                 },
                 success: function(response) {
@@ -65,7 +65,7 @@ jQuery(document).ready(function($) {
                     }
                 },
                 error: function() {
-                    $('.wpaa-plugin-container form').prepend('<div class="error"><p>Error loading agent scope.</p></div>');
+                    $('.wpa-plugin-container form').prepend('<div class="error"><p>Error loading agent scope.</p></div>');
                 }
             });
         }
@@ -95,15 +95,15 @@ jQuery(document).ready(function($) {
 
 
     // Create Agent
-    $('#wpaa_create_agent_form').submit(function(event) {
+    $('#wpa_create_agent_form').submit(function(event) {
         event.preventDefault();
 
-        $('#wpaa_create_agent_button').prop('disabled', true);
-        button_text = $('#wpaa_create_agent_button').text();
+        $('#wpa_create_agent_button').prop('disabled', true);
+        button_text = $('#wpa_create_agent_button').text();
         if (button_text === 'Create AI Agent') {
-            $('#wpaa_create_agent_button').text('Creating...');
+            $('#wpa_create_agent_button').text('Creating...');
         } else {
-            $('#wpaa_create_agent_button').text('Updating...');
+            $('#wpa_create_agent_button').text('Updating...');
         }
 
         const checkboxes = document.querySelectorAll('input[name="articles[]"]');
@@ -116,15 +116,15 @@ jQuery(document).ready(function($) {
         if (!checkedOne) {
             showNotification('Please select at least one knowledge article.', 'error');
             setTimeout(function() {
-                $('#wpaa_create_agent_button').prop('disabled', false);
-                $('#wpaa_create_agent_button').text(button_text);
+                $('#wpa_create_agent_button').prop('disabled', false);
+                $('#wpa_create_agent_button').text(button_text);
             }, 2000);
             return;
         }
 
         var formData = new FormData(this);
-        formData.append('action', 'wpaa_create_agent');
-        formData.append('nonce', wpaa_setting_nonce.nonce);
+        formData.append('action', 'wpa_create_agent');
+        formData.append('nonce', wpa_setting_nonce.nonce);
 
         $.ajax({
             url: ajaxurl,
@@ -150,36 +150,36 @@ jQuery(document).ready(function($) {
         });
 
         setTimeout(function() {
-            $('#wpaa_create_agent_button').prop('disabled', false);
-            $('#wpaa_create_agent_button').text(button_text);
+            $('#wpa_create_agent_button').prop('disabled', false);
+            $('#wpa_create_agent_button').text(button_text);
         }, 1000);
 
     });
 
     // Knowledge Base Link
-    $(document).on('click', '.wpaa-kb-link', function(e) {
+    $(document).on('click', '.wpa-kb-link', function(e) {
         e.preventDefault();
         // Modal HTML
         var modalHtml = `
-            <div class="wpaa-modal-overlay">
-                <div class="wpaa-modal">
-                    <button class="wpaa-modal-close" title="Close">&times;</button>
-                    <div class="wpaa-modal-header">
+            <div class="wpa-modal-overlay">
+                <div class="wpa-modal">
+                    <button class="wpa-modal-close" title="Close">&times;</button>
+                    <div class="wpa-modal-header">
                         <h2>Upload Knowledge Article</h2>
                     </div>
-                    <hr class="wpaa-hr">
-                    <div class="wpaa-modal-content">
-                        <div class="wpaa-modal-description">
+                    <hr class="wpa-hr">
+                    <div class="wpa-modal-content">
+                        <div class="wpa-modal-description">
                             <h4>Upload your knowledge articles to enrich your Agent's contextual understanding, enabling it to deliver more accurate and intelligent responses.</h4>
                         </div>
-                        <form id="wpaa_upload_article_form" method="post" enctype="multipart/form-data">
-                            <div class="wpaa-file-upload">
+                        <form id="wpa_upload_article_form" method="post" enctype="multipart/form-data">
+                            <div class="wpa-file-upload">
                                 <input type="file" name="article_file" id="article_file" accept=".txt,.doc,.docx,.pdf,.pptx,.md,.html,.json" required>
-                                <button type="submit" class="wpaa-upload-btn" id="wpaa_upload_article_button">Upload</button>
+                                <button type="submit" class="wpa-upload-btn" id="wpa_upload_article_button">Upload</button>
                             </div>
                         </form>
                         <hr>
-                        <div class="wpaa-modal-footer">
+                        <div class="wpa-modal-footer">
                             <p><b>Suggested Content:</b> Product catalogs, manuals, user guides, and technical documentation
                             </br><b>Supported Formats:</b> .txt, .doc, .docx, .pdf, .pptx, .md, .html, .json</p>
                         </div>
@@ -188,22 +188,22 @@ jQuery(document).ready(function($) {
             </div>
         `;
         // Remove any existing modal
-        $('.wpaa-modal-overlay').remove();
+        $('.wpa-modal-overlay').remove();
         // Append modal to body
         $('body').append(modalHtml);
 
     });
 
     // Handle upload in modal
-    $(document).on('submit', '#wpaa_upload_article_form', function(event) {
+    $(document).on('submit', '#wpa_upload_article_form', function(event) {
         event.preventDefault();
 
-        $('#wpaa_upload_article_button').prop('disabled', true);
-        $('#wpaa_upload_article_button').text('Uploading...');
+        $('#wpa_upload_article_button').prop('disabled', true);
+        $('#wpa_upload_article_button').text('Uploading...');
 
         var formData = new FormData(this);
-        formData.append('action', 'wpaa_article_upload');
-        formData.append('nonce', wpaa_setting_nonce.nonce);
+        formData.append('action', 'wpa_article_upload');
+        formData.append('nonce', wpa_setting_nonce.nonce);
         $.ajax({
             url: ajaxurl,
             type: 'POST',
@@ -222,15 +222,15 @@ jQuery(document).ready(function($) {
                 showNotification(response.data, 'error');
             },
             complete: function() {
-                $('#wpaa_upload_article_button').prop('disabled', false);
-                $('#wpaa_upload_article_button').text('Upload');
+                $('#wpa_upload_article_button').prop('disabled', false);
+                $('#wpa_upload_article_button').text('Upload');
             }
         });
     });
 
 
     // Agent List on Create Page
-    $(document).on('click', '.wpaa-agent-list1 li', function(e) {
+    $(document).on('click', '.wpa-agent-list1 li', function(e) {
         // If the click was on a child <a>, prevent default
         if ($(e.target).is('a')) {
             e.preventDefault();
@@ -239,7 +239,7 @@ jQuery(document).ready(function($) {
         
         // If clicking "New Agent", just open create page with blank form
         if (agent_id === 'new') {
-            $('#wpaa_setting_menu li[data-page="create"]').trigger('click');
+            $('#wpa_setting_menu li[data-page="create"]').trigger('click');
             // Clear form fields
             $('#agent_id').val('');
             $('#name').val('');
@@ -250,28 +250,28 @@ jQuery(document).ready(function($) {
             $('input[name="articles[]"]').prop('checked', false);
             $('input[name="functions[]"]').prop('checked', false);
             // Set page title for new agent
-            $('#wpaa_create_agent_title').text('Create Your Agent');
-            $('#wpaa_create_agent_button').text('Create Agent');
+            $('#wpa_create_agent_title').text('Create Your Agent');
+            $('#wpa_create_agent_button').text('Create Agent');
             $('#delete_agent_link').hide();
             return;
         }
 
         //disable the agent from first
-        $('#wpaa_create_agent_form').find('input, textarea, select').prop('disabled', true);
+        $('#wpa_create_agent_form').find('input, textarea, select').prop('disabled', true);
         // Load agent info from database
         $.ajax({
             url: ajaxurl,
             type: 'POST',
             data: {
-                action: 'wpaa_get_agent',
-                nonce: wpaa_setting_nonce.nonce,
+                action: 'wpa_get_agent',
+                nonce: wpa_setting_nonce.nonce,
                 agent_id: agent_id
             },
             success: function(response) {
                 if (response.success) {
                     // Fill form with agent data
-                    $('#wpaa_create_agent_title').text('Update Your Agent');
-                    $('#wpaa_create_agent_button').text('Update Agent');
+                    $('#wpa_create_agent_title').text('Update Your Agent');
+                    $('#wpa_create_agent_button').text('Update Agent');
 
                     $('#agent_id').val(response.data.id);
                     $('#name').val(response.data.name);
@@ -307,14 +307,14 @@ jQuery(document).ready(function($) {
                 showNotification('Error loading agent data', 'error');
             },
             complete: function() {
-                $('#wpaa_create_agent_form').find('input, textarea, select').prop('disabled', false);
+                $('#wpa_create_agent_form').find('input, textarea, select').prop('disabled', false);
             }
         });
     });
 
 
     // Agent List on Publish Page
-    $(document).on('click', '.wpaa-agent-list2 li', function(e) {
+    $(document).on('click', '.wpa-agent-list2 li', function(e) {
         // If the click was on a child <a>, prevent default
         if ($(e.target).is('a')) {
             e.preventDefault();
@@ -322,7 +322,7 @@ jQuery(document).ready(function($) {
         var agent_id = $(this).find('a').data('agent_id');
         
         // Update selected state in the list
-        $('.wpaa-agent-list2 li').removeClass('active');
+        $('.wpa-agent-list2 li').removeClass('active');
         $(this).addClass('active');
         
         // Update the select and trigger change
@@ -331,15 +331,15 @@ jQuery(document).ready(function($) {
 
 
     // Publish Agent
-    $('#wpaa-publish-agent-form').on('submit', function(e) {
+    $('#wpa-publish-agent-form').on('submit', function(e) {
         e.preventDefault();
 
-        $('#wpaa_publish_agent_button').prop('disabled', true);
-        $('#wpaa_publish_agent_button').text('Publishing...');
+        $('#wpa_publish_agent_button').prop('disabled', true);
+        $('#wpa_publish_agent_button').text('Publishing...');
 
         var formData = new FormData(this);
-        formData.append('action', 'wpaa_publish_agent');
-        formData.append('nonce', wpaa_setting_nonce.nonce);
+        formData.append('action', 'wpa_publish_agent');
+        formData.append('nonce', wpa_setting_nonce.nonce);
 
         $.ajax({
             url: ajaxurl,
@@ -353,13 +353,13 @@ jQuery(document).ready(function($) {
                 } else {
                     showNotification('Error: ' + response.data, 'error');
                 }
-                $('#wpaa_publish_agent_button').prop('disabled', false);
-                $('#wpaa_publish_agent_button').text('Publish Agent');
+                $('#wpa_publish_agent_button').prop('disabled', false);
+                $('#wpa_publish_agent_button').text('Publish Agent');
             },
             error: function(xhr) {
                 showNotification('Error publishing agent. Please try again.', 'error');
-                $('#wpaa_publish_agent_button').prop('disabled', false);
-                $('#wpaa_publish_agent_button').text('Publish Agent');
+                $('#wpa_publish_agent_button').prop('disabled', false);
+                $('#wpa_publish_agent_button').text('Publish Agent');
             }
         });
 
@@ -368,49 +368,49 @@ jQuery(document).ready(function($) {
 
     
     // Add notification container if not present
-    if ($('#wpaa-notification-container').length === 0) {
-        $('body').append('<div id="wpaa-notification-container"></div>');
+    if ($('#wpa-notification-container').length === 0) {
+        $('body').append('<div id="wpa-notification-container"></div>');
     }
 
     // Modern notification function
     function showNotification(message, type = 'info') {
         const notification = $(`
-            <div class="wpaa-notification wpaa-notification-${type}">
+            <div class="wpa-notification wpa-notification-${type}">
                 ${message}
             </div>
         `);
-        $('#wpaa-notification-container').append(notification);
+        $('#wpa-notification-container').append(notification);
         setTimeout(() => {
             notification.fadeOut(400, function() { $(this).remove(); });
         }, 2000);
     }
 
     // Delete Agent Confirmation Popup
-    $(document).on('click', '.wpaa-delete-agent-link', function(e) {
+    $(document).on('click', '.wpa-delete-agent-link', function(e) {
         e.preventDefault();
         var agent_id = $(this).data('agent_id');
         
         // Remove any existing modal
-        $('.wpaa-modal-overlay').remove();
+        $('.wpa-modal-overlay').remove();
         
         // Modal HTML
         var modalHtml = `
-            <div class="wpaa-modal-overlay">
-                <div class="wpaa-modal">
-                    <button class="wpaa-modal-close" title="Close">&times;</button>
-                    <div class="wpaa-modal-header">
+            <div class="wpa-modal-overlay">
+                <div class="wpa-modal">
+                    <button class="wpa-modal-close" title="Close">&times;</button>
+                    <div class="wpa-modal-header">
                         <h3>Confirm Deletion</h3>
                     </div>
-                    <hr class="wpaa-hr">
-                    <div class="wpaa-modal-content">
+                    <hr class="wpa-hr">
+                    <div class="wpa-modal-content">
                         <p>Are you sure you want to delete this agent?</p>
-                        <div class="wpaa-modal-button">
-                            <button id="wpaa-confirm-delete" data-agent_id="${agent_id}">Delete</button>
-                            <button id="wpaa-confirm-cancel">Cancel</button>
+                        <div class="wpa-modal-button">
+                            <button id="wpa-confirm-delete" data-agent_id="${agent_id}">Delete</button>
+                            <button id="wpa-confirm-cancel">Cancel</button>
                         </div>
                     </div>
                     <hr>
-                    <div class="wpaa-modal-footer">
+                    <div class="wpa-modal-footer">
                         <p>The assigned article and its functions will remain intact, but the conversation history with this agent will be deleted.</p>
                     </div>
                 </div>
@@ -420,7 +420,7 @@ jQuery(document).ready(function($) {
     });
 
     // Handle confirm delete
-    $(document).on('click', '#wpaa-confirm-delete', function(e) {
+    $(document).on('click', '#wpa-confirm-delete', function(e) {
         e.preventDefault();
         var agent_id = $(this).data('agent_id');
 
@@ -428,8 +428,8 @@ jQuery(document).ready(function($) {
             url: ajaxurl,
             type: 'POST',
             data: {
-                action: 'wpaa_delete_agent',
-                nonce: wpaa_setting_nonce.nonce,
+                action: 'wpa_delete_agent',
+                nonce: wpa_setting_nonce.nonce,
                 agent_id: agent_id
             },
             success: function(response) {
@@ -446,31 +446,31 @@ jQuery(document).ready(function($) {
                 showNotification('Error deleting agent. Please try again.', 'error');
             }
         });
-        $('.wpaa-modal-overlay').remove();
+        $('.wpa-modal-overlay').remove();
     });
 
 
     // Close modal on click
-    $(document).on('click', '.wpaa-modal-close, .wpaa-modal-overlay, #wpaa-confirm-cancel', function(e) {
-        if ($(e.target).hasClass('wpaa-modal-close') || $(e.target).hasClass('wpaa-modal-overlay') || $(e.target).is('#wpaa-confirm-cancel')) {
-            $('.wpaa-modal-overlay').remove();
+    $(document).on('click', '.wpa-modal-close, .wpa-modal-overlay, #wpa-confirm-cancel', function(e) {
+        if ($(e.target).hasClass('wpa-modal-close') || $(e.target).hasClass('wpa-modal-overlay') || $(e.target).is('#wpa-confirm-cancel')) {
+            $('.wpa-modal-overlay').remove();
         }
     });
 
 
     // Save Access Key
-    $('#wpaa_save_key_button').on('click', function(e) {
+    $('#wpa_save_key_button').on('click', function(e) {
         e.preventDefault();
-        $('#wpaa_save_key_button').prop('disabled', true);
-        $('#wpaa_save_key_button').text('Saving...');
+        $('#wpa_save_key_button').prop('disabled', true);
+        $('#wpa_save_key_button').text('Saving...');
 
         var access_key = $('#access_key').val();
         $.ajax({
             url: ajaxurl,
             type: 'POST',
             data: {
-                action: 'wpaa_save_key',
-                nonce: wpaa_setting_nonce.nonce,
+                action: 'wpa_save_key',
+                nonce: wpa_setting_nonce.nonce,
                 access_key: access_key
             },
             success: function(response) {
@@ -488,8 +488,8 @@ jQuery(document).ready(function($) {
         });
 
         setTimeout(() => {
-            $('#wpaa_save_key_button').prop('disabled', false);
-            $('#wpaa_save_key_button').text('Save Key');
+            $('#wpa_save_key_button').prop('disabled', false);
+            $('#wpa_save_key_button').text('Save Key');
         }, 2000);
     });
 

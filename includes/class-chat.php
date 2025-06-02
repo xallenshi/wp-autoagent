@@ -1,17 +1,17 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
 class Chat {
     private $table_agent;
 
     public function __construct() {
         $this->table_agent = Config::get_table_name('agent');
-        add_action('wp_ajax_wpaa_check_agent_scope', array($this, 'wpaa_check_agent_scope'));
-        add_action('wp_ajax_nopriv_wpaa_check_agent_scope', array($this, 'wpaa_check_agent_scope'));
+        add_action('wp_ajax_wpa_check_agent_scope', array($this, 'wpa_check_agent_scope'));
+        add_action('wp_ajax_nopriv_wpa_check_agent_scope', array($this, 'wpa_check_agent_scope'));
     }
 
-    public function wpaa_check_agent_scope() {
-        if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
+    public function wpa_check_agent_scope() {
+        if (!check_ajax_referer('wpa_request', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }

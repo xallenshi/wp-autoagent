@@ -1,22 +1,22 @@
 <?php
-namespace WPAutoAgent\Core;
+namespace WPAgent\Core;
 
 class Run {
     private $table_conversation;
 
     public function __construct() {
         $this->table_conversation = Config::get_table_name('conversation');
-        add_action('wp_ajax_wpaa_run_agent', array($this, 'wpaa_run_agent'));
-        add_action('wp_ajax_nopriv_wpaa_run_agent', array($this, 'wpaa_run_agent'));
+        add_action('wp_ajax_wpa_run_agent', array($this, 'wpa_run_agent'));
+        add_action('wp_ajax_nopriv_wpa_run_agent', array($this, 'wpa_run_agent'));
 
-        add_action('wp_ajax_wpaa_get_chat_history', array($this, 'wpaa_get_chat_history'));
-        add_action('wp_ajax_nopriv_wpaa_get_chat_history', array($this, 'wpaa_get_chat_history'));
+        add_action('wp_ajax_wpa_get_chat_history', array($this, 'wpa_get_chat_history'));
+        add_action('wp_ajax_nopriv_wpa_get_chat_history', array($this, 'wpa_get_chat_history'));
 
-        add_action('wp_ajax_wpaa_save_conversation', array($this, 'wpaa_save_conversation'));
-        add_action('wp_ajax_nopriv_wpaa_save_conversation', array($this, 'wpaa_save_conversation'));
+        add_action('wp_ajax_wpa_save_conversation', array($this, 'wpa_save_conversation'));
+        add_action('wp_ajax_nopriv_wpa_save_conversation', array($this, 'wpa_save_conversation'));
 
-        add_action('wp_ajax_wpaa_run_the_agent', array($this, 'wpaa_run_the_agent'));
-        add_action('wp_ajax_nopriv_wpaa_run_the_agent', array($this, 'wpaa_run_the_agent'));
+        add_action('wp_ajax_wpa_run_the_agent', array($this, 'wpa_run_the_agent'));
+        add_action('wp_ajax_nopriv_wpa_run_the_agent', array($this, 'wpa_run_the_agent'));
     }
 
     private function call_lambda_api($body) {
@@ -54,9 +54,9 @@ class Run {
     }
 
 
-    public function wpaa_run_agent() {
+    public function wpa_run_agent() {
 
-        if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
+        if (!check_ajax_referer('wpa_request', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }
@@ -83,7 +83,7 @@ class Run {
         }
 
         #keep conversation state
-        $session_id = $this->wpaa_get_session_id();
+        $session_id = $this->wpa_get_session_id();
         $response_id = $db_handler->get_latest_response_id($agent_id, $session_id);
         #add system level instructions
         $input[] = array('role' => 'system', 'content' => $instructions);
@@ -133,10 +133,10 @@ class Run {
             $args = json_decode($function_call_args, true) ?: [];
 
             // Dynamic function dispatch
-            if (isset(\WPAutoAgent\Core\FunctionHandler::$function_map[$function_call_name])) {
-                $callable = \WPAutoAgent\Core\FunctionHandler::$function_map[$function_call_name][1];           
-                if (method_exists('\WPAutoAgent\Core\FunctionHandler', $callable)) {
-                    $function_call_result = \WPAutoAgent\Core\FunctionHandler::$callable($args);
+            if (isset(\WPAgent\Core\FunctionHandler::$function_map[$function_call_name])) {
+                $callable = \WPAgent\Core\FunctionHandler::$function_map[$function_call_name][1];           
+                if (method_exists('\WPAgent\Core\FunctionHandler', $callable)) {
+                    $function_call_result = \WPAgent\Core\FunctionHandler::$callable($args);
                 } else {
                     error_log('Function not callable: ' . $function_call_name);
                 }
@@ -171,7 +171,7 @@ class Run {
     }
 
 
-    public function wpaa_run_the_agent($request_id, $object1, $object2) {
+    public function wpa_run_the_agent($request_id, $object1, $object2) {
 
         if (!$request_id) {
             return false;
@@ -217,9 +217,9 @@ class Run {
     }
 
 
-    public function wpaa_run_the_agent2() {
+    public function wpa_run_the_agent2() {
 
-        if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
+        if (!check_ajax_referer('wpa_request', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }
@@ -280,7 +280,7 @@ class Run {
         global $wpdb;
         
         #get non-logged-in/logged-in user session id
-        $session_id = $this->wpaa_get_session_id();
+        $session_id = $this->wpa_get_session_id();
         if($session_id) {
             $user_id = is_user_logged_in() ? get_current_user_id() : null;
             $result = $wpdb->insert($this->table_conversation, array(
@@ -308,7 +308,7 @@ class Run {
     }
 
 
-    public function wpaa_save_conversation() {
+    public function wpa_save_conversation() {
         global $wpdb;
 
         $agent_id = $_POST['agent_id'];
@@ -317,7 +317,7 @@ class Run {
         $api_msg = wp_kses_post(wp_unslash($_POST['api_msg']));
         
         #get non-logged-in/logged-in user session id
-        $session_id = $this->wpaa_get_session_id();
+        $session_id = $this->wpa_get_session_id();
         if($agent_id && $session_id) {
             $user_id = is_user_logged_in() ? get_current_user_id() : null;
             $result = $wpdb->insert($this->table_conversation, array(
@@ -344,14 +344,14 @@ class Run {
         }
     }
 
-    public function wpaa_get_chat_history() {
-        if (!check_ajax_referer('wpaa_request', 'nonce', false)) {
+    public function wpa_get_chat_history() {
+        if (!check_ajax_referer('wpa_request', 'nonce', false)) {
             wp_send_json_error('Invalid nonce.');
             return;
         }
 
         $agent_id = intval($_POST['agent_id']);
-        $session_id = $this->wpaa_get_session_id();
+        $session_id = $this->wpa_get_session_id();
 
         $db_handler = new DBHandler();
         $results = $db_handler->get_chat_history($agent_id, $session_id);
@@ -360,7 +360,7 @@ class Run {
     }
 
 
-    public function wpaa_get_session_id() {
+    public function wpa_get_session_id() {
         static $session_id = null;
         # 1. Handle logged-in users
         if (is_user_logged_in()) {

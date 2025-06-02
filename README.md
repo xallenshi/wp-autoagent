@@ -1,2 +1,2 @@
-# wp-autoagent
+# wp-agent
 today

@@ -1,11 +1,11 @@
-.wpaa-title {
+.wpa-title {
     font-family: 'Arial', sans-serif;
     font-size: 24px;
     font-weight: 600;
     margin: 20px 0 20px 0;
 }
 
-#wpaa_setting_menu {
+#wpa_setting_menu {
     width: 250px;
     float: left;
     background-color: #fff;
@@ -14,19 +14,19 @@
 
 }
 
-#wpaa_setting_menu li {
+#wpa_setting_menu li {
     padding: 12px 20px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
     border-left: 4px solid transparent;
 }
 
-#wpaa_setting_menu li:hover {
+#wpa_setting_menu li:hover {
     background-color: rgba(52, 152, 219, 0.1);
     border-left-color: var(--primary-color);
 }
 
-#wpaa_setting_menu li.active {
+#wpa_setting_menu li.active {
     background-color: #e5f3fa;
     border-left-color: var(--primary-color);
     font-weight: bold;
@@ -34,7 +34,7 @@
 }
 
 
-#wpaa_settings_content {
+#wpa_settings_content {
     margin-left: 270px;
     margin-right: 20px;
     padding: 15px;
@@ -43,18 +43,18 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.wpaa-plugin-container {
+.wpa-plugin-container {
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f9;
     color: #333;
 }
 
-.wpaa-plugin-container h1, .wpaa-plugin-container h2, .wpaa-plugin-container h3 {
+.wpa-plugin-container h1, .wpa-plugin-container h2, .wpa-plugin-container h3 {
     color: #444;
     text-align: center;
 }
 
-.wpaa-plugin-container form {
+.wpa-plugin-container form {
     max-width: 600px;
     margin: 0 auto;
     background: #fff;
@@ -63,15 +63,15 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.wpaa-plugin-container label {
+.wpa-plugin-container label {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
 }
 
-.wpaa-plugin-container input[type="text"],
-.wpaa-plugin-container textarea,
-.wpaa-plugin-container select {
+.wpa-plugin-container input[type="text"],
+.wpa-plugin-container textarea,
+.wpa-plugin-container select {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -80,15 +80,15 @@
     box-sizing: border-box;
 }
 
-.wpaa-plugin-container textarea {
+.wpa-plugin-container textarea {
     resize: vertical;
 }
 
-.wpaa-plugin-container input[type="checkbox"] {
+.wpa-plugin-container input[type="checkbox"] {
     margin-right: 10px;
 }
 
-.wpaa-plugin-container button {
+.wpa-plugin-container button {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -99,51 +99,51 @@
     transition: background-color 0.3s;
 }
 
-.wpaa-plugin-container button:hover {
+.wpa-plugin-container button:hover {
     background-color: #0056b3;
 }
 
-.wpaa-plugin-container div {
+.wpa-plugin-container div {
     margin-bottom: 10px;
 }
 
-.wpaa-plugin-container select {
+.wpa-plugin-container select {
     max-width: 100%;
 }
 
 
 
 /* Multiselect Styles */
-.wpaa-publish-scope-container {
+.wpa-publish-scope-container {
     display: flex;
     gap: 20px;
 }
 
-.wpaa-publish-scope-container select[name="selected_pages[]"] option:hover,
-.wpaa-publish-scope-container select[name="selected_admin_pages[]"] option:hover {
+.wpa-publish-scope-container select[name="selected_pages[]"] option:hover,
+.wpa-publish-scope-container select[name="selected_admin_pages[]"] option:hover {
     background-color: #e8f0fe !important;
     cursor: pointer;
 }
 
-.wpaa-publish-scope-container select[multiple] {
+.wpa-publish-scope-container select[multiple] {
     padding: 5px;
     width: 288px;
 }
 
-.wpaa-publish-scope-container select[multiple] option {
+.wpa-publish-scope-container select[multiple] option {
     padding: 8px;
     border-bottom: 1px solid #f0f0f0;
     cursor: pointer;
     transition: background-color 0.2s;
 }
 
-.wpaa-publish-scope-container select[multiple] option:checked {
+.wpa-publish-scope-container select[multiple] option:checked {
     background: #4CAF50 linear-gradient(0deg, #4CAF50 0%, #4CAF50 100%) !important;
     font-weight: bold;
 }
 
 /* Knowledge Base Link */
-.wpaa-kb-link {
+.wpa-kb-link {
     display: inline-block;
     color: #0073aa;
     text-decoration: none;
@@ -152,12 +152,12 @@
     transition: color 0.3s ease;
 }
 
-.wpaa-kb-link:hover {
+.wpa-kb-link:hover {
     color: #00a0d2;
 }
 
 
-.wpaa-panel-header {
+.wpa-panel-header {
     font-size: 16px;
     font-weight: bold;
     color: #000000;
@@ -169,7 +169,7 @@
 }
 
 /* Agent list styling */
-.wpaa-agent-list1, .wpaa-agent-list2 {
+.wpa-agent-list1, .wpa-agent-list2 {
     width: 200px;
     float: left;
     background-color: #fff;
@@ -178,7 +178,7 @@
     list-style: none;
 }
 
-.wpaa-agent-list1 li, .wpaa-agent-list2 li {
+.wpa-agent-list1 li, .wpa-agent-list2 li {
     padding: 12px 20px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
@@ -187,25 +187,25 @@
     display: block;
 }
 
-.wpaa-agent-list1 li:hover, .wpaa-agent-list2 li:hover {
+.wpa-agent-list1 li:hover, .wpa-agent-list2 li:hover {
     background-color: rgba(52, 152, 219, 0.1);
     border-left-color: var(--primary-color);
 }
 
-.wpaa-agent-list1 li.active, .wpaa-agent-list2 li.active {
+.wpa-agent-list1 li.active, .wpa-agent-list2 li.active {
     background-color: #e5f3fa;
     border-left-color: var(--primary-color);
     font-weight: bold;
     color: #0073aa;
 }
 
-.wpaa-agent-list1 li a, .wpaa-agent-list2 li a {
+.wpa-agent-list1 li a, .wpa-agent-list2 li a {
     text-decoration: none;
 }
 
 
 
-.wpaa-modal-overlay {
+.wpa-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -218,13 +218,13 @@
     justify-content: center;
 }
 
-.wpaa-modal-header {
+.wpa-modal-header {
     text-align: center;
     font-weight: bold;
     color: #fff;
 }
 
-.wpaa-modal {
+.wpa-modal {
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 32px rgba(0,0,0,0.2);
@@ -233,19 +233,19 @@
     padding: 20px;
     position: relative;
     z-index: 10001;
-    animation: wpaaModalIn 0.2s;
+    animation: wpaModalIn 0.2s;
 }
 
-.wpaa-modal-content {
+.wpa-modal-content {
     line-height: 2;
 }
 
-@keyframes wpaaModalIn {
+@keyframes wpaModalIn {
     from { transform: scale(0.95); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
 
-.wpaa-modal-close {
+.wpa-modal-close {
     position: absolute;
     top: 12px;
     right: 16px;
@@ -257,31 +257,31 @@
     z-index: 10002;
     transition: color 0.2s;
 }
-.wpaa-modal-close:hover {
+.wpa-modal-close:hover {
     color: #d00;
 }
 
-.wpaa-modal-button {
+.wpa-modal-button {
     display: flex;
     gap: 16px;
     justify-content: center;
     margin: 30px;
 }
 
-.wpaa-textarea {
+.wpa-textarea {
     width: 100%;
     height: 75px;
 }
 
 /* Notification Styles */
-#wpaa-notification-container {
+#wpa-notification-container {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 9999;
 }
-.wpaa-notification {
+.wpa-notification {
     background: #222;
     color: #fff;
     padding: 20px 32px;
@@ -301,40 +301,40 @@
     text-align: center;
 }
 
-.wpaa-notification-success {
+.wpa-notification-success {
     background: #28a745;
 }
-.wpaa-notification-error {
+.wpa-notification-error {
     background: #dc3545;
 }
-.wpaa-notification-info {
+.wpa-notification-info {
     background: #222;
 }
 
 
 
 /* Button Styles */
-#wpaa_publish_agent_button[disabled],
-#wpaa_create_agent_button[disabled],
-#wpaa_save_key_button[disabled] {
+#wpa_publish_agent_button[disabled],
+#wpa_create_agent_button[disabled],
+#wpa_save_key_button[disabled] {
     background-color: #aaa;
     cursor: not-allowed;
 }
 
-#wpaa_publish_agent_button:not([disabled]),
-#wpaa_create_agent_button:not([disabled]), 
-#wpaa_save_key_button:not([disabled]) {
+#wpa_publish_agent_button:not([disabled]),
+#wpa_create_agent_button:not([disabled]), 
+#wpa_save_key_button:not([disabled]) {
     background-color: #007bff;
     cursor: pointer;
 }
 
 
-.wpaa-space {
+.wpa-space {
     margin-left: 5px;
 }
 
 /* Tooltip Styles */
-.wpaa-tooltip {
+.wpa-tooltip {
   display: inline-block;
   position: relative;
   cursor: pointer;
@@ -350,7 +350,7 @@
   font-size: 12px;
 }
 
-.wpaa-tooltip-text {
+.wpa-tooltip-text {
   visibility: hidden;
   width: max-content;
   min-width: 200px;
@@ -371,14 +371,14 @@
   line-height: 1.5;
 }
 
-.wpaa-tooltip:hover .wpaa-tooltip-text {
+.wpa-tooltip:hover .wpa-tooltip-text {
   visibility: visible;
   opacity: 1;
 }
 
 
 /* Example Styles */ 
-.wpaa-example-container {
+.wpa-example-container {
     display: flex;
     justify-content: right;
     gap: 10px;
@@ -386,37 +386,37 @@
     margin-top: 10px;
 }
 
-.wpaa-example-link {
+.wpa-example-link {
     font-size: 12px;
     color: #0073aa;
     text-decoration: none;
 }
 
-.wpaa-example-link:hover {
+.wpa-example-link:hover {
     color: #00a0d2;
 }
 
 
 
-.wpaa-row {
+.wpa-row {
     display: flex;
     align-items: baseline;
     flex-direction: row;
     flex-wrap: nowrap;
 }
-.wpaa-row input[type="radio"], .wpaa-row input[type="checkbox"] {
+.wpa-row input[type="radio"], .wpa-row input[type="checkbox"] {
     /* Fine-tune vertical alignment */
     transform: translateY(3px);
 }
 
-.wpaa-row-middle {
+.wpa-row-middle {
     display: flex;
     align-items: center;
     justify-content: center;
     margin-top: 30px;
 }
 
-.wpaa-row-middle-bottom {
+.wpa-row-middle-bottom {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -424,7 +424,7 @@
 
 
 
-.wpaa-hr {
+.wpa-hr {
     border: none;
     width: 50%;
     left: 50%;
@@ -437,12 +437,12 @@
 }
 
 
-.wpaa-logo {
+.wpa-logo {
     width: 150px;
     margin-right: 10px;
 }
 
-.wpaa-logo img {
+.wpa-logo img {
     width: 100%;
     height: 100%;
 }
