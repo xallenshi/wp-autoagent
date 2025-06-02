@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WP AutoAgent
+ * Plugin Name: WP Agent
  * Plugin URI: https://xsolution.com
  * Description: An AI-driven agent for WordPress that assists with customer inquiries and requests.
  * Version: 1.0.0

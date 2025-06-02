@@ -57,6 +57,10 @@ foreach ($menu as $item) {
                 </li>
                 <?php
             }
+        } else {
+            ?>
+            <li>No Agent</li>
+            <?php
         }
         ?>
     </ul>

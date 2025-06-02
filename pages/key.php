@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 
 $db_handler = new DBHandler();
 $global_setting = $db_handler->get_global_setting();
-$access_key = $global_setting->access_key;
+$access_key = isset($global_setting->access_key) ? $global_setting->access_key : '';
 
 ?>
 

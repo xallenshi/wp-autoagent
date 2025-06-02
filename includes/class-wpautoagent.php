@@ -46,10 +46,10 @@ class WPAutoAgent {
 
     private function create_privacy_policy_page() {
         // 1. Register activation hook to create the page
-        register_activation_hook(__FILE__, function() {
+        register_activation_hook(WP_AUTOAGENT_PLUGIN_FILE, function() {
             $page_title = 'WP Agent Privacy Policy';
             $page_slug = 'wpaa-privacy-policy';
-            $page_content = '[wpaa_privacy_policy]'; // Use a shortcode for dynamic content
+            $page_content = '[wpaa_privacy_policy]';
     
             // Check if the page already exists
             $page = get_page_by_path($page_slug);
@@ -72,7 +72,7 @@ class WPAutoAgent {
     
         // 2. Add the shortcode to display file content
         add_shortcode('wpaa_privacy_policy', function() {
-            $file_path = plugin_dir_path(__FILE__) . 'wpaa-privacy-policy.html'; // Adjust path as needed
+            $file_path = WP_AUTOAGENT_PLUGIN_DIR . 'assets/html/wpaa-privacy-policy.html';
             if (file_exists($file_path)) {
                 $content = file_get_contents($file_path);
                 return '<div class="wpaa-privacy-policy">' . $content . '</div>';
