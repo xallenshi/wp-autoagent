@@ -18,6 +18,7 @@ class WPAutoAgent {
 
     public function init_plugin() {
         $this->init_components();
+        $this->create_privacy_policy_page();
     }
 
     private function init_components() {
@@ -43,4 +44,43 @@ class WPAutoAgent {
         $this->key = new Key();
     }
 
+    private function create_privacy_policy_page() {
+        // 1. Register activation hook to create the page
+        register_activation_hook(__FILE__, function() {
+            $page_title = 'WP Agent Privacy Policy';
+            $page_slug = 'wpaa-privacy-policy';
+            $page_content = '[wpaa_privacy_policy]'; // Use a shortcode for dynamic content
+    
+            // Check if the page already exists
+            $page = get_page_by_path($page_slug);
+            if (!$page) {
+                // Create post object
+                $page_id = wp_insert_post([
+                    'post_title'   => $page_title,
+                    'post_name'    => $page_slug,
+                    'post_content' => $page_content,
+                    'post_status'  => 'publish',
+                    'post_type'    => 'page',
+                ]);
+                if ($page_id && !is_wp_error($page_id)) {
+                    update_option('wpaa_privacy_policy_page_id', $page_id);
+                }
+            } else {
+                update_option('wpaa_privacy_policy_page_id', $page->ID);
+            }
+        });
+    
+        // 2. Add the shortcode to display file content
+        add_shortcode('wpaa_privacy_policy', function() {
+            $file_path = plugin_dir_path(__FILE__) . 'wpaa-privacy-policy.html'; // Adjust path as needed
+            if (file_exists($file_path)) {
+                $content = file_get_contents($file_path);
+                return '<div class="wpaa-privacy-policy">' . $content . '</div>';
+            } else {
+                return '<div class="wpaa-privacy-policy">Privacy Policy file not found.</div>';
+            }
+        });
+    }
+
+    
 }

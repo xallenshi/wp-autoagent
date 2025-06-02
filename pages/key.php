@@ -15,7 +15,7 @@ $access_key = $global_setting->access_key;
     <form method="post">
         <h2>Access Key</h2>
         <hr class="wpaa-hr">
-        <h4>The access key will be provided to you after you obtain the preferred plan. Please check out the <a href="https://wpaa.xsolutions.com/pricing/" target="_blank">pricing page</a> for more details.</h4>
+        <h4>The access key will be provided after you obtain the preferred plan (free plan is available). Please check out the <a href="https://wpaa.xsolutions.com/pricing/" target="_blank">pricing page</a> for more details.</h4>
         <div class="form-field">
             <label for="access_key">Access Key
                 <span class="wpaa-tooltip">?

@@ -12,6 +12,7 @@ $table_article = WPAutoAgent\Core\Config::get_table_name('article');
 $table_agent = WPAutoAgent\Core\Config::get_table_name('agent');
 $table_conversation = WPAutoAgent\Core\Config::get_table_name('conversation');
 $table_function = WPAutoAgent\Core\Config::get_table_name('function');
+$table_global = WPAutoAgent\Core\Config::get_table_name('global');
 
 // Remove custom database tables
 global $wpdb;
@@ -19,6 +20,6 @@ $wpdb->query("DROP TABLE IF EXISTS {$table_article}");
 $wpdb->query("DROP TABLE IF EXISTS {$table_agent}");
 $wpdb->query("DROP TABLE IF EXISTS {$table_conversation}");
 $wpdb->query("DROP TABLE IF EXISTS {$table_function}");
+$wpdb->query("DROP TABLE IF EXISTS {$table_global}");
 
-// Delete options if any
-// delete_option('pinecone_api_key');
+

@@ -63,3 +63,7 @@ function wp_autoagent_init() {
     $wp_autoagent->init_plugin();
 }
 add_action('plugins_loaded', __NAMESPACE__ . '\\wp_autoagent_init');
+
+
+
+
