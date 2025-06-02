@@ -49,7 +49,7 @@
     color: #333;
 }
 
-.wpaa-plugin-container h1, .wpaa-plugin-container h2 {
+.wpaa-plugin-container h1, .wpaa-plugin-container h2, .wpaa-plugin-container h3 {
     color: #444;
     text-align: center;
 }
@@ -95,7 +95,7 @@
     padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
     transition: background-color 0.3s;
 }
 
@@ -155,7 +155,6 @@
 .wpaa-kb-link:hover {
     color: #00a0d2;
 }
-
 
 
 .wpaa-panel-header {
@@ -221,12 +220,8 @@
 
 .wpaa-modal-header {
     text-align: center;
-    background-color: #007bff;
-    font-size: 16px;
     font-weight: bold;
     color: #fff;
-    padding: 5px;
-    border-radius: 5px 5px 0 0;
 }
 
 .wpaa-modal {
@@ -360,7 +355,7 @@
   width: max-content;
   min-width: 200px;
   max-width: 300px;
-  background-color: #23282d;
+  background-color: #000080;
   color: #fff;
   text-align: left;
   border-radius: 4px;
@@ -373,6 +368,7 @@
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 12px;
+  line-height: 1.5;
 }
 
 .wpaa-tooltip:hover .wpaa-tooltip-text {
@@ -438,4 +434,15 @@
     margin: 20px 0;
     background: linear-gradient(90deg, transparent, #007bff 50%, transparent);
     border-radius: 2px;
+}
+
+
+.wpaa-logo {
+    width: 150px;
+    margin-right: 10px;
+}
+
+.wpaa-logo img {
+    width: 100%;
+    height: 100%;
 }

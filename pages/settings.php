@@ -1,8 +1,8 @@
 <div class="wpaa-body">
-    <div class="wpaa-title">WP AutoAgent Settings</div>
-    
+    <div class="wpaa-title"><img class="wpaa-logo" src="<?php echo WP_AUTOAGENT_PLUGIN_URL . 'assets/img/logo.png'; ?>" alt="WP AutoAgent"></div>
+
     <div id="wpaa_setting_menu">
-    <div class="wpaa-panel-header"><i class="fi fi-ss-settings"></i><span class="wpaa-space">Settings</span></div>
+    <div class="wpaa-panel-header"><span class="wpaa-space">Settings</span></div>
         <ul>
             <li data-page="create">Manage Agent</li>
             <li data-page="publish">Publish Agent</li>

@@ -13,7 +13,7 @@ $access_key = $global_setting->access_key;
 
 <div class="wpaa-plugin-container">
     <form method="post">
-        <h1>Access Key</h1>
+        <h2>Access Key</h2>
         <hr class="wpaa-hr">
         <h4>The access key will be provided to you after you obtain the preferred plan. Please check out the <a href="https://wpaa.xsolutions.com/pricing/" target="_blank">pricing page</a> for more details.</h4>
         <div class="form-field">

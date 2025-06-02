@@ -165,29 +165,23 @@ jQuery(document).ready(function($) {
                 <div class="wpaa-modal">
                     <button class="wpaa-modal-close" title="Close">&times;</button>
                     <div class="wpaa-modal-header">
-                        <h2>Knowledge Base Upload</h2>
-                        <p class="wpaa-modal-subtitle">Enhance your AI Agent with custom knowledge</p>
+                        <h2>Upload Knowledge Article</h2>
                     </div>
-                    <hr>
+                    <hr class="wpaa-hr">
                     <div class="wpaa-modal-content">
                         <div class="wpaa-modal-description">
-                            <p>Upload articles to the knowledge base to improve your AI Agent's contextual understanding.</p>
-                            <p>Supported content: Product catalogs, manuals, guides, documentation</p>
+                            <h4>Upload your knowledge articles to enrich your Agent's contextual understanding, enabling it to deliver more accurate and intelligent responses.</h4>
                         </div>
                         <form id="wpaa_upload_article_form" method="post" enctype="multipart/form-data">
                             <div class="wpaa-file-upload">
-                                <input type="file" name="article_file" id="article_file" accept=".txt,.doc,.docx,.xls,.xlsx,.pdf" required>
-                                <label for="article_file" class="wpaa-file-label">
-                                    <span class="wpaa-file-icon">📄</span>
-                                    <span>Choose a file</span>
-                                </label>
+                                <input type="file" name="article_file" id="article_file" accept=".txt,.doc,.docx,.pdf,.pptx,.md,.html,.json" required>
+                                <button type="submit" class="wpaa-upload-btn" id="wpaa_upload_article_button">Upload</button>
                             </div>
-                            <button type="submit" class="wpaa-upload-btn">Upload Article</button>
                         </form>
-                        <div id="wpaa_article_list" class="wpaa-article-list"></div>
                         <hr>
                         <div class="wpaa-modal-footer">
-                            <p>Supported content: Product catalogs, manuals, guides, documentation</p>
+                            <p><b>Suggested Content:</b> Product catalogs, manuals, user guides, and technical documentation
+                            </br><b>Supported Formats:</b> .txt, .doc, .docx, .pdf, .pptx, .md, .html, .json</p>
                         </div>
                     </div>
                 </div>
@@ -198,30 +192,15 @@ jQuery(document).ready(function($) {
         // Append modal to body
         $('body').append(modalHtml);
 
-        // Load article list via AJAX
-        $.ajax({
-            url: ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'wpaa_get_article_list',
-                nonce: wpaa_setting_nonce.nonce
-            },
-            success: function(response) {
-                if (response.success && response.data) {
-                    $('#wpaa_article_list').html(response.data);
-                } else {
-                    $('#wpaa_article_list').html('<div>No articles found.</div>');
-                }
-            },
-            error: function() {
-                $('#wpaa_article_list').html('<div>Error loading articles.</div>');
-            }
-        });
     });
 
     // Handle upload in modal
     $(document).on('submit', '#wpaa_upload_article_form', function(event) {
         event.preventDefault();
+
+        $('#wpaa_upload_article_button').prop('disabled', true);
+        $('#wpaa_upload_article_button').text('Uploading...');
+
         var formData = new FormData(this);
         formData.append('action', 'wpaa_article_upload');
         formData.append('nonce', wpaa_setting_nonce.nonce);
@@ -234,26 +213,17 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     showNotification(response.data, 'success');
+                    location.reload();
                 } else {
                     showNotification(response.data, 'error');
                 }
-                // Reload article list after upload
-                $.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'wpaa_get_article_list',
-                        nonce: wpaa_setting_nonce.nonce
-                    },
-                    success: function(response) {
-                        if (response.success && response.data) {
-                            $('#wpaa_article_list').html(response.data);
-                        }
-                    }
-                });
             },
             error: function(response) {
                 showNotification(response.data, 'error');
+            },
+            complete: function() {
+                $('#wpaa_upload_article_button').prop('disabled', false);
+                $('#wpaa_upload_article_button').text('Upload');
             }
         });
     });
@@ -429,19 +399,19 @@ jQuery(document).ready(function($) {
                 <div class="wpaa-modal">
                     <button class="wpaa-modal-close" title="Close">&times;</button>
                     <div class="wpaa-modal-header">
-                        <h2>Confirm Delete</h2>
+                        <h3>Confirm Deletion</h3>
                     </div>
-                    <hr>
+                    <hr class="wpaa-hr">
                     <div class="wpaa-modal-content">
                         <p>Are you sure you want to delete this agent?</p>
                         <div class="wpaa-modal-button">
-                            <button id="wpaa-confirm-delete" data-agent_id="${agent_id}" style="background:#dc3545;">Delete</button>
-                            <button id="wpaa-confirm-cancel" style="background:#aaa;">Cancel</button>
+                            <button id="wpaa-confirm-delete" data-agent_id="${agent_id}">Delete</button>
+                            <button id="wpaa-confirm-cancel">Cancel</button>
                         </div>
                     </div>
                     <hr>
                     <div class="wpaa-modal-footer">
-                        <p>This action cannot be undone.</p>
+                        <p>The assigned article and its functions will remain intact, but the conversation history with this agent will be deleted.</p>
                     </div>
                 </div>
             </div>

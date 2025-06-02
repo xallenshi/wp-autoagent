@@ -33,12 +33,12 @@ $functions = $db_handler->get_functions();
 
 <div class="wpaa-plugin-container">
     <form id="wpaa_create_agent_form" method="post" enctype="multipart/form-data">
-    <h1 id="wpaa_create_agent_title">Create Your Agent</h1>
+    <h2 id="wpaa_create_agent_title">Create Your Agent</h2>
     <hr class="wpaa-hr">
     <h4>The WordPress Auto Agent is an AI-powered assistant that supports your customers by answering questions based on your knowledge articles and automating tasks through integration with popular WordPress plugins.</h4>
     
         <!-- Basic Info -->
-        <h2>Agent Settings</h2>
+        <h3>Agent Settings</h3>
         <input type="hidden" id="agent_id" name="agent_id" value="">
         <label for="name">Agent Name
           <span class="wpaa-tooltip">?
@@ -74,10 +74,10 @@ $functions = $db_handler->get_functions();
         </select>
 
         <!-- Knowledge Base -->
-        <h2>Knowledge Base</h2>
+        <h3>Knowledge Base</h3>
         <label>Select File
             <span class="wpaa-tooltip">?
-                <span class="wpaa-tooltip-text">Each agent can only have one file for now. If you have multiple knowledge articles for one agent, please merge them online before uploading.</span>
+                <span class="wpaa-tooltip-text">Each agent currently supports only one file. If you have multiple knowledge files for an agent, it is recommended to merge them into a single document before uploading.</span>
             </span>
         </label>
         <a href="#" class="wpaa-kb-link" data-page="upload">Upload Your New Knowledge Article</a>
@@ -103,7 +103,7 @@ $functions = $db_handler->get_functions();
         ?>
         
         <!-- Function Enablement -->
-        <h2>Function Enablement</h2>
+        <h3>Function Enablement</h3>
         <label>Select Functions</label>
         
         <?php

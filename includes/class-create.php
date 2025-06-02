@@ -11,6 +11,8 @@ class Create {
 
     public function __construct() {
         $this->table_agent = Config::get_table_name('agent');
+        $this->table_conversation = Config::get_table_name('conversation');
+
         add_action('wp_ajax_wpaa_create_agent', array($this, 'wpaa_create_agent'));
         
         add_action('wp_ajax_wpaa_get_agent', array($this, 'wpaa_get_agent'));
@@ -156,7 +158,8 @@ class Create {
             return;
         }
         $wpdb->delete($this->table_agent, array('id' => $agent_id));
-        wp_send_json_success('The agent has been deleted.');
+        $wpdb->delete($this->table_conversation, array('agent_id' => $agent_id));
+        wp_send_json_success('The agent have been deleted.');
     }
 
 }

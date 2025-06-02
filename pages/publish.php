@@ -64,7 +64,7 @@ foreach ($menu as $item) {
 
 <div class="wpaa-plugin-container">
     <form method="post" id="wpaa-publish-agent-form">
-    <h1>Publish Agent</h1>
+    <h2>Publish Agent</h2>
     <hr class="wpaa-hr">
     <h4>Publish your agents to the selected website admin pages and frontend pages.</h4>
 
@@ -77,7 +77,7 @@ foreach ($menu as $item) {
     </select>
 
     <!-- Page Selection -->
-    <h2>Agent Deployment Scope</h2>
+    <h3>Agent Deployment Scope</h3>
     <div class="wpaa-publish-scope-container">
         <div>
             <label for="name">Selected Frontend Pages</label>
