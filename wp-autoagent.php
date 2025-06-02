@@ -67,3 +67,45 @@ add_action('plugins_loaded', __NAMESPACE__ . '\\wp_autoagent_init');
 
 
 
+
+// Function to create privacy policy page
+function wp_autoagent_create_privacy_policy_page() {
+    $page_title = 'WP Agent Privacy Policy';
+    $page_slug = 'wpaa-privacy-policy';
+    $page_content = '[wpaa_privacy_policy]';
+
+    // Check if the page already exists
+    $page = get_page_by_path($page_slug);
+    if (!$page) {
+        // Create post object
+        $page_id = wp_insert_post([
+            'post_title'   => $page_title,
+            'post_name'    => $page_slug,
+            'post_content' => $page_content,
+            'post_status'  => 'publish',
+            'post_type'    => 'page',
+        ]);
+        if ($page_id && !is_wp_error($page_id)) {
+            update_option('wpaa_privacy_policy_page_id', $page_id);
+        }
+    } else {
+        update_option('wpaa_privacy_policy_page_id', $page->ID);
+    }
+    error_log('Privacy Policy page created: ' . $page_id);
+}
+
+// Function to handle privacy policy shortcode
+function wp_autoagent_privacy_policy_shortcode() {
+    $file_path = WP_AUTOAGENT_PLUGIN_DIR . 'assets/html/wpaa-privacy-policy.html';
+    if (file_exists($file_path)) {
+        $content = file_get_contents($file_path);
+        return '<div class="wpaa-privacy-policy">' . $content . '</div>';
+    } else {
+        error_log('Privacy Policy file not found: ' . $file_path);
+        return '<div class="wpaa-privacy-policy">Privacy Policy file not found.</div>';
+    }
+}
+
+// Register activation hook and shortcode
+register_activation_hook(WP_AUTOAGENT_PLUGIN_FILE, 'wp_autoagent_create_privacy_policy_page');
+add_shortcode('wpaa_privacy_policy', 'wp_autoagent_privacy_policy_shortcode');
